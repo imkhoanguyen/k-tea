@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tea.Api", "tea-server\src\Tea.Api\Tea.Api.csproj", "{CB6B67D0-FA11-4510-AA1E-9D436D164D95}"
 EndProject
@@ -10,6 +10,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tea.Application", "tea-server\src\Tea.Application\Tea.Application.csproj", "{1AF43EE5-D795-4942-ADD1-047909E7493A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tea.Infrastructure", "tea-server\src\Tea.Infrastructure\Tea.Infrastructure.csproj", "{8F3F6604-4201-47BF-9CBB-D13DC797193A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-server", "docker-server", "{8160E5A6-F599-42E3-B264-B4249FA29EDC}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
