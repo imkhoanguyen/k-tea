@@ -36,6 +36,7 @@ namespace Tea.Api.Controllers
         [HttpPut("{id:int}")]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryUpdateRequest request)
         {
@@ -47,7 +48,7 @@ namespace Tea.Api.Controllers
 
         [HttpDelete("{id:int}")]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
