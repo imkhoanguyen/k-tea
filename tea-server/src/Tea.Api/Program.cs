@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Tea.Application.Services.Implements;
+using Tea.Application.Services.Interfaces;
+using Tea.Domain.Repositories;
 using Tea.Infrastructure.DataAccess;
+using Tea.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +16,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<TeaContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
