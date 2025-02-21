@@ -27,7 +27,7 @@ namespace Tea.Application.Services.Implements
                 return CategoryMapper.EntityToResponse(entity);
             }
 
-            throw new Exception("Problem create category.");
+            throw new SaveChangesFailedException("Category");
         }
 
         public async Task DeleteAsync(int id)
@@ -40,7 +40,7 @@ namespace Tea.Application.Services.Implements
 
             if(!await unit.SaveChangesAsync())
             {
-                throw new Exception($"Problem delete category with id: {id}.");
+                throw new SaveChangesFailedException("Category");
             }
         }
 
@@ -79,7 +79,7 @@ namespace Tea.Application.Services.Implements
                 return CategoryMapper.EntityToResponse(entityToReturn!);
             }
 
-            throw new Exception($"Problem update category with id: {request.Id}.");
+            throw new SaveChangesFailedException("Category");
         }
     }
 }

@@ -1,7 +1,11 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tea.Api.Middlewares;
 using Tea.Application.Services.Implements;
 using Tea.Application.Services.Interfaces;
+using Tea.Application.Validators.Categories;
 using Tea.Domain.Repositories;
 using Tea.Infrastructure.DataAccess;
 using Tea.Infrastructure.Repositories;
@@ -10,10 +14,35 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => e.ErrorMessage)
+            .ToList();
+
+            var result = new
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Error = errors
+            };
+
+            return new BadRequestObjectResult(result);
+        };
+    });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register Assembly Validator
+builder.Services.AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<CategoryCreateRequestValidator>();
+
 
 builder.Services.AddDbContext<TeaContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
