@@ -40,9 +40,7 @@ namespace Tea.Api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryUpdateRequest request)
         {
-            if (id != request.Id)
-                return BadRequest($"Id: {id} in the route does not match the Id: {request.Id} in the request body.");
-            var categoryResponse = await categoryService.UpdateAsync(request);
+            var categoryResponse = await categoryService.UpdateAsync(id, request);
             return Ok(categoryResponse);
         }
 

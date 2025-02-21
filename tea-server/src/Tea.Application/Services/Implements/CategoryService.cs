@@ -59,8 +59,11 @@ namespace Tea.Application.Services.Implements
             return new PaginationResponse<CategoryResponse>(responseList, pagination.Count, pagination.CurrentPage, pagination.PageSize);
         }
 
-        public async Task<CategoryResponse> UpdateAsync(CategoryUpdateRequest request)
+        public async Task<CategoryResponse> UpdateAsync(int id, CategoryUpdateRequest request)
         {
+            if(id != request.Id)
+                throw new IdMismatchException(routeId: id, bodyId: request.Id);
+
             var entity = await unit.Category.FindAsync(x => x.Id == request.Id, tracked: true);
 
             if(entity == null)

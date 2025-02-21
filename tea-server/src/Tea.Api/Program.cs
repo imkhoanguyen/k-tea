@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Tea.Api.Middlewares;
 using Tea.Application.Services.Implements;
 using Tea.Application.Services.Interfaces;
 using Tea.Domain.Repositories;
@@ -21,6 +22,8 @@ builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
