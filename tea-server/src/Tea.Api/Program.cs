@@ -49,7 +49,7 @@ builder.Services.AddSwaggerGen();
 // Register Assembly Validator
 builder.Services.AddFluentValidationAutoValidation()
                 .AddFluentValidationClientsideAdapters();
-builder.Services.AddValidatorsFromAssemblyContaining<CategoryCreateRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CategoryCreateParentRequestValidator>();
 
 
 builder.Services.AddDbContext<TeaContext>(options =>

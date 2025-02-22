@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Tea.Domain.Common;
 using Tea.Domain.Entities;
 using Tea.Domain.Repositories;
@@ -11,7 +12,9 @@ namespace Tea.Infrastructure.Repositories
     {
         public async Task<PaginationResponse<Category>> GetPaginationAsync(PaginationRequest request)
         {
-            var query = context.Categories.AsNoTracking().AsQueryable();
+            var query = context.Categories.AsNoTracking().Include(x => x.Children).AsQueryable();
+
+            query = query.Where(x => !x.IsDeleted && x.ParentId == null);
 
             if(!string.IsNullOrEmpty(request.Search))
             {
@@ -32,6 +35,16 @@ namespace Tea.Infrastructure.Repositories
             }
 
             return await query.ApplyPaginationAsync(request.PageIndex, request.PageSize);
+        }
+
+        public override async Task<Category?> FindAsync(Expression<Func<Category, bool>>? predicate, bool tracked = false)
+        {
+            if (predicate == null)
+                return tracked ? await context.Categories.Include(x => x.Children).FirstOrDefaultAsync()
+                : await context.Categories.Include(x=> x.Children).AsNoTracking().FirstOrDefaultAsync();
+
+            return tracked ? await context.Categories.Include(x => x.Children).FirstOrDefaultAsync(predicate)
+                : await context.Categories.Include(x => x.Children).AsNoTracking().FirstOrDefaultAsync(predicate);
         }
     }
 }

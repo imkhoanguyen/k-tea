@@ -27,9 +27,19 @@ namespace Tea.Api.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create([FromBody] CategoryCreateRequest request)
+        public async Task<IActionResult> Create([FromBody] CategoryCreateParentRequest request)
         {
-            var categoryResponse = await categoryService.CreateAsync(request);
+            var categoryResponse = await categoryService.CreateParentAsync(request);
+            return CreatedAtAction(nameof(Get), new { id = categoryResponse.Id }, categoryResponse);
+        }
+
+        [HttpPost("children")]
+        [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CreateChildren([FromBody] CategoryCreateChildrenRequest request)
+        {
+            var categoryResponse = await categoryService.CreateChildrenAsync(request);
             return CreatedAtAction(nameof(Get), new { id = categoryResponse.Id }, categoryResponse);
         }
 

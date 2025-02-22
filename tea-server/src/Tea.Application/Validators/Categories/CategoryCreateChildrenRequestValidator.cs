@@ -3,10 +3,14 @@ using Tea.Application.DTOs.Categories;
 
 namespace Tea.Application.Validators.Categories
 {
-    public class CategoryCreateRequestValidator : AbstractValidator<CategoryCreateRequest>
+    public class CategoryCreateChildrenRequestValidator : AbstractValidator<CategoryCreateChildrenRequest>
     {
-        public CategoryCreateRequestValidator()
+        public CategoryCreateChildrenRequestValidator()
         {
+            RuleFor(x => x.ParentId)
+                .GreaterThan(0)
+                .WithMessage("ParentId must be greater than 0.");
+
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Name is required.")
                 .MaximumLength(100).WithMessage("Name must not exceed 100 characters.");

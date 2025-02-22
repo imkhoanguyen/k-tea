@@ -1,4 +1,6 @@
-﻿namespace Tea.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Tea.Domain.Entities
 {
     public class Category
     {

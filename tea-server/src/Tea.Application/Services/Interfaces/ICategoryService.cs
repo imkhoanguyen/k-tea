@@ -7,7 +7,8 @@ namespace Tea.Application.Services.Interfaces
     {
         Task<PaginationResponse<CategoryResponse>> GetPaginationAsync(PaginationRequest request);
         Task<CategoryResponse> GetByIdAsync(int id);
-        Task<CategoryResponse> CreateAsync(CategoryCreateRequest request);
+        Task<CategoryResponse> CreateParentAsync(CategoryCreateParentRequest request);
+        Task<CategoryResponse> CreateChildrenAsync(CategoryCreateChildrenRequest request);
         Task<CategoryResponse> UpdateAsync(int id, CategoryUpdateRequest request);
         Task DeleteAsync(int id);
     }

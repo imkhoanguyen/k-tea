@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Tea.Domain.Entities;
+using Tea.Infrastructure.DataAccess.EntityConfigs;
 
 namespace Tea.Infrastructure.DataAccess
 {
@@ -15,6 +16,7 @@ namespace Tea.Infrastructure.DataAccess
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.ApplyConfigurationsFromAssembly(typeof(CategoryConfig).Assembly);
         }
     }
 }

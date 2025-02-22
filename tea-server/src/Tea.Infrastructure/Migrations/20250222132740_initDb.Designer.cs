@@ -12,7 +12,7 @@ using Tea.Infrastructure.DataAccess;
 namespace Tea.Infrastructure.Migrations
 {
     [DbContext(typeof(TeaContext))]
-    [Migration("20250220132141_initDb")]
+    [Migration("20250222132740_initDb")]
     partial class initDb
     {
         /// <inheritdoc />
@@ -32,9 +32,6 @@ namespace Tea.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -56,7 +53,7 @@ namespace Tea.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("ParentId");
 
                     b.ToTable("Categories");
                 });
@@ -65,7 +62,8 @@ namespace Tea.Infrastructure.Migrations
                 {
                     b.HasOne("Tea.Domain.Entities.Category", null)
                         .WithMany("Children")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Tea.Domain.Entities.Category", b =>

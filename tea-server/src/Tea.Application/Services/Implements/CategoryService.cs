@@ -12,7 +12,38 @@ namespace Tea.Application.Services.Implements
 {
     public class CategoryService(IUnitOfWork unit, ILogger<CategoryService> logger) : ICategoryService
     {
-        public async Task<CategoryResponse> CreateAsync(CategoryCreateRequest request)
+        public async Task<CategoryResponse> CreateChildrenAsync(CategoryCreateChildrenRequest request)
+        {
+            logger.LogInformation($"Creating a new children category with NAME: {request.Name}");
+
+            var parent = await unit.Category.FindAsync(x => x.Id == request.ParentId, true);
+
+            if (parent == null)
+            {
+                logger.LogWarning($"Category Parent with ID: {request.ParentId} not found.");
+                throw new CategoryNotFoundException(request.ParentId);
+            }
+
+            var children = new Category
+            {
+                Name = request.Name,
+                Description = request.Description,
+                Slug = request.Slug,
+            };
+
+            parent.Children.Add(children);
+
+            if (await unit.SaveChangesAsync())
+            {
+                logger.LogInformation($"Children Crategory created successfully with ID: {children.Id}");
+                var entityToReturn = await unit.Category.FindAsync(x => x.Id == children.Id);
+                return CategoryMapper.EntityToResponse(entityToReturn!);
+            }
+
+            throw new SaveChangesFailedException("Category");
+        }
+
+        public async Task<CategoryResponse> CreateParentAsync(CategoryCreateParentRequest request)
         {
             logger.LogInformation($"Creating a new category with NAME: {request.Name}");
 
@@ -21,7 +52,6 @@ namespace Tea.Application.Services.Implements
                 Name = request.Name,
                 Description = request.Description,
                 Slug = request.Slug,
-                ParentId = request.ParentId,
             };
 
             unit.Category.Add(entity);
