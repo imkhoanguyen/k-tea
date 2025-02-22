@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Tea.Api.Middlewares;
 using Tea.Application.Services.Implements;
 using Tea.Application.Services.Interfaces;
@@ -11,6 +12,13 @@ using Tea.Infrastructure.DataAccess;
 using Tea.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Config SeriLog
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 
