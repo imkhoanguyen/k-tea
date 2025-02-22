@@ -16,7 +16,7 @@ namespace Tea.Application.Services.Implements
         {
             logger.LogInformation($"Creating a new children category with NAME: {request.Name}");
 
-            var parent = await unit.Category.FindAsync(x => x.Id == request.ParentId, true);
+            var parent = await unit.Category.FindAsync(x => x.Id == request.ParentId, tracked: true);
 
             if (parent == null)
             {
@@ -40,6 +40,7 @@ namespace Tea.Application.Services.Implements
                 return CategoryMapper.EntityToResponse(entityToReturn!);
             }
 
+            logger.LogError($"{Logging.SaveChangesFailed}");
             throw new SaveChangesFailedException("Category");
         }
 
