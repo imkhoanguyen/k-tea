@@ -26,7 +26,8 @@ namespace Tea.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Create([FromBody] CategoryCreateParentRequest request)
         {
             var categoryResponse = await categoryService.CreateParentAsync(request);
@@ -36,7 +37,7 @@ namespace Tea.Api.Controllers
         [HttpPost("children")]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateChildren([FromBody] CategoryCreateChildrenRequest request)
         {
             var categoryResponse = await categoryService.CreateChildrenAsync(request);
@@ -47,7 +48,6 @@ namespace Tea.Api.Controllers
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryUpdateRequest request)
         {
             var categoryResponse = await categoryService.UpdateAsync(id, request);
@@ -57,7 +57,7 @@ namespace Tea.Api.Controllers
         [HttpDelete("{id:int}")]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             await categoryService.DeleteAsync(id);
