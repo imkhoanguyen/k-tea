@@ -16,7 +16,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-server", "docker-ser
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CategoryService.Unit.Tests", "tea-server\tests\CategoryService.Unit.Tests\CategoryService.Unit.Tests.csproj", "{18DD675E-9667-41C3-B166-D936635B5E12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tea.Application.Unit.Tests", "tea-server\tests\CategoryService.Unit.Tests\Tea.Application.Unit.Tests.csproj", "{18DD675E-9667-41C3-B166-D936635B5E12}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D9F4E8F5-4ADC-4A76-BC9D-70EF0B483A53}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{73CF207E-779D-45DC-9EC0-687685E43F9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,5 +51,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CB6B67D0-FA11-4510-AA1E-9D436D164D95} = {D9F4E8F5-4ADC-4A76-BC9D-70EF0B483A53}
+		{9B40FE5A-0537-4DAC-BF6E-BCB3F321ABB2} = {D9F4E8F5-4ADC-4A76-BC9D-70EF0B483A53}
+		{1AF43EE5-D795-4942-ADD1-047909E7493A} = {D9F4E8F5-4ADC-4A76-BC9D-70EF0B483A53}
+		{8F3F6604-4201-47BF-9CBB-D13DC797193A} = {D9F4E8F5-4ADC-4A76-BC9D-70EF0B483A53}
+		{18DD675E-9667-41C3-B166-D936635B5E12} = {73CF207E-779D-45DC-9EC0-687685E43F9F}
 	EndGlobalSection
 EndGlobal
