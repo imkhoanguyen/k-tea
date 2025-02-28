@@ -2,7 +2,9 @@ using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Tea.Application.DTOs.Categories;
+using Tea.Application.Mappers;
 using Tea.Application.Services.Implements;
+using Tea.Domain.Common;
 using Tea.Domain.Entities;
 using Tea.Domain.Exceptions;
 using Tea.Domain.Repositories;
@@ -305,6 +307,217 @@ namespace Tea.Application.Unit.Tests
 
             // Assert
             Assert.Equal(categoryNotFoundException(id), exception.Message);
+        }
+
+        [Fact]
+        public async Task GetPaginationAsync_ShouldReturnPaginationResponse_WhenDataExists()
+        {
+            // Arrange
+            var request = new PaginationRequest
+            {
+                PageSize = 5,
+                PageIndex = 1,
+            };
+
+            var categories = new List<Category>
+            {
+                new Category { Id = 1, Name = "Category 1", Description = "Description 1", Slug = "category-1" },
+                new Category { Id = 2, Name = "Category 2", Description = "Description 2", Slug = "category-2" }
+            };
+
+
+            var paginationResult = new PaginationResponse<Category>(categories, categories.Count, request.PageIndex, request.PageSize);
+
+
+            _unitMock.Setup(x => x.Category.GetPaginationAsync(request)).ReturnsAsync(paginationResult);
+
+
+            // Act
+            var result = await _sut.GetPaginationAsync(request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(paginationResult.TotalCount, result.TotalCount);
+            Assert.Equal(paginationResult.PageSize, result.PageSize);
+            Assert.Equal(paginationResult.CurrentPage, result.CurrentPage);
+            Assert.Equal(paginationResult.PageSize, result.PageSize);
+
+            Assert.Equal(categories.Count, result.Count);
+            for(int i = 0; i < categories.Count; i++)
+            {
+                Assert.Equal(categories[i].Id, result.ElementAt(i).Id);
+                Assert.Equal(categories[i].Name, result.ElementAt(i).Name);
+                Assert.Equal(categories[i].Description, result.ElementAt(i).Description);
+                Assert.Equal(categories[i].Slug, result.ElementAt(i).Slug);
+            }
+        }
+
+        [Fact]
+        public async Task GetPaginationAsync_ShouldReturnEmptyList_WhenNoDataExists()
+        {
+            // Arrange
+            var request = new PaginationRequest
+            {
+                PageSize = 5,
+                PageIndex = 1,
+            };
+
+            var emptyCategories = new List<Category>();
+
+
+            var paginationResult = new PaginationResponse<Category>(emptyCategories, emptyCategories.Count, request.PageIndex, request.PageSize);
+
+
+            _unitMock.Setup(x => x.Category.GetPaginationAsync(request)).ReturnsAsync(paginationResult);
+
+
+            // Act
+            var result = await _sut.GetPaginationAsync(request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(0, result.TotalCount);
+            Assert.Equal(paginationResult.PageSize, result.PageSize);
+            Assert.Equal(paginationResult.CurrentPage, result.CurrentPage);
+            Assert.Equal(paginationResult.PageSize, result.PageSize);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ShouldReturnCategoryResponse_WhenCategoryExistsAndSaveChangesSucceed()
+        {
+            // Arrange
+            int id = 1;
+
+            var request = new CategoryUpdateRequest
+            {
+                Id = id,
+                Name = "updated name",
+                Description = "updated description",
+                Slug = "updated-name"
+            };
+
+            var category = new Category
+            {
+                Id = id,
+                Name = "default name",
+                Description = "default des",
+                Slug = "default slug",
+            };
+
+            var updatedCategory = new Category
+            {
+                Id = id,
+                Name = request.Name,
+                Description = request.Description,
+                Slug = request.Slug,
+            };
+
+            _unitMock.Setup(x => x.Category.FindAsync(It.IsAny<Expression<Func<Category, bool>>>(), true))
+            .ReturnsAsync(category);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
+
+            _unitMock.Setup(x => x.Category.FindAsync(It.IsAny<Expression<Func<Category, bool>>>(), false))
+            .ReturnsAsync(updatedCategory);
+
+            // Act
+            var result = await _sut.UpdateAsync(id, request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(updatedCategory.Id, result.Id);
+            Assert.Equal(updatedCategory.Name, result.Name);
+            Assert.Equal(updatedCategory.Description, result.Description);
+            Assert.Equal(updatedCategory.Slug, result.Slug);
+        }
+
+
+        [Fact]
+        public async Task UpdateAsync_ShouldThrowCategoryNotFoundException_WhenCategoryNotFound()
+        {
+            // Arrange
+            int id = 1;
+
+            var request = new CategoryUpdateRequest
+            {
+                Id = id,
+                Name = "updated name",
+                Description = "updated description",
+                Slug = "updated-name"
+            };
+
+            _unitMock.Setup(x => x.Category.FindAsync(It.IsAny<Expression<Func<Category, bool>>>(), true))
+            .ReturnsAsync((Category)null);
+
+            // Act
+            var exception = await Assert.ThrowsAsync<CategoryNotFoundException>(() => _sut.UpdateAsync(id, request));
+
+            // Assert
+            Assert.Equal(categoryNotFoundException(id), exception.Message);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ShouldThrowSaveChangesFailedException_WhenSaveChangesFailed()
+        {
+            // Arrange
+            int id = 1;
+
+            var request = new CategoryUpdateRequest
+            {
+                Id = id,
+                Name = "updated name",
+                Description = "updated description",
+                Slug = "updated-name"
+            };
+
+            var category = new Category
+            {
+                Id = id,
+                Name = "default name",
+                Description = "default des",
+                Slug = "default slug",
+            };
+
+            var updatedCategory = new Category
+            {
+                Id = id,
+                Name = request.Name,
+                Description = request.Description,
+                Slug = request.Slug,
+            };
+
+            _unitMock.Setup(x => x.Category.FindAsync(It.IsAny<Expression<Func<Category, bool>>>(), true))
+            .ReturnsAsync(category);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(false);
+
+            // Act
+            var exception = await Assert.ThrowsAsync<SaveChangesFailedException>(() => _sut.UpdateAsync(id, request));
+
+            // Assert
+            Assert.Equal(saveChangesFailExceptionString, exception.Message);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ShouldThrowIdMismatchException_WhenIdRouteAndIdBodyNotSame()
+        {
+            // Arrange
+            int routeId = 1;
+
+            var request = new CategoryUpdateRequest
+            {
+                Id = 2,
+                Name = "updated name",
+                Description = "updated description",
+                Slug = "updated-name"
+            };
+
+            // Act
+            var exception = await Assert.ThrowsAsync<IdMismatchException>(() => _sut.UpdateAsync(routeId, request));
+
+            // Assert
+            Assert.Equal($"Id: {routeId} in the route does not match the Id: {request.Id} in the request body.",
+                exception.Message);
         }
     }
 }
