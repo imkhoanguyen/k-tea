@@ -67,7 +67,7 @@ namespace Tea.Application.Unit.Tests
 
             _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
 
-            _unitMock.Setup(u => u.Category.FindAsync(It.IsAny<Expression<Func<Category, bool>>>(), false))
+            _unitMock.Setup(x => x.Category.FindAsync(It.IsAny<Expression<Func<Category, bool>>>(), false))
                      .ReturnsAsync(children);
 
             // Act
@@ -161,7 +161,7 @@ namespace Tea.Application.Unit.Tests
 
             _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
 
-            _unitMock.Setup(u => u.Category.FindAsync(It.IsAny<Expression<Func<Category, bool>>>(), false))
+            _unitMock.Setup(x => x.Category.FindAsync(It.IsAny<Expression<Func<Category, bool>>>(), false))
                      .ReturnsAsync(category);
 
             // Act
@@ -195,6 +195,116 @@ namespace Tea.Application.Unit.Tests
 
             // Assert
             Assert.Equal(saveChangesFailExceptionString, exception.Message);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ShouldSoftDeleteCategory_WhenCategoryExistsAndSaveChangesSucceed()
+        {
+            // Arrange
+            int id = 1;
+            var category = new Category
+            {
+                Id = id,
+                Name = "milk tea",
+                Description = "des milk tea",
+                Slug = "milk-tea"
+            };
+             
+            _unitMock.Setup(x => x.Category.FindAsync(It.IsAny<Expression<Func<Category, bool>>>(), true))
+            .ReturnsAsync(category);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
+
+            // Act
+            await _sut.DeleteAsync(id);
+
+            // Assert
+            Assert.True(category.IsDeleted);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ShouldThrowCategoryNotFoundException_WhenCategoryFound()
+        {
+            // Arrange
+            int id = 0;
+
+            _unitMock.Setup(x => x.Category.FindAsync(It.IsAny<Expression<Func<Category, bool>>>(), true))
+                .ReturnsAsync((Category)null);
+
+            // Act
+            var exception = await Assert.ThrowsAsync<CategoryNotFoundException>(() => _sut.DeleteAsync(id));
+
+            // Assert
+            Assert.Equal(categoryNotFoundException(id), exception.Message);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ShouldThrowSaveChangesFailedException_WhenSaveChangesFailed()
+        {
+            // Arrange
+            int id = 1;
+
+            var category = new Category
+            {
+                Id = id,
+                Name = "milk tea",
+                Description = "des milk tea",
+                Slug = "milk-tea"
+            };
+
+            _unitMock.Setup(x => x.Category.FindAsync(It.IsAny<Expression<Func<Category, bool>>>(), true))
+            .ReturnsAsync(category);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(false);
+
+            // Act
+            var exception = await Assert.ThrowsAsync<SaveChangesFailedException>(() => _sut.DeleteAsync(id));
+
+            // Assert
+            Assert.Equal(saveChangesFailExceptionString, exception.Message);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_ShouldReturnCategoryResponse_WhenCategoryExists()
+        {
+            // Arrange
+            int id = 1;
+            var category = new Category
+            {
+                Id = id,
+                Name = "milk tea",
+                Description = "des milk tea",
+                Slug = "milk-tea"
+            };
+
+            _unitMock.Setup(x => x.Category.FindAsync(It.IsAny<Expression<Func<Category, bool>>>(), false))
+            .ReturnsAsync(category);
+
+            // Act
+            var result = await _sut.GetByIdAsync(id);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(category.Id, result.Id);
+            Assert.Equal(category.Name, result.Name);
+            Assert.Equal(category.Description, result.Description);
+            Assert.Equal(category.Slug, result.Slug);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_ShouldThrowCategoryNotFoundException_WhenCategoryNotFound()
+        {
+            // Arrange
+            int id = 0;
+
+            _unitMock.Setup(x => x.Category.FindAsync(It.IsAny<Expression<Func<Category, bool>>>(), false))
+            .ReturnsAsync((Category)null);
+
+            // Act
+            var exception = await Assert.ThrowsAsync<CategoryNotFoundException>(() => _sut.GetByIdAsync(id));
+
+            // Assert
+            Assert.Equal(categoryNotFoundException(id), exception.Message);
         }
     }
 }
