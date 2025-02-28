@@ -13,7 +13,7 @@ namespace Tea.Application.Mappers
                 Name = entity.Name,
                 Description = entity.Description,
                 Slug = entity.Slug,
-                Children = entity.Children.Select(EntityToResponse).ToList(),
+                Children = entity.Children.Select(EntityToResponse).ToList() ?? [],
             };
         }
     }
