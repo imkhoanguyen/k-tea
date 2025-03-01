@@ -1,14 +1,14 @@
 ﻿namespace Tea.Domain.Entities
 {
-    public class Category
+    public class Item
     {
         public int Id { get; set; }
         public required string Name { get; set; }
-        public required string Description { get; set; }
-        public bool IsDeleted { get; set; }
+        public string? Description { get; set; }
         public required string Slug { get; set; }
-        public int? ParentId { get; set; }
-        public List<Category> Children { get; set; } = [];
+        public required string ImgUrl { get; set; }
+        public bool IsDeleted { get; set; }
+        public bool IsPublished { get; set; }
         public List<ItemCategory> ItemCategories { get; set; } = [];
     }
 }
