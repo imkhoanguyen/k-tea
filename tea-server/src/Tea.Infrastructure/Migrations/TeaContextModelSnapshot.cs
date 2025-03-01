@@ -86,7 +86,7 @@ namespace Tea.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Item");
+                    b.ToTable("Items");
                 });
 
             modelBuilder.Entity("Tea.Domain.Entities.ItemCategory", b =>
@@ -101,7 +101,7 @@ namespace Tea.Infrastructure.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemCategory");
+                    b.ToTable("ItemCategories");
                 });
 
             modelBuilder.Entity("Tea.Domain.Entities.Size", b =>
@@ -125,7 +125,7 @@ namespace Tea.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("NewPrice")
+                    b.Property<decimal?>("NewPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Price")
@@ -135,7 +135,7 @@ namespace Tea.Infrastructure.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("Size");
+                    b.ToTable("Sizes");
                 });
 
             modelBuilder.Entity("Tea.Domain.Entities.Category", b =>
@@ -168,7 +168,7 @@ namespace Tea.Infrastructure.Migrations
             modelBuilder.Entity("Tea.Domain.Entities.Size", b =>
                 {
                     b.HasOne("Tea.Domain.Entities.Item", "Item")
-                        .WithMany()
+                        .WithMany("Sizes")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -186,6 +186,8 @@ namespace Tea.Infrastructure.Migrations
             modelBuilder.Entity("Tea.Domain.Entities.Item", b =>
                 {
                     b.Navigation("ItemCategories");
+
+                    b.Navigation("Sizes");
                 });
 #pragma warning restore 612, 618
         }

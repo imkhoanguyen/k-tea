@@ -4,12 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Tea.Api.Middlewares;
+using Tea.Application.Interfaces;
 using Tea.Application.Services.Implements;
 using Tea.Application.Services.Interfaces;
 using Tea.Application.Validators.Categories;
 using Tea.Domain.Repositories;
+using Tea.Infrastructure.Configurations;
 using Tea.Infrastructure.DataAccess;
 using Tea.Infrastructure.Repositories;
+using Tea.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,8 +58,13 @@ builder.Services.AddValidatorsFromAssemblyContaining<CategoryCreateParentRequest
 builder.Services.AddDbContext<TeaContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.Configure<CloudinaryConfig>(builder.Configuration.GetSection(CloudinaryConfig.ConfigName));
+
 builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IItemService, ItemService>();
+
 
 var app = builder.Build();
 

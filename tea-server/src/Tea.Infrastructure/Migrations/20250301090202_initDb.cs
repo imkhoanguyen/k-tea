@@ -34,7 +34,7 @@ namespace Tea.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Item",
+                name: "Items",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -48,11 +48,11 @@ namespace Tea.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Item", x => x.Id);
+                    table.PrimaryKey("PK_Items", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ItemCategory",
+                name: "ItemCategories",
                 columns: table => new
                 {
                     ItemId = table.Column<int>(type: "int", nullable: false),
@@ -60,23 +60,23 @@ namespace Tea.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ItemCategory", x => new { x.CategoryId, x.ItemId });
+                    table.PrimaryKey("PK_ItemCategories", x => new { x.CategoryId, x.ItemId });
                     table.ForeignKey(
-                        name: "FK_ItemCategory_Categories_CategoryId",
+                        name: "FK_ItemCategories_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ItemCategory_Item_ItemId",
+                        name: "FK_ItemCategories_Items_ItemId",
                         column: x => x.ItemId,
-                        principalTable: "Item",
+                        principalTable: "Items",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Size",
+                name: "Sizes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -85,16 +85,16 @@ namespace Tea.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    NewPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    NewPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     ItemId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Size", x => x.Id);
+                    table.PrimaryKey("PK_Sizes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Size_Item_ItemId",
+                        name: "FK_Sizes_Items_ItemId",
                         column: x => x.ItemId,
-                        principalTable: "Item",
+                        principalTable: "Items",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -105,13 +105,13 @@ namespace Tea.Infrastructure.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ItemCategory_ItemId",
-                table: "ItemCategory",
+                name: "IX_ItemCategories_ItemId",
+                table: "ItemCategories",
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Size_ItemId",
-                table: "Size",
+                name: "IX_Sizes_ItemId",
+                table: "Sizes",
                 column: "ItemId");
         }
 
@@ -119,16 +119,16 @@ namespace Tea.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ItemCategory");
+                name: "ItemCategories");
 
             migrationBuilder.DropTable(
-                name: "Size");
+                name: "Sizes");
 
             migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Item");
+                name: "Items");
         }
     }
 }
