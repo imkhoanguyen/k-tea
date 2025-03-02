@@ -6,6 +6,7 @@ using Tea.Application.Interfaces;
 using Tea.Application.Mappers;
 using Tea.Application.Services.Interfaces;
 using Tea.Domain.Common;
+using Tea.Domain.Constants;
 using Tea.Domain.Entities;
 using Tea.Domain.Exceptions;
 using Tea.Domain.Repositories;
@@ -16,6 +17,7 @@ namespace Tea.Application.Services.Implements
     {
         public async Task<ItemResponse> CreateAsync(ItemCreateRequest request)
         {
+            logger.LogInformation($"Creating a new item with NAME: {request.Name}");
             /*
              * upload img to cloudinary
              */
@@ -26,59 +28,73 @@ namespace Tea.Application.Services.Implements
                 throw new UploadFileFailedException();
             }
 
-            var item = new Item
+            try
             {
-                Name = request.Name,
-                Description = request.Description,
-                Slug = request.Slug,
-                IsPublished = request.IsPublished,
-                ImgUrl = resultUploadImg.Url!,
-            };
-
-            /*
-             * add item category
-             */
-            foreach (var categoryId in request.CategoryIdList)
-            {
-                var itemCategory = new ItemCategory
+                var item = new Item
                 {
-                    CategoryId = categoryId,
-                    ItemId = item.Id,
+                    Name = request.Name,
+                    Description = request.Description,
+                    Slug = request.Slug,
+                    IsPublished = request.IsPublished,
+                    ImgUrl = resultUploadImg.Url!,
+                    PublicId = resultUploadImg.PublicId,
                 };
-                item.ItemCategories.Add(itemCategory);
-            }
 
-
-            /*
-             * addd size 
-             */
-            var sizeCreateRequests = JsonConvert.DeserializeObject<List<SizeCreateRequest>>(request.SizeCreateRequestJson);
-
-            if (sizeCreateRequests != null)
-            {
-                foreach (var sizeRequest in sizeCreateRequests)
+                /*
+                 * add item category
+                 */
+                foreach (var categoryId in request.CategoryIdList)
                 {
-                    var size = new Size
+                    var itemCategory = new ItemCategory
                     {
-                        Name = sizeRequest.Name,
-                        Description = sizeRequest.Description,
-                        Price = sizeRequest.Price,
-                        NewPrice = sizeRequest.NewPrice,
-                        ItemId = item.Id
+                        CategoryId = categoryId,
+                        ItemId = item.Id,
                     };
-                    item.Sizes.Add(size);
+                    item.ItemCategories.Add(itemCategory);
+                }
+
+
+                /*
+                 * addd size 
+                 */
+                var sizeCreateRequests = JsonConvert.DeserializeObject<List<SizeCreateRequest>>(request.SizeCreateRequestJson);
+
+                if (sizeCreateRequests != null)
+                {
+                    foreach (var sizeRequest in sizeCreateRequests)
+                    {
+                        var size = new Size
+                        {
+                            Name = sizeRequest.Name,
+                            Description = sizeRequest.Description,
+                            Price = sizeRequest.Price,
+                            NewPrice = sizeRequest.NewPrice,
+                            ItemId = item.Id
+                        };
+                        item.Sizes.Add(size);
+                    }
+                }
+
+                unit.Item.Add(item);
+
+                if (await unit.SaveChangesAsync())
+                {
+                    logger.LogInformation($"Crategory created successfully with ID: {item.Id}");
+                    var entityToReturn = await unit.Item.FindAsync(x => x.Id == item.Id);
+                    return ItemMapper.EntityToResponse(entityToReturn!);
+                }
+                else
+                {
+                    logger.LogError(Logging.SaveChangesFailed);
+                    throw new SaveChangesFailedException("Item");
                 }
             }
-
-            unit.Item.Add(item);
-
-            if (await unit.SaveChangesAsync())
+            catch (Exception ex)
             {
-                var entityToReturn = await unit.Item.FindAsync(x => x.Id == item.Id);
-                return ItemMapper.EntityToResponse(entityToReturn!);
+                logger.LogError(ex, "An error occurred while creating the item.");
+                var resultDeleteImg = await cloudinaryService.DeleteFileAsync(resultUploadImg.PublicId!);
+                throw;
             }
-
-            throw new SaveChangesFailedException("Item");
         }
 
         public async Task<ItemResponse> GetByIdAsync(int id)

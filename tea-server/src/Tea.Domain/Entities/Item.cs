@@ -7,6 +7,7 @@
         public string? Description { get; set; }
         public required string Slug { get; set; }
         public required string ImgUrl { get; set; }
+        public string? PublicId { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsPublished { get; set; }
         public List<ItemCategory> ItemCategories { get; set; } = [];
