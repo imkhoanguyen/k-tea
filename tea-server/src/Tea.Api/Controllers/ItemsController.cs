@@ -89,7 +89,7 @@ namespace Tea.Api.Controllers
         [ProducesResponseType(typeof(ItemResponse), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteSizesInItem([FromRoute] int itemId,[FromQuery] List<int> sizeIdList)
+        public async Task<IActionResult> DeleteSizesOfItem([FromRoute] int itemId,[FromQuery] List<int> sizeIdList)
         {
             await itemService.DeleteSizesAsync(itemId, sizeIdList);
             return NoContent();

@@ -15,8 +15,4 @@
     <ProjectReference Include="..\Tea.Domain\Tea.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Validators\Items\" />
-  </ItemGroup>
-
 </Project>
