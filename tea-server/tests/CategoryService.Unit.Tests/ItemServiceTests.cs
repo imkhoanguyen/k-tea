@@ -430,7 +430,40 @@ namespace Tea.Application.Unit.Tests
         }
 
         [Fact]
-        public async void DeleteSizesAsync_ShouldSaveChangesFailedException_WhenSaveChangesfailed()
+        public async void DeleteSizesAsync_ShouldThrowItemMustHaveAtLeastOneSizeException_WhenNoSizesLeft()
+        {
+            // Arrange
+            var itemId = 1;
+            var sizeIdList = new List<int>() { 1, 2, 3};
+
+            var sizes = new List<Size>
+            {
+                new Size {Id = 1, Name = "size1", Description = "des 1", NewPrice = null, Price = 1},
+                new Size {Id=2, Name = "size2", Description = "des 2", NewPrice = null, Price = 2},
+                new Size {Id = 3, Name = "size3", Description = "des 3", NewPrice = null, Price = 3},
+            };
+
+            var entity = new Item
+            {
+                Id = 1,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                ImgUrl = "item",
+                Sizes = sizes,
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync(entity);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
+
+            // Act && Assert
+            await Assert.ThrowsAsync<ItemMustHaveAtLeastOneSizeException>(() => _sut.DeleteSizesAsync(itemId, sizeIdList));
+        }
+
+        [Fact]
+        public async void DeleteSizesAsync_ShouldSaveChangesFailedException_WhenSaveChangesFailed()
         {
             // Arrange
             var itemId = 1;
@@ -460,6 +493,48 @@ namespace Tea.Application.Unit.Tests
 
             // Act && Assert
             await Assert.ThrowsAsync<SaveChangesFailedException>(() => _sut.DeleteSizesAsync(itemId, sizeIdList));
+        }
+
+
+        [Fact]
+        public async void GetByIdAsync_ShouldReturnItemResponse_WhenItemExists()
+        {
+            // Arrange
+            int id = 1;
+            var entity = new Item
+            {
+                Id = 1,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                ImgUrl = "item",
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), false))
+                .ReturnsAsync(entity);
+
+            // Act
+            var result = await _sut.GetByIdAsync(id);
+
+            // Assert
+            Assert.Equal(id, result.Id);
+            Assert.Equal(entity.Name, result.Name);
+            Assert.Equal(entity.Description, result.Description);
+            Assert.Equal(entity.Slug, result.Slug);
+            Assert.Equal(entity.ImgUrl, result.ImgUrl);
+        }
+
+        [Fact]
+        public async void GetByIdAsync_ShouldThrowItemNotFoundException_WhenItemNotFound()
+        {
+            // Arrange
+            int id = 1;
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), false))
+                .ReturnsAsync((Item)null);
+
+            // Act && Assert
+            await Assert.ThrowsAsync<ItemNotFoundException>(() => _sut.GetByIdAsync(id));
         }
     }
 }
