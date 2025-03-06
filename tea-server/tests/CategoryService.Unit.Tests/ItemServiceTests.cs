@@ -9,6 +9,7 @@ using Tea.Application.DTOs.Sizes;
 using Tea.Application.Interfaces;
 using Tea.Application.Services.Implements;
 using Tea.Application.Services.Interfaces;
+using Tea.Domain.Common;
 using Tea.Domain.Entities;
 using Tea.Domain.Exceptions;
 using Tea.Domain.Repositories;
@@ -434,7 +435,7 @@ namespace Tea.Application.Unit.Tests
         {
             // Arrange
             var itemId = 1;
-            var sizeIdList = new List<int>() { 1, 2, 3};
+            var sizeIdList = new List<int>() { 1, 2, 3 };
 
             var sizes = new List<Size>
             {
@@ -535,6 +536,131 @@ namespace Tea.Application.Unit.Tests
 
             // Act && Assert
             await Assert.ThrowsAsync<ItemNotFoundException>(() => _sut.GetByIdAsync(id));
+        }
+
+
+        [Fact]
+        public async void GetPaginationAsync_ShouldReturnPaginationResponse_WhenDataExists()
+        {
+            // Arrange
+            var request = new PaginationRequest
+            {
+                PageSize = 5,
+                PageIndex = 1,
+            };
+
+            var sizes = new List<Size>
+            {
+                new Size {Id = 1, Name = "size1", Description = "des 1", NewPrice = null, Price = 1},
+                new Size {Id=2, Name = "size2", Description = "des 2", NewPrice = null, Price = 2},
+                new Size {Id = 3, Name = "size3", Description = "des 3", NewPrice = null, Price = 3},
+            };
+
+            var categories = new List<Category>
+            {
+                new Category {Id=1, Name = "category", Description = "category", Slug = "category" },
+                new Category {Id=2, Name = "category2", Description = "category2", Slug = "category2" },
+            };
+
+            var items = new List<Item>()
+            {
+                new Item{Id = 1, Name = "item",Description = "item",Slug = "item",ImgUrl = "item", Sizes = sizes, ItemCategories = categories.Select(x => new ItemCategory { Category = x, ItemId = 1, CategoryId = x.Id }).ToList(),},
+                new Item{Id = 2, Name = "item2",Description = "item2",Slug = "item2",ImgUrl = "item2",Sizes = sizes, ItemCategories = categories.Select(x => new ItemCategory { Category = x, ItemId = 1, CategoryId = x.Id }).ToList(),},
+            };
+
+            var paginationResult = new PaginationResponse<Item>(items, items.Count, request.PageIndex, request.PageSize);
+
+            _unitMock.Setup(x => x.Item.GetPaginationAsync(request, null)).ReturnsAsync(paginationResult);
+
+            // Act
+            var result = await _sut.GetPaginationAsync(request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(paginationResult.TotalCount, result.TotalCount);
+            Assert.Equal(paginationResult.PageSize, result.PageSize);
+            Assert.Equal(paginationResult.CurrentPage, result.CurrentPage);
+            Assert.Equal(paginationResult.PageSize, result.PageSize);
+
+            Assert.Equal(items.Count, result.Count);
+            for (int i = 0; i < items.Count; i++)
+            {
+                Assert.Equal(items[i].Id, result.ElementAt(i).Id);
+                Assert.Equal(items[i].Name, result.ElementAt(i).Name);
+                Assert.Equal(items[i].Description, result.ElementAt(i).Description);
+                Assert.Equal(items[i].Slug, result.ElementAt(i).Slug);
+
+                // Kiểm tra Sizes
+                Assert.Equal(items[i].Sizes.Count, result.ElementAt(i).Sizes.Count);
+                for (int j = 0; j < items[i].Sizes.Count; j++)
+                {
+                    Assert.Equal(items[i].Sizes[j].Id, result.ElementAt(i).Sizes.ElementAt(j).Id);
+                    Assert.Equal(items[i].Sizes[j].Name, result.ElementAt(i).Sizes.ElementAt(j).Name);
+                }
+
+                // Kiểm tra ItemCategories
+                Assert.Equal(items[i].ItemCategories.Count, result.ElementAt(i).Categories.Count);
+                for (int j = 0; j < items[i].ItemCategories.Count; j++)
+                {
+                    Assert.Equal(items[i].ItemCategories[j].CategoryId, result.ElementAt(i).Categories.ElementAt(j).Id);
+                }
+            }
+        }
+
+        [Fact]
+        public async void GetPaginationAsync_ShouldReturnEmptyPaginationResponse_WhenNoDataExists()
+        {
+            // Arrange
+            var request = new PaginationRequest
+            {
+                PageSize = 5,
+                PageIndex = 1,
+            };
+
+            var item = new List<Item>();
+
+            var paginationResult = new PaginationResponse<Item>(item, item.Count, request.PageIndex, request.PageSize);
+
+            _unitMock.Setup(x => x.Item.GetPaginationAsync(request, null)).ReturnsAsync(paginationResult);
+
+            // Act
+            var result = await _sut.GetPaginationAsync(request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+            Assert.Equal(0, result.TotalCount);
+            Assert.Equal(paginationResult.PageSize, result.PageSize);
+            Assert.Equal(paginationResult.CurrentPage, result.CurrentPage);
+            Assert.Equal(paginationResult.PageSize, result.PageSize);
+        }
+
+        [Fact]
+        public async void GetPublicPaginationAsync_ShouldReturnEmptyPaginationResponse_WhenNoDataExists()
+        {
+            // Arrange
+            var request = new PaginationRequest
+            {
+                PageSize = 5,
+                PageIndex = 1,
+            };
+
+            var item = new List<Item>();
+
+            var paginationResult = new PaginationResponse<Item>(item, item.Count, request.PageIndex, request.PageSize);
+
+            _unitMock.Setup(x => x.Item.GetPaginationAsync(request, It.IsAny<Expression<Func<Item, bool>>>())).ReturnsAsync(paginationResult);
+
+            // Act
+            var result = await _sut.GetPaginationAsync(request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+            Assert.Equal(0, result.TotalCount);
+            Assert.Equal(paginationResult.PageSize, result.PageSize);
+            Assert.Equal(paginationResult.CurrentPage, result.CurrentPage);
+            Assert.Equal(paginationResult.PageSize, result.PageSize);
         }
     }
 }
