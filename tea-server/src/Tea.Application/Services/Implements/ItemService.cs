@@ -93,24 +93,19 @@ namespace Tea.Application.Services.Implements
                     item.ItemCategories.Add(itemCategory);
                 }
 
-                /*
-                 * addd size 
-                 */
+                // add size
                 var sizeCreateRequests = JsonConvert.DeserializeObject<List<SizeCreateRequest>>(request.SizeCreateRequestJson);
 
-                if (sizeCreateRequests != null)
+                foreach (var sizeRequest in sizeCreateRequests!)
                 {
-                    foreach (var sizeRequest in sizeCreateRequests)
+                    var size = new Size
                     {
-                        var size = new Size
-                        {
-                            Name = sizeRequest.Name,
-                            Description = sizeRequest.Description,
-                            Price = sizeRequest.Price,
-                            NewPrice = sizeRequest.NewPrice,
-                        };
-                        item.Sizes.Add(size);
-                    }
+                        Name = sizeRequest.Name,
+                        Description = sizeRequest.Description,
+                        Price = sizeRequest.Price,
+                        NewPrice = sizeRequest.NewPrice,
+                    };
+                    item.Sizes.Add(size);
                 }
 
                 unit.Item.Add(item);
@@ -118,7 +113,10 @@ namespace Tea.Application.Services.Implements
                 if (await unit.SaveChangesAsync())
                 {
                     logger.LogInformation($"Crategory created successfully with ID: {item.Id}");
-                    return ItemMapper.EntityToResponse(item);
+                    // do chỉ có categoryId nên phải get lại để get thông tin category 
+                    // => get lại
+                    var entityToReturn = await unit.Item.FindAsync(x => x.Id == item.Id);
+                    return ItemMapper.EntityToResponse(entityToReturn!);
                 }
 
                 logger.LogError(Logging.SaveChangesFailed);
@@ -156,7 +154,7 @@ namespace Tea.Application.Services.Implements
         {
             logger.LogInformation($"delete size in item with itemID: {itemId}");
 
-            if(sizeIdList == null || sizeIdList.Count == 0)
+            if (sizeIdList == null || sizeIdList.Count == 0)
             {
                 logger.LogWarning("List sizeId cannot be null or empty.");
                 throw new EmptySizeListException();
@@ -171,7 +169,7 @@ namespace Tea.Application.Services.Implements
 
             var sizesToDelete = item.Sizes.Where(x => sizeIdList.Contains(x.Id)).ToList();
 
-            if(item.Sizes.Count - sizesToDelete.Count < 1)
+            if (item.Sizes.Count - sizesToDelete.Count < 1)
             {
                 logger.LogWarning("Cannot delete sizes because the item must have at least one size.");
                 throw new ItemMustHaveAtLeastOneSizeException();
@@ -230,7 +228,7 @@ namespace Tea.Application.Services.Implements
         {
             logger.LogInformation($"Updating image of item with ID: {itemId}");
 
-            if(imgFile == null || imgFile.Length == 0)
+            if (imgFile == null || imgFile.Length == 0)
             {
                 logger.LogWarning("File request cant empty or null");
                 throw new EmptyFileRequestException();
@@ -313,14 +311,14 @@ namespace Tea.Application.Services.Implements
 
             //add new category to item
             var categoriesNeedAdd = itemCategoriesRequest
-                .Select(x => new ItemCategory { CategoryId = x.CategoryId, ItemId = x.ItemId})
+                .Select(x => new ItemCategory { CategoryId = x.CategoryId, ItemId = x.ItemId })
                 .Except(currentCategoriesItem);
             entity.ItemCategories.AddRange(categoriesNeedAdd);
 
             //delete category in item
             var categoriesNeedDelete = currentCategoriesItem
-                .Except(itemCategoriesRequest.Select(x => new ItemCategory { CategoryId = x.CategoryId, ItemId = x.ItemId })); 
-            
+                .Except(itemCategoriesRequest.Select(x => new ItemCategory { CategoryId = x.CategoryId, ItemId = x.ItemId }));
+
             foreach (var itemCategory in categoriesNeedDelete)
             {
                 entity.ItemCategories.Remove(itemCategory);

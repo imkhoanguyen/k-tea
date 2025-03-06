@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using FluentValidation;
+using Newtonsoft.Json;
 using Tea.Application.DTOs.Items;
 using Tea.Application.DTOs.Sizes;
 
@@ -55,7 +56,7 @@ namespace Tea.Application.Validators.Items
         {
             try
             {
-                var sizes = JsonSerializer.Deserialize<List<SizeCreateRequest>>(json);
+                var sizes = JsonConvert.DeserializeObject<List<SizeCreateRequest>>(json);
                 if (sizes == null || sizes.Count == 0) return false;
                 
                 foreach(var size in sizes)
