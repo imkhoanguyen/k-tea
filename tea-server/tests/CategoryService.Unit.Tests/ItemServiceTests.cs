@@ -12,6 +12,7 @@ using Tea.Application.Services.Interfaces;
 using Tea.Domain.Entities;
 using Tea.Domain.Exceptions;
 using Tea.Domain.Repositories;
+using Xunit;
 
 namespace Tea.Application.Unit.Tests
 {
@@ -294,6 +295,73 @@ namespace Tea.Application.Unit.Tests
 
             // Act &&  Assert
             await Assert.ThrowsAsync<SaveChangesFailedException>(() => _sut.CreateAsync(request));
+        }
+
+
+        [Fact]
+        public async void DeleteAsync_ShouldSoftDeleteItem_WhenItemExistsAndSaveChangesSucceed()
+        {
+            // Arrange
+            int id = 1;
+
+            var entity = new Item
+            {
+                Id = 1,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                ImgUrl = "item",
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                .ReturnsAsync(entity);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
+
+            // Act
+            await _sut.DeleteAsync(id);
+
+            // Assert
+            Assert.True(entity.IsDeleted);
+            Assert.False(entity.IsPublished);
+        }
+
+        [Fact]
+        public async void DeleteAsync_ShouldThrowItemNotFoundException_WhenItemNotFound()
+        {
+            // Arrange
+            int id = 1;
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                .ReturnsAsync((Item)null);
+
+            // Act && Assert
+            await Assert.ThrowsAsync<ItemNotFoundException>(() => _sut.DeleteAsync(id));
+        }
+
+        [Fact]
+        public async void DeleteAsync_ShouldThrowSaveChangesFailedException_WhenSaveChangeFailed()
+        {
+            // Arrange
+            int id = 1;
+
+            var entity = new Item
+            {
+                Id = 1,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                ImgUrl = "item",
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                .ReturnsAsync(entity);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(false);
+
+
+            // Act && Assert
+            await Assert.ThrowsAsync<SaveChangesFailedException>(() => _sut.DeleteAsync(id));
         }
     }
 }
