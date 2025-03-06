@@ -1,8 +1,11 @@
-﻿using Tea.Domain.Entities;
+﻿using System.Linq.Expressions;
+using Tea.Domain.Common;
+using Tea.Domain.Entities;
 
 namespace Tea.Domain.Repositories
 {
     public interface IItemRepository : IRepository<Item>
     {
+        Task<PaginationResponse<Item>> GetPaginationAsync(PaginationRequest request, Expression<Func<Item, bool>>? expression);
     }
 }

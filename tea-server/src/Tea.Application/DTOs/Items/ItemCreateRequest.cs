@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Tea.Application.DTOs.Sizes;
 
 namespace Tea.Application.DTOs.Items
 {

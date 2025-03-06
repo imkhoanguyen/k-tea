@@ -6,5 +6,9 @@
         ISizeRepository Size { get; }
         IItemRepository Item { get; }
         Task<bool> SaveChangesAsync();
+        Task BeginTransactionAsync();
+        Task CommitTransactionAsync();
+        Task RollbackTransactionAsync();
+        void Dispose();
     }
 }
