@@ -99,7 +99,7 @@ namespace Tea.Application.Unit.Tests
 
             _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
                 .ReturnsAsync((Item)null);
-            
+
 
             // Act && Assert
             await Assert.ThrowsAsync<EmptySizeListException>(() => _sut.AddSizesAsync(itemId, requests));
@@ -362,6 +362,104 @@ namespace Tea.Application.Unit.Tests
 
             // Act && Assert
             await Assert.ThrowsAsync<SaveChangesFailedException>(() => _sut.DeleteAsync(id));
+        }
+
+
+        [Fact]
+        public async void DeleteSizesAsync_ShouldRemoveSizeOfItem_WhenSaveChangesSuccess()
+        {
+            // Arrange
+            var itemId = 1;
+            var sizeIdList = new List<int>() { 1, 2 };
+
+            var sizes = new List<Size>
+            {
+                new Size {Id = 1, Name = "size1", Description = "des 1", NewPrice = null, Price = 1},
+                new Size {Id=2, Name = "size2", Description = "des 2", NewPrice = null, Price = 2},
+                new Size {Id = 3, Name = "size3", Description = "des 3", NewPrice = null, Price = 3},
+            };
+
+            var entity = new Item
+            {
+                Id = 1,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                ImgUrl = "item",
+                Sizes = sizes,
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync(entity);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
+
+            // Act
+            await _sut.DeleteSizesAsync(itemId, sizeIdList);
+
+            // Assert
+            Assert.Equal(1, entity.Sizes.Count);
+            Assert.DoesNotContain(entity.Sizes, x => sizeIdList.Contains(x.Id));
+            Assert.Contains(entity.Sizes, x => x.Id == 3);
+        }
+
+        [Fact]
+        public async void DeleteSizesAsync_ShouldThrowEmptySizeListException_WhenSizeIdListIsEmptyOrNull()
+        {
+            // Arrange
+            var itemId = 1;
+            var sizeIdList = new List<int>();
+
+            // Act && Assert
+            await Assert.ThrowsAsync<EmptySizeListException>(() => _sut.DeleteSizesAsync(itemId, sizeIdList));
+        }
+
+        [Fact]
+        public async void DeleteSizesAsync_ShouldThrowItemNotFoundException_WhenItemNotFound()
+        {
+            // Arrange
+            var itemId = 1;
+            var sizeIdList = new List<int>() { 1, 2 };
+
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync((Item)null);
+
+            // Act && Assert
+            await Assert.ThrowsAsync<ItemNotFoundException>(() => _sut.DeleteSizesAsync(itemId, sizeIdList));
+        }
+
+        [Fact]
+        public async void DeleteSizesAsync_ShouldSaveChangesFailedException_WhenSaveChangesfailed()
+        {
+            // Arrange
+            var itemId = 1;
+            var sizeIdList = new List<int>() { 1, 2 };
+
+            var sizes = new List<Size>
+            {
+                new Size {Id = 1, Name = "size1", Description = "des 1", NewPrice = null, Price = 1},
+                new Size {Id=2, Name = "size2", Description = "des 2", NewPrice = null, Price = 2},
+                new Size {Id = 3, Name = "size3", Description = "des 3", NewPrice = null, Price = 3},
+            };
+
+            var entity = new Item
+            {
+                Id = 1,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                ImgUrl = "item",
+                Sizes = sizes,
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync(entity);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(false);
+
+            // Act && Assert
+            await Assert.ThrowsAsync<SaveChangesFailedException>(() => _sut.DeleteSizesAsync(itemId, sizeIdList));
         }
     }
 }
