@@ -1031,5 +1031,175 @@ namespace Tea.Application.Unit.Tests
             // Act & Assert
             await Assert.ThrowsAsync<SaveChangesFailedException>(() => _sut.UpdateItemAsync(id, request));
         }
+
+
+        [Fact]
+        public async void UpdateSizeAsync_ShouldReturnItemResponse_WhenSaveChangeSuccess()
+        {
+            // Arrange
+            var itemId = 1;
+            var request = new SizeUpdateRequest
+            {
+                Id = 1,
+                Name = "size",
+                Description = "size",
+                NewPrice = 100,
+                Price = 200,
+                ItemId = itemId,
+            };
+
+            var originSizeList = new List<Size>
+            {
+                new Size {Id=1,Name = "s", Description = "s 1", NewPrice = null, Price = 1},
+            };
+
+            var item = new Item
+            {
+                Id = itemId,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                ImgUrl = "item",
+                Sizes = originSizeList,
+                ItemCategories = [],
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync(item);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
+
+            // Act
+            var result = await _sut.UpdateSizeAsync(itemId, request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(item.Sizes.First().Id, request.Id);
+            Assert.Equal(item.Sizes.First().Name, request.Name);
+            Assert.Equal(item.Sizes.First().Description, request.Description);
+            Assert.Equal(item.Sizes.First().NewPrice, request.NewPrice);
+            Assert.Equal(item.Sizes.First().Price, request.Price);
+        }
+
+        [Fact]
+        public async void UpdateSizeAsync_ShouldThrowIdMismatchException_WhenIdRouteAndIdBodyNotSame()
+        {
+            // Arrange
+            var itemId = 1;
+            var request = new SizeUpdateRequest
+            {
+                Id = 1,
+                Name = "size",
+                Description = "size",
+                NewPrice = 100,
+                Price = 200,
+                ItemId = 2,
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<IdMismatchException>(() => _sut.UpdateSizeAsync(itemId, request));
+        }
+
+        [Fact]
+        public async void UpdateSizeAsync_ShouldThrowItemNotFoundException_WhenItemNotFound()
+        {
+            // Arrange
+            var itemId = 1;
+            var request = new SizeUpdateRequest
+            {
+                Id = 1,
+                Name = "size",
+                Description = "size",
+                NewPrice = 100,
+                Price = 200,
+                ItemId = itemId,
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync((Item)null);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ItemNotFoundException>(() => _sut.UpdateSizeAsync(itemId, request));
+        }
+
+        [Fact]
+        public async void UpdateSizeAsync_ShouldThrowSizeNotFoundException_WhenSizeNotFoundInItem()
+        {
+            // Arrange
+            var itemId = 1;
+            var request = new SizeUpdateRequest
+            {
+                Id = 1,
+                Name = "size",
+                Description = "size",
+                NewPrice = 100,
+                Price = 200,
+                ItemId = itemId,
+            };
+
+            var originSizeList = new List<Size>
+            {
+                new Size {Id=1,Name = "s", Description = "s 1", NewPrice = null, Price = 1},
+            };
+
+            var item = new Item
+            {
+                Id = itemId,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                ImgUrl = "item",
+                Sizes = [],
+                ItemCategories = [],
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync(item);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<SizeNotFoundException>(() => _sut.UpdateSizeAsync(itemId, request));
+        }
+
+        [Fact]
+        public async void UpdateSizeAsync_ShouldThrowSaveChangesFailedException_WhenSaveChangeFail()
+        {
+            // Arrange
+            var itemId = 1;
+            var request = new SizeUpdateRequest
+            {
+                Id = 1,
+                Name = "size",
+                Description = "size",
+                NewPrice = 100,
+                Price = 200,
+                ItemId = itemId,
+            };
+
+            var originSizeList = new List<Size>
+            {
+                new Size {Id=1,Name = "s", Description = "s 1", NewPrice = null, Price = 1},
+            };
+
+            var item = new Item
+            {
+                Id = itemId,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                ImgUrl = "item",
+                Sizes = originSizeList,
+                ItemCategories = [],
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync(item);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(false);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<SaveChangesFailedException>(() => _sut.UpdateSizeAsync(itemId, request));
+        }
     }
 }
