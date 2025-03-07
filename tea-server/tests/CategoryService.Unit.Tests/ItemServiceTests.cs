@@ -861,5 +861,175 @@ namespace Tea.Application.Unit.Tests
             // Act & Assert
             await Assert.ThrowsAsync<SaveChangesFailedException>(() => _sut.UpdateImageAsync(entity.Id, request));
         }
+
+
+        [Fact]
+        public async void UpdateItemAsync_ShouldReturnItemResponse_WhenSaveChangesSuccess()
+        {
+            // Arrange
+            var id = 1;
+            var request = new ItemUpdateRequest
+            {
+                Id = id,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                CategoryIdList = [1, 2, 3],
+            };
+
+            var categories = new List<Category>
+            {
+                new Category {Id=1, Name = "category", Description = "category", Slug = "category" },
+                new Category {Id=2, Name = "category2", Description = "category2", Slug = "category2" },
+            };
+
+            var categories1 = new List<Category>
+            {
+                new Category {Id=1, Name = "category", Description = "category", Slug = "category" },
+                new Category {Id=2, Name = "category2", Description = "category2", Slug = "category2" },
+                new Category {Id=3, Name = "category3", Description = "category3", Slug = "category3" },
+
+            };
+
+            var entity = new Item
+            {
+                Id = id,
+                Name = "origin",
+                Description = "origin",
+                Slug = "origin",
+                ImgUrl = "origin",
+                ItemCategories = categories.Select(x => new ItemCategory { CategoryId = x.Id, ItemId = id, Category = x}).ToList()
+            };
+
+            var updatedEntity = new Item
+            {
+                Id = id,
+                Name = request.Name,
+                Description = request.Description,
+                Slug = request.Slug,
+                ImgUrl = "origin",
+                ItemCategories = request.CategoryIdList.Select(x => new ItemCategory { CategoryId = x, ItemId = id, Category = categories1.First(c => c.Id == x) }).ToList()
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync(entity);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), false))
+                 .ReturnsAsync(updatedEntity);
+
+            // Act
+            var result = await _sut.UpdateItemAsync(id, request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(result.Id, request.Id);
+            Assert.Equal(result.Name, request.Name);
+            Assert.Equal(result.Description, request.Description);
+            Assert.Equal(result.Slug, request.Slug);
+
+            Assert.Equal(request.CategoryIdList.Count, result.Categories.Count);
+            foreach (var categoryId in request.CategoryIdList)
+            {
+                Assert.Contains(result.Categories, x => x.Id == categoryId);
+            }
+        }
+
+        [Fact]
+        public async void UpdateItemAsync_ShouldThrowIdMismatchException_WhenIdRouteAndIdBodyNotSame()
+        {
+            // Arrange
+            var id = 1;
+            var request = new ItemUpdateRequest
+            {
+                Id = 2,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                CategoryIdList = [1, 2, 3],
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<IdMismatchException>(() => _sut.UpdateItemAsync(id, request));
+        }
+
+        [Fact]
+        public async void UpdateItemAsync_ShouldThrowItemMustHaveAtLeastOneCategoryException_WhenCategoryIdListEmpty()
+        {
+            // Arrange
+            var id = 1;
+            var request = new ItemUpdateRequest
+            {
+                Id = id,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                CategoryIdList = [],
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ItemMustHaveAtLeastOneCategoryException>(() => _sut.UpdateItemAsync(id, request));
+        }
+
+        [Fact]
+        public async void UpdateItemAsync_ShouldThrowItemNotFoundException_WhenItemNotFound()
+        {
+            // Arrange
+            var id = 1;
+            var request = new ItemUpdateRequest
+            {
+                Id = id,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                CategoryIdList = [1, 2, 3],
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync((Item)null);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ItemNotFoundException>(() => _sut.UpdateItemAsync(id, request));
+        }
+
+        [Fact]
+        public async void UpdateItemAsync_ShouldThrowSaveChangesFailedException_WhenSaveChangesFail()
+        {
+            // Arrange
+            var id = 1;
+            var request = new ItemUpdateRequest
+            {
+                Id = id,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                CategoryIdList = [1, 2, 3],
+            };
+
+            var categories = new List<Category>
+            {
+                new Category {Id=1, Name = "category", Description = "category", Slug = "category" },
+                new Category {Id=2, Name = "category2", Description = "category2", Slug = "category2" },
+            };
+
+            var entity = new Item
+            {
+                Id = id,
+                Name = "origin",
+                Description = "origin",
+                Slug = "origin",
+                ImgUrl = "origin",
+                ItemCategories = categories.Select(x => new ItemCategory { CategoryId = x.Id, ItemId = id, Category = x }).ToList()
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync(entity);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(false);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<SaveChangesFailedException>(() => _sut.UpdateItemAsync(id, request));
+        }
     }
 }
