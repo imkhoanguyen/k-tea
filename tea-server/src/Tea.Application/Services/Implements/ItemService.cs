@@ -228,12 +228,6 @@ namespace Tea.Application.Services.Implements
         {
             logger.LogInformation($"Updating image of item with ID: {itemId}");
 
-            if (imgFile == null || imgFile.Length == 0)
-            {
-                logger.LogWarning("File request cant empty or null");
-                throw new EmptyFileRequestException();
-            }
-
             var entity = await unit.Item.FindAsync(x => x.Id == itemId, tracked: true);
             if (entity == null)
             {

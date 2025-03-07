@@ -652,7 +652,7 @@ namespace Tea.Application.Unit.Tests
             _unitMock.Setup(x => x.Item.GetPaginationAsync(request, It.IsAny<Expression<Func<Item, bool>>>())).ReturnsAsync(paginationResult);
 
             // Act
-            var result = await _sut.GetPaginationAsync(request);
+            var result = await _sut.GetPublicPaginationAsync(request);
 
             // Assert
             Assert.NotNull(result);
@@ -661,6 +661,205 @@ namespace Tea.Application.Unit.Tests
             Assert.Equal(paginationResult.PageSize, result.PageSize);
             Assert.Equal(paginationResult.CurrentPage, result.CurrentPage);
             Assert.Equal(paginationResult.PageSize, result.PageSize);
+        }
+
+        [Fact]
+        public async void GetPublicPaginationAsync_ShouldReturnOnlyPublishedItem_WhenDataExists()
+        {
+            // Arrange
+            var request = new PaginationRequest
+            {
+                PageSize = 5,
+                PageIndex = 1,
+            };
+
+            var sizes = new List<Size>
+            {
+                new Size {Id = 1, Name = "size1", Description = "des 1", NewPrice = null, Price = 1},
+                new Size {Id=2, Name = "size2", Description = "des 2", NewPrice = null, Price = 2},
+                new Size {Id = 3, Name = "size3", Description = "des 3", NewPrice = null, Price = 3},
+            };
+
+            var categories = new List<Category>
+            {
+                new Category {Id=1, Name = "category", Description = "category", Slug = "category" },
+                new Category {Id=2, Name = "category2", Description = "category2", Slug = "category2" },
+            };
+
+            var expect = new List<Item>()
+            {
+                new Item{Id = 1, Name = "item",Description = "item",Slug = "item",ImgUrl = "item", IsPublished = true, Sizes = sizes, ItemCategories = categories.Select(x => new ItemCategory { Category = x, ItemId = 1, CategoryId = x.Id }).ToList(),},
+                new Item{Id = 2, Name = "item2",Description = "item2",Slug = "item2",ImgUrl = "item2", IsPublished = true, Sizes = sizes, ItemCategories = categories.Select(x => new ItemCategory { Category = x, ItemId = 1, CategoryId = x.Id }).ToList(),},
+            };
+
+            var paginationResult = new PaginationResponse<Item>(expect, expect.Count, request.PageIndex, request.PageSize);
+
+            _unitMock.Setup(x => x.Item.GetPaginationAsync(request, null)).ReturnsAsync(paginationResult);
+
+            // Act
+            var result = await _sut.GetPublicPaginationAsync(request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(paginationResult.TotalCount, result.TotalCount);
+            Assert.Equal(paginationResult.PageSize, result.PageSize);
+            Assert.Equal(paginationResult.CurrentPage, result.CurrentPage);
+            Assert.Equal(paginationResult.PageSize, result.PageSize);
+
+            Assert.Equal(expect.Count, result.Count);
+            for (int i = 0; i < expect.Count; i++)
+            {
+                Assert.True(result.ElementAt(i).IsPublished);
+                Assert.Equal(expect[i].Id, result.ElementAt(i).Id);
+                Assert.Equal(expect[i].Name, result.ElementAt(i).Name);
+                Assert.Equal(expect[i].Description, result.ElementAt(i).Description);
+                Assert.Equal(expect[i].Slug, result.ElementAt(i).Slug);
+
+                // Kiểm tra Sizes
+                Assert.Equal(expect[i].Sizes.Count, result.ElementAt(i).Sizes.Count);
+                for (int j = 0; j < expect[i].Sizes.Count; j++)
+                {
+                    Assert.Equal(expect[i].Sizes[j].Id, result.ElementAt(i).Sizes.ElementAt(j).Id);
+                    Assert.Equal(expect[i].Sizes[j].Name, result.ElementAt(i).Sizes.ElementAt(j).Name);
+                }
+
+                // Kiểm tra ItemCategories
+                Assert.Equal(expect[i].ItemCategories.Count, result.ElementAt(i).Categories.Count);
+                for (int j = 0; j < expect[i].ItemCategories.Count; j++)
+                {
+                    Assert.Equal(expect[i].ItemCategories[j].CategoryId, result.ElementAt(i).Categories.ElementAt(j).Id);
+                }
+            }
+        }
+
+
+        [Fact]
+        public async void UpdateImageAsync_ShouldReturnImgUrl_WhenUploadImageSuccessed()
+        {
+            // Arrange
+            var request = new Mock<IFormFile>().Object;
+            var entity = new Item
+            {
+                Id = 1,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                ImgUrl = "item",
+                PublicId = "item"
+            };
+
+            var uploadResult = new FileUploadResult
+            {
+                Url = "https://static.nutscdn.com/vimg/0-0/71ee65b75262619d4fc6a431bcd20802.jpg",
+                PublicId = "public_id",
+                Error = null
+            };
+
+            var deleteResult = new FileDeleteResult
+            {
+                Error = null
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync(entity);
+
+            _cloudinaryMock.Setup(x => x.AddImageAsync(It.IsAny<IFormFile>()))
+                .ReturnsAsync(uploadResult);
+
+            _cloudinaryMock.Setup(x => x.DeleteFileAsync(entity.PublicId)).ReturnsAsync(deleteResult);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
+            // Act
+            var imageUrl = await _sut.UpdateImageAsync(entity.Id, request);
+
+            // Assert
+            Assert.NotNull(imageUrl);
+            Assert.Equal(imageUrl, uploadResult.Url);
+        }
+
+        [Fact]
+        public async void UpdateImageAsync_ShouldThrowItemNotFoundException_WhenItemDoesNotExist()
+        {
+            // Arrange
+            var request = new Mock<IFormFile>().Object;
+            var itemId = 1;
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync((Item)null);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ItemNotFoundException>(() => _sut.UpdateImageAsync(itemId, request));
+        }
+
+        [Fact]
+        public async void UpdateImageAsync_ShouldThrowUploadFileFailedException_WhenUploadImageFails()
+        {
+            // Arrange
+            var request = new Mock<IFormFile>().Object;
+            var entity = new Item
+            {
+                Id = 1,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                ImgUrl = "item",
+                PublicId = "item"
+            };
+
+            var uploadResult = new FileUploadResult
+            {
+                Error = "Upload failed"
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync(entity);
+
+            _cloudinaryMock.Setup(x => x.AddImageAsync(It.IsAny<IFormFile>()))
+                .ReturnsAsync(uploadResult);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UploadFileFailedException>(() => _sut.UpdateImageAsync(entity.Id, request));
+        }
+
+        [Fact]
+        public async void UpdateImageAsync_ShouldThrowSaveChangesFailedException_WhenSaveChangesFails()
+        {
+            // Arrange
+            var request = new Mock<IFormFile>().Object;
+            var entity = new Item
+            {
+                Id = 1,
+                Name = "item",
+                Description = "item",
+                Slug = "item",
+                ImgUrl = "item",
+                PublicId = "item"
+            };
+
+            var uploadResult = new FileUploadResult
+            {
+                Url = "https://static.nutscdn.com/vimg/0-0/71ee65b75262619d4fc6a431bcd20802.jpg",
+                PublicId = "public_id",
+                Error = null
+            };
+
+            var deleteResult = new FileDeleteResult
+            {
+                Error = null
+            };
+
+            _unitMock.Setup(x => x.Item.FindAsync(It.IsAny<Expression<Func<Item, bool>>>(), true))
+                 .ReturnsAsync(entity);
+
+            _cloudinaryMock.Setup(x => x.AddImageAsync(It.IsAny<IFormFile>()))
+                .ReturnsAsync(uploadResult);
+
+            _cloudinaryMock.Setup(x => x.DeleteFileAsync(entity.PublicId)).ReturnsAsync(deleteResult);
+
+            _unitMock.Setup(x => x.SaveChangesAsync()).ReturnsAsync(false);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<SaveChangesFailedException>(() => _sut.UpdateImageAsync(entity.Id, request));
         }
     }
 }
