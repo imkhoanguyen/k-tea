@@ -1,1 +1,43 @@
 /* You can add global styles to this file, and also import other style files */
+-root {
+  --bs-danger: #f46d6e;
+}
+
+/* có important vì trường hợp sử dụng của các class này được sử dụng trong button của ng zorro */
+.btn-blue {
+  background-color: #5a90e0 !important;
+  color: #fff !important;
+}
+
+.btn-blue:hover {
+  color: #fff !important;
+  border-color: #85b2ed !important;
+  background: #85b2ed !important;
+}
+
+.btn-yellow {
+  background-color: #fcc419 !important;
+  color: #fff !important;
+}
+
+.btn-yellow:hover {
+  color: #fff !important;
+  border-color: #ffd642 !important;
+  background: #ffd642 !important;
+}
+
+/* Style cho ô trong table có nội dung dài */
+/* Style for table cells with long content */
+.fixed-height-box {
+  height: 100px;
+  max-height: 100px;
+  overflow-y: auto; /* Hiển thị thanh cuộn dọc khi nội dung quá dài */
+  white-space: pre-wrap; /* Bảo toàn định dạng xuống dòng trong văn bản */
+  text-overflow: ellipsis;
+  text-indent: -0.5ch;
+  scrollbar-width: none; /* Ẩn thanh cuộn trong Firefox */
+}
+
+.fixed-height-box::-webkit-scrollbar {
+  display: none; /* Ẩn thanh cuộn trong Chrome, Edge và Safari */
+}

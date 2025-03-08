@@ -13,4 +13,3 @@ export class CategoryParams extends PaginationRequest {
     super();
   }
 }
-
