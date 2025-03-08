@@ -13,7 +13,6 @@ using Tea.Domain.Common;
 using Tea.Domain.Entities;
 using Tea.Domain.Exceptions;
 using Tea.Domain.Repositories;
-using Xunit;
 
 namespace Tea.Application.Unit.Tests
 {
@@ -568,7 +567,7 @@ namespace Tea.Application.Unit.Tests
                 new Item{Id = 2, Name = "item2",Description = "item2",Slug = "item2",ImgUrl = "item2",Sizes = sizes, ItemCategories = categories.Select(x => new ItemCategory { Category = x, ItemId = 1, CategoryId = x.Id }).ToList(),},
             };
 
-            var paginationResult = new PaginationResponse<Item>(items, items.Count, request.PageIndex, request.PageSize);
+            var paginationResult = new PaginationResponse<Item>(request.PageIndex, request.PageSize, items.Count, items);
 
             _unitMock.Setup(x => x.Item.GetPaginationAsync(request, null)).ReturnsAsync(paginationResult);
 
@@ -577,32 +576,31 @@ namespace Tea.Application.Unit.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(paginationResult.TotalCount, result.TotalCount);
+            Assert.Equal(paginationResult.Count, result.Count);
             Assert.Equal(paginationResult.PageSize, result.PageSize);
-            Assert.Equal(paginationResult.CurrentPage, result.CurrentPage);
-            Assert.Equal(paginationResult.PageSize, result.PageSize);
+            Assert.Equal(paginationResult.PageIndex, result.PageIndex);
 
             Assert.Equal(items.Count, result.Count);
             for (int i = 0; i < items.Count; i++)
             {
-                Assert.Equal(items[i].Id, result.ElementAt(i).Id);
-                Assert.Equal(items[i].Name, result.ElementAt(i).Name);
-                Assert.Equal(items[i].Description, result.ElementAt(i).Description);
-                Assert.Equal(items[i].Slug, result.ElementAt(i).Slug);
+                Assert.Equal(items[i].Id, result.Data.ElementAt(i).Id);
+                Assert.Equal(items[i].Name, result.Data.ElementAt(i).Name);
+                Assert.Equal(items[i].Description, result.Data.ElementAt(i).Description);
+                Assert.Equal(items[i].Slug, result.Data.ElementAt(i).Slug);
 
                 // Kiểm tra Sizes
-                Assert.Equal(items[i].Sizes.Count, result.ElementAt(i).Sizes.Count);
+                Assert.Equal(items[i].Sizes.Count, result.Data.ElementAt(i).Sizes.Count);
                 for (int j = 0; j < items[i].Sizes.Count; j++)
                 {
-                    Assert.Equal(items[i].Sizes[j].Id, result.ElementAt(i).Sizes.ElementAt(j).Id);
-                    Assert.Equal(items[i].Sizes[j].Name, result.ElementAt(i).Sizes.ElementAt(j).Name);
+                    Assert.Equal(items[i].Sizes[j].Id, result.Data.ElementAt(i).Sizes.ElementAt(j).Id);
+                    Assert.Equal(items[i].Sizes[j].Name, result.Data.ElementAt(i).Sizes.ElementAt(j).Name);
                 }
 
                 // Kiểm tra ItemCategories
-                Assert.Equal(items[i].ItemCategories.Count, result.ElementAt(i).Categories.Count);
+                Assert.Equal(items[i].ItemCategories.Count, result.Data.ElementAt(i).Categories.Count);
                 for (int j = 0; j < items[i].ItemCategories.Count; j++)
                 {
-                    Assert.Equal(items[i].ItemCategories[j].CategoryId, result.ElementAt(i).Categories.ElementAt(j).Id);
+                    Assert.Equal(items[i].ItemCategories[j].CategoryId, result.Data.ElementAt(i).Categories.ElementAt(j).Id);
                 }
             }
         }
@@ -619,7 +617,7 @@ namespace Tea.Application.Unit.Tests
 
             var item = new List<Item>();
 
-            var paginationResult = new PaginationResponse<Item>(item, item.Count, request.PageIndex, request.PageSize);
+            var paginationResult = new PaginationResponse<Item>(request.PageIndex, request.PageSize, item.Count, item);
 
             _unitMock.Setup(x => x.Item.GetPaginationAsync(request, null)).ReturnsAsync(paginationResult);
 
@@ -628,11 +626,10 @@ namespace Tea.Application.Unit.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Empty(result);
-            Assert.Equal(0, result.TotalCount);
+            Assert.Empty(result.Data);
+            Assert.Equal(0, result.Count);
             Assert.Equal(paginationResult.PageSize, result.PageSize);
-            Assert.Equal(paginationResult.CurrentPage, result.CurrentPage);
-            Assert.Equal(paginationResult.PageSize, result.PageSize);
+            Assert.Equal(paginationResult.PageIndex, result.PageIndex);
         }
 
         [Fact]
@@ -647,7 +644,7 @@ namespace Tea.Application.Unit.Tests
 
             var item = new List<Item>();
 
-            var paginationResult = new PaginationResponse<Item>(item, item.Count, request.PageIndex, request.PageSize);
+            var paginationResult = new PaginationResponse<Item>(request.PageIndex, request.PageSize, item.Count, item);
 
             _unitMock.Setup(x => x.Item.GetPaginationAsync(request, It.IsAny<Expression<Func<Item, bool>>>())).ReturnsAsync(paginationResult);
 
@@ -656,11 +653,10 @@ namespace Tea.Application.Unit.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Empty(result);
-            Assert.Equal(0, result.TotalCount);
+            Assert.Empty(result.Data);
+            Assert.Equal(0, result.Count);
             Assert.Equal(paginationResult.PageSize, result.PageSize);
-            Assert.Equal(paginationResult.CurrentPage, result.CurrentPage);
-            Assert.Equal(paginationResult.PageSize, result.PageSize);
+            Assert.Equal(paginationResult.PageIndex, result.PageIndex);
         }
 
         [Fact]
@@ -692,42 +688,41 @@ namespace Tea.Application.Unit.Tests
                 new Item{Id = 2, Name = "item2",Description = "item2",Slug = "item2",ImgUrl = "item2", IsPublished = true, Sizes = sizes, ItemCategories = categories.Select(x => new ItemCategory { Category = x, ItemId = 1, CategoryId = x.Id }).ToList(),},
             };
 
-            var paginationResult = new PaginationResponse<Item>(expect, expect.Count, request.PageIndex, request.PageSize);
+            var paginationResult = new PaginationResponse<Item>(request.PageIndex, request.PageSize, expect.Count, expect);
 
-            _unitMock.Setup(x => x.Item.GetPaginationAsync(request, null)).ReturnsAsync(paginationResult);
+            _unitMock.Setup(x => x.Item.GetPaginationAsync(request, x => x.IsPublished)).ReturnsAsync(paginationResult);
 
             // Act
             var result = await _sut.GetPublicPaginationAsync(request);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(paginationResult.TotalCount, result.TotalCount);
+            Assert.Equal(paginationResult.Count, result.Count);
             Assert.Equal(paginationResult.PageSize, result.PageSize);
-            Assert.Equal(paginationResult.CurrentPage, result.CurrentPage);
-            Assert.Equal(paginationResult.PageSize, result.PageSize);
+            Assert.Equal(paginationResult.PageIndex, result.PageIndex);
 
             Assert.Equal(expect.Count, result.Count);
             for (int i = 0; i < expect.Count; i++)
             {
-                Assert.True(result.ElementAt(i).IsPublished);
-                Assert.Equal(expect[i].Id, result.ElementAt(i).Id);
-                Assert.Equal(expect[i].Name, result.ElementAt(i).Name);
-                Assert.Equal(expect[i].Description, result.ElementAt(i).Description);
-                Assert.Equal(expect[i].Slug, result.ElementAt(i).Slug);
+                Assert.True(result.Data.ElementAt(i).IsPublished);
+                Assert.Equal(expect[i].Id, result.Data.ElementAt(i).Id);
+                Assert.Equal(expect[i].Name, result.Data.ElementAt(i).Name);
+                Assert.Equal(expect[i].Description, result.Data.ElementAt(i).Description);
+                Assert.Equal(expect[i].Slug, result.Data.ElementAt(i).Slug);
 
                 // Kiểm tra Sizes
-                Assert.Equal(expect[i].Sizes.Count, result.ElementAt(i).Sizes.Count);
+                Assert.Equal(expect[i].Sizes.Count, result.Data.ElementAt(i).Sizes.Count);
                 for (int j = 0; j < expect[i].Sizes.Count; j++)
                 {
-                    Assert.Equal(expect[i].Sizes[j].Id, result.ElementAt(i).Sizes.ElementAt(j).Id);
-                    Assert.Equal(expect[i].Sizes[j].Name, result.ElementAt(i).Sizes.ElementAt(j).Name);
+                    Assert.Equal(expect[i].Sizes[j].Id, result.Data.ElementAt(i).Sizes.ElementAt(j).Id);
+                    Assert.Equal(expect[i].Sizes[j].Name, result.Data.ElementAt(i).Sizes.ElementAt(j).Name);
                 }
 
                 // Kiểm tra ItemCategories
-                Assert.Equal(expect[i].ItemCategories.Count, result.ElementAt(i).Categories.Count);
+                Assert.Equal(expect[i].ItemCategories.Count, result.Data.ElementAt(i).Categories.Count);
                 for (int j = 0; j < expect[i].ItemCategories.Count; j++)
                 {
-                    Assert.Equal(expect[i].ItemCategories[j].CategoryId, result.ElementAt(i).Categories.ElementAt(j).Id);
+                    Assert.Equal(expect[i].ItemCategories[j].CategoryId, result.Data.ElementAt(i).Categories.ElementAt(j).Id);
                 }
             }
         }

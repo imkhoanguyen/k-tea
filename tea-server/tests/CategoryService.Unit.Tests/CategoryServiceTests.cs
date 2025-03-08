@@ -324,8 +324,7 @@ namespace Tea.Application.Unit.Tests
                 new Category { Id = 2, Name = "Category 2", Description = "Description 2", Slug = "category-2" }
             };
 
-
-            var paginationResult = new PaginationResponse<Category>(categories, categories.Count, request.PageIndex, request.PageSize);
+            var paginationResult = new PaginationResponse<Category>(request.PageIndex, request.PageSize, categories.Count, categories);
 
 
             _unitMock.Setup(x => x.Category.GetPaginationAsync(request)).ReturnsAsync(paginationResult);
@@ -336,18 +335,17 @@ namespace Tea.Application.Unit.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(paginationResult.TotalCount, result.TotalCount);
+            Assert.Equal(paginationResult.Count, result.Count);
             Assert.Equal(paginationResult.PageSize, result.PageSize);
-            Assert.Equal(paginationResult.CurrentPage, result.CurrentPage);
-            Assert.Equal(paginationResult.PageSize, result.PageSize);
+            Assert.Equal(paginationResult.PageIndex, result.PageIndex);
 
             Assert.Equal(categories.Count, result.Count);
             for(int i = 0; i < categories.Count; i++)
             {
-                Assert.Equal(categories[i].Id, result.ElementAt(i).Id);
-                Assert.Equal(categories[i].Name, result.ElementAt(i).Name);
-                Assert.Equal(categories[i].Description, result.ElementAt(i).Description);
-                Assert.Equal(categories[i].Slug, result.ElementAt(i).Slug);
+                Assert.Equal(categories[i].Id, result.Data.ElementAt(i).Id);
+                Assert.Equal(categories[i].Name, result.Data.ElementAt(i).Name);
+                Assert.Equal(categories[i].Description, result.Data.ElementAt(i).Description);
+                Assert.Equal(categories[i].Slug, result.Data.ElementAt(i).Slug);
             }
         }
 
@@ -364,8 +362,7 @@ namespace Tea.Application.Unit.Tests
             var emptyCategories = new List<Category>();
 
 
-            var paginationResult = new PaginationResponse<Category>(emptyCategories, emptyCategories.Count, request.PageIndex, request.PageSize);
-
+            var paginationResult = new PaginationResponse<Category>(request.PageIndex, request.PageSize, emptyCategories.Count, emptyCategories);
 
             _unitMock.Setup(x => x.Category.GetPaginationAsync(request)).ReturnsAsync(paginationResult);
 
@@ -375,10 +372,9 @@ namespace Tea.Application.Unit.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(0, result.TotalCount);
+            Assert.Equal(0, result.Count);
             Assert.Equal(paginationResult.PageSize, result.PageSize);
-            Assert.Equal(paginationResult.CurrentPage, result.CurrentPage);
-            Assert.Equal(paginationResult.PageSize, result.PageSize);
+            Assert.Equal(paginationResult.PageIndex, result.PageIndex);
         }
 
         [Fact]
