@@ -109,10 +109,10 @@ namespace Tea.Application.Services.Implements
         {
             logger.LogInformation($"Getting categories with Pagination. PageIndex: {request.PageIndex}, Page Size: {request.PageSize}");
             var pagination = await unit.Category.GetPaginationAsync(request);
-            var responseList = pagination.Select(CategoryMapper.EntityToResponse);
+            var responseList = pagination.Data.Select(CategoryMapper.EntityToResponse);
 
-            logger.LogInformation($"Successfully retrieved {pagination.Count} categories for Page: {pagination.CurrentPage}");
-            return new PaginationResponse<CategoryResponse>(responseList, pagination.Count, pagination.CurrentPage, pagination.PageSize);
+            logger.LogInformation($"Successfully retrieved {pagination.Count} categories for Page: {pagination.PageIndex}");
+            return new PaginationResponse<CategoryResponse>(pagination.PageIndex, pagination.PageSize, pagination.Count, responseList);
         }
 
         public async Task<CategoryResponse> UpdateAsync(int id, CategoryUpdateRequest request)

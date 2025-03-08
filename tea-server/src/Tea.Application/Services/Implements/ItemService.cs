@@ -208,20 +208,20 @@ namespace Tea.Application.Services.Implements
         {
             logger.LogInformation($"Retrieving items with Pagination. PageIndex: {request.PageIndex}, Page Size: {request.PageSize}");
             var pagination = await unit.Item.GetPaginationAsync(request, expression: null);
-            var responseList = pagination.Select(ItemMapper.EntityToResponse);
+            var responseList = pagination.Data.Select(ItemMapper.EntityToResponse);
 
-            logger.LogInformation($"Successfully retrieved {pagination.Count} items for Page: {pagination.CurrentPage}");
-            return new PaginationResponse<ItemResponse>(responseList, pagination.Count, pagination.CurrentPage, pagination.PageSize);
+            logger.LogInformation($"Successfully retrieved {pagination.Count} items for Page: {pagination.PageIndex}");
+            return new PaginationResponse<ItemResponse>(pagination.PageIndex, pagination.PageSize, pagination.Count, responseList);
         }
 
         public async Task<PaginationResponse<ItemResponse>> GetPublicPaginationAsync(PaginationRequest request)
         {
             logger.LogInformation($"Retrieving public items with Pagination. PageIndex: {request.PageIndex}, Page Size: {request.PageSize}");
             var pagination = await unit.Item.GetPaginationAsync(request, x => x.IsPublished);
-            var responseList = pagination.Select(ItemMapper.EntityToResponse);
+            var responseList = pagination.Data.Select(ItemMapper.EntityToResponse);
 
-            logger.LogInformation($"Successfully retrieved public {pagination.Count} items for Page: {pagination.CurrentPage}");
-            return new PaginationResponse<ItemResponse>(responseList, pagination.Count, pagination.CurrentPage, pagination.PageSize);
+            logger.LogInformation($"Successfully retrieved public {pagination.Count} items for Page: {pagination.PageIndex}");
+            return new PaginationResponse<ItemResponse>(pagination.PageIndex, pagination.PageSize, pagination.Count, responseList);
         }
 
         public async Task<string> UpdateImageAsync(int itemId, IFormFile imgFile)
