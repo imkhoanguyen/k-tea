@@ -1,0 +1,81 @@
+<a routerLink="/" class="logo d-flex justify-content-center align-items-center">
+  <img src="img/noBgWhite.png" alt="k tea logo" width="100" height="auto" />
+</a>
+<ul nz-menu nzTheme="dark" nzMode="inline">
+  <li nz-menu-item [class.active]="currentPage === 1" (click)="changePage(1)">
+    <a routerLink="/admin">
+      <span class="menu-icon">
+        <i class="bi bi-bar-chart-line-fill"></i>
+      </span>
+      <span>Thống kê</span>
+    </a>
+  </li>
+  <li nz-menu-item [class.active]="currentPage === 2" (click)="changePage(2)">
+    <a routerLink="song">
+      <span class="menu-icon">
+        <i class="bi bi-music-note"></i>
+      </span>
+      <span>Quản lý danh mục</span>
+    </a>
+  </li>
+  <li nz-menu-item [class.active]="currentPage === 3" (click)="changePage(3)">
+    <a routerLink="genre">
+      <span class="menu-icon">
+        <i class="bi bi-tag-fill"></i>
+      </span>
+      <span>Quản lý sản phẩm</span>
+    </a>
+  </li>
+  <!-- <li nz-menu-item [class.active]="currentPage === 4" (click)="changePage(4)">
+    <a routerLink="singer">
+      <span class="menu-icon">
+        <i class="bi bi-mic-fill"></i>
+      </span>
+      <span>Quản lý ca sĩ</span>
+    </a>
+  </li>
+
+  <li nz-menu-item [class.active]="currentPage === 5" (click)="changePage(5)">
+    <a routerLink="playlist">
+      <span class="menu-icon">
+        <i class="bi bi-music-note-list"></i>
+      </span>
+      <span>Quản lý danh sách phát</span>
+    </a>
+  </li>
+
+  <li nz-menu-item [class.active]="currentPage === 6" (click)="changePage(6)">
+    <a routerLink="vip-package">
+      <span class="menu-icon">
+        <i class="bi bi-rocket-takeoff-fill"></i>
+      </span>
+      <span>Quản lý gói đăng ký</span>
+    </a>
+  </li>
+
+  <li nz-menu-item [class.active]="currentPage === 7" (click)="changePage(7)">
+    <a routerLink="transaction">
+      <span class="menu-icon">
+        <i class="bi bi-handbag-fill"></i>
+      </span>
+      <span>Quản lý mua hàng</span>
+    </a>
+  </li>
+
+  <li nz-menu-item [class.active]="currentPage === 8" (click)="changePage(8)">
+    <a routerLink="user">
+      <span class="menu-icon">
+        <i class="bi bi-person-fill"></i>
+      </span>
+      <span>Quản lý user</span>
+    </a>
+  </li>
+  <li nz-menu-item [class.active]="currentPage === 9" (click)="changePage(9)">
+    <a routerLink="role">
+      <span class="menu-icon">
+        <i class="bi bi-key-fill"></i>
+      </span>
+      <span>Quản lý quyền</span>
+    </a>
+  </li> -->
+</ul>

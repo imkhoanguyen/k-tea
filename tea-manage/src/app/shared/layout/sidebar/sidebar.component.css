@@ -1,0 +1,17 @@
+.logo {
+  height: 1rem;
+  margin: 3.5rem 0 3rem 0;
+}
+
+.menu-icon {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+}
+
+img {
+  max-width: 150px;
+}
+
+a {
+  text-decoration: none;
+}
