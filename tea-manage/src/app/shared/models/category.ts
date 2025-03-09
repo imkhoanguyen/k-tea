@@ -13,3 +13,16 @@ export class CategoryParams extends PaginationRequest {
     super();
   }
 }
+
+export interface CategoryAddParent {
+  name: string;
+  description: string;
+  slug: string;
+}
+
+export interface CategoryUpdate {
+  id: number;
+  name: string;
+  description: string;
+  slug: string;
+}

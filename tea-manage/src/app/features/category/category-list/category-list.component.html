@@ -17,7 +17,7 @@
     </form>
   </div>
   <div class="d-flex gap-2">
-    <button nzType="primary" nzSize="large" nz-button (click)="sendRequest()">
+    <button nzType="primary" nzSize="large" nz-button (click)="showAddModal()">
       Thêm
     </button>
     <button
@@ -104,3 +104,8 @@
   ></nz-pagination>
   <ng-template #totalTemplate let-total>Tổng {{ total }} danh mục</ng-template>
 </div>
+
+<!-- category add modal -->
+<app-category-add
+  (categoryParentAdded)="handleEventAddParent($event)"
+></app-category-add>

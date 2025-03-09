@@ -14,6 +14,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient } from '@angular/common/http';
 import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { EyeOutline } from '@ant-design/icons-angular/icons';
+import { provideToastr } from 'ngx-toastr';
+
 registerLocaleData(vi);
 const icons = [EyeOutline];
 
@@ -26,5 +28,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(),
     provideNzIcons(icons),
+    provideToastr(),
   ],
 };

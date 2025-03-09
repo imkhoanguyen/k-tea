@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { CategoryService } from '../../../core/services/category.service';
 import { Category, CategoryParams } from '../../../shared/models/category';
@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { FormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { CategoryAddComponent } from '../category-add/category-add.component';
 
 @Component({
   selector: 'app-category-list',
@@ -21,6 +22,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     NzPaginationModule,
     FormsModule,
     NzInputModule,
+    CategoryAddComponent,
   ],
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.css',
@@ -29,6 +31,16 @@ export class CategoryListComponent implements OnInit {
   private categoryService = inject(CategoryService);
   categories?: Pagination<Category>;
   prm = new CategoryParams();
+  @ViewChild(CategoryAddComponent) categoryAddComponent!: CategoryAddComponent;
+
+  // helper add
+  showAddModal() {
+    this.categoryAddComponent.showModal();
+  }
+
+  handleEventAddParent(c: Category) {
+    this.categories?.data.unshift(c);
+  }
 
   // helper pagination
   onPageIndexChange(newPageNumber: number) {

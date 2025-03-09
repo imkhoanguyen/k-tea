@@ -1,7 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Category, CategoryParams } from '../../shared/models/category';
+import {
+  Category,
+  CategoryAddParent,
+  CategoryParams,
+} from '../../shared/models/category';
 import { Pagination } from '../../shared/models/base';
 
 @Injectable({
@@ -28,5 +32,9 @@ export class CategoryService {
     return this.http.get<Pagination<Category>>(this.apiUrl + 'categories', {
       params,
     });
+  }
+
+  addParent(c: CategoryAddParent) {
+    return this.http.post(this.apiUrl + 'categories', c);
   }
 }

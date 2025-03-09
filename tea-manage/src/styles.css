@@ -41,3 +41,9 @@
 .fixed-height-box::-webkit-scrollbar {
   display: none; /* Ẩn thanh cuộn trong Chrome, Edge và Safari */
 }
+
+/* toastr */
+.toast-success {
+  background-color: #09a779 !important;
+  color: white !important;
+}

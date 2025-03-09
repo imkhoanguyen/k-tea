@@ -1,1 +1,69 @@
-<p>category-add works!</p>
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzTitle="Thêm danh mục"
+  (nzOnCancel)="handleCancel()"
+  [nzFooter]="null"
+>
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="frm" (ngSubmit)="submitForm()">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>Tên danh mục</nz-form-label>
+        <nz-form-control
+          [nzSpan]="12"
+          nzHasFeedback
+          nzValidatingTip="Validating..."
+          [nzErrorTip]="nameErrorTpl"
+        >
+          <input
+            nz-input
+            formControlName="name"
+            placeholder="Nhập tên danh mục"
+          />
+          <ng-template #nameErrorTpl let-control>
+            @if (control.errors?.['required']) { Vui lòng nhập tên danh mục! }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>Slug</nz-form-label>
+        <nz-form-control
+          [nzSpan]="12"
+          nzHasFeedback
+          [nzErrorTip]="emailErrorTpl"
+        >
+          <input
+            class="w-100"
+            nz-input
+            formControlName="slug"
+            placeholder="ex: thuc-an, nuoc-giai-khac..."
+          />
+          <ng-template #emailErrorTpl let-control>
+            @if (control.errors?.['required']) { Vui lòng nhập Slug! }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">Mô tả</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <textarea
+            nz-input
+            placeholder="Nhập mô tả của danh mục"
+            nzAutosize
+            formControlName="description"
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control [nzOffset]="7" [nzSpan]="12">
+          <div class="d-flex gap-2">
+            <button nz-button nzType="primary" [disabled]="!frm.valid">
+              Lưu
+            </button>
+            <button nz-button (click)="handleCancel()">Đóng</button>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>
