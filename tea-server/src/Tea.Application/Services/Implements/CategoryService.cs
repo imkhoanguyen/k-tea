@@ -90,6 +90,31 @@ namespace Tea.Application.Services.Implements
             logger.LogInformation($"Category with ID: {id} was deleted.");
         }
 
+        public async Task DeletesAsync(List<int> categoryIdList)
+        {
+            logger.LogInformation($"Deleting categories with IDs: {string.Join(", ", categoryIdList)}");
+
+            var entities = await unit.Category.FindAllAsync(x => categoryIdList.Contains(x.Id), tracked: true);
+            if (entities == null || !entities.Any())
+            {
+                logger.LogWarning("No categories found to delete.");
+                throw new EmptyCategoryIdListException();
+            }
+
+            foreach (var entity in entities)
+            {
+                entity.IsDeleted = true;
+            }
+
+            if (!await unit.SaveChangesAsync())
+            {
+                logger.LogError($"{Logging.SaveChangesFailed}");
+                throw new SaveChangesFailedException("Categories");
+            }
+
+            logger.LogInformation($"Categories with IDs: {string.Join(", ", categoryIdList)} were deleted.");
+        }
+
         public async Task<CategoryResponse> GetByIdAsync(int id)
         {
             logger.LogInformation($"Getting Category with ID: {id}.");

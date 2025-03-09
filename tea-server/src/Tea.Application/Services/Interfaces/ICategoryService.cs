@@ -11,5 +11,6 @@ namespace Tea.Application.Services.Interfaces
         Task<CategoryResponse> CreateChildrenAsync(CategoryCreateChildrenRequest request);
         Task<CategoryResponse> UpdateAsync(int id, CategoryUpdateRequest request);
         Task DeleteAsync(int id);
+        Task DeletesAsync(List<int> categoryIdList);
     }
 }

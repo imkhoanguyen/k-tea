@@ -55,12 +55,22 @@ namespace Tea.Api.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             await categoryService.DeleteAsync(id);
+            return NoContent();
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Deletes([FromQuery] List<int> categoryIdList)
+        {
+            await categoryService.DeletesAsync(categoryIdList);
             return NoContent();
         }
     }
