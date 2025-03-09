@@ -11,10 +11,11 @@ import { registerLocaleData } from '@angular/common';
 import vi from '@angular/common/locales/vi';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { EyeOutline } from '@ant-design/icons-angular/icons';
 import { provideToastr } from 'ngx-toastr';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 registerLocaleData(vi);
 const icons = [EyeOutline];
@@ -26,7 +27,7 @@ export const appConfig: ApplicationConfig = {
     provideNzI18n(vi_VN),
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([errorInterceptor])),
     provideNzIcons(icons),
     provideToastr(),
   ],

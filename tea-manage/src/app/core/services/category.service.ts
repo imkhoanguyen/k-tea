@@ -5,6 +5,7 @@ import {
   Category,
   CategoryAddParent,
   CategoryParams,
+  CategoryUpdate,
 } from '../../shared/models/category';
 import { Pagination } from '../../shared/models/base';
 
@@ -36,5 +37,30 @@ export class CategoryService {
 
   addParent(c: CategoryAddParent) {
     return this.http.post(this.apiUrl + 'categories', c);
+  }
+
+  update(c: CategoryUpdate) {
+    return this.http.put(this.apiUrl + `categories/${c.id}`, c);
+  }
+
+  get(id: number) {
+    return this.http.get(this.apiUrl + `categories/${id}`);
+  }
+
+  delete(id: number) {
+    return this.http.delete(this.apiUrl + `categories/${id}`);
+  }
+
+  deletes(categoryIdList: number[]) {
+    if (categoryIdList.length > 0) {
+      let params = new HttpParams();
+      categoryIdList.forEach((id) => {
+        params = params.append('categoryIdList', id);
+      });
+
+      return this.http.delete(this.apiUrl + `categories`, { params });
+    } else {
+      return;
+    }
   }
 }

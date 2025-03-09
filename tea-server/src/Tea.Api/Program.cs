@@ -38,7 +38,7 @@ builder.Services.AddControllers()
             var result = new
             {
                 Status = StatusCodes.Status400BadRequest,
-                Error = errors
+                Errors = errors
             };
 
             return new BadRequestObjectResult(result);

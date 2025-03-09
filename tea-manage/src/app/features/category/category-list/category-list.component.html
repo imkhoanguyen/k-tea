@@ -25,7 +25,7 @@
       nz-button
       [ngClass]="{ 'btn-blue': setOfCheckedId.size === 1 }"
       [disabled]="setOfCheckedId.size != 1"
-      (click)="sendRequest()"
+      (click)="showUpdateModal()"
     >
       Sửa
     </button>
@@ -45,7 +45,7 @@
       nz-button
       nzDanger
       [disabled]="setOfCheckedId.size === 0"
-      (click)="sendRequest()"
+      (click)="showDeleteConfirm()"
     >
       Xoá {{ setOfCheckedId.size === 0 ? "" : setOfCheckedId.size }}
     </button>
@@ -109,3 +109,8 @@
 <app-category-add
   (categoryParentAdded)="handleEventAddParent($event)"
 ></app-category-add>
+
+<!-- category update modal -->
+<app-category-update
+  (categoryUpdated)="handleEventUpdate($event)"
+></app-category-update>

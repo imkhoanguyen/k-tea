@@ -10,6 +10,9 @@ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { FormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { CategoryAddComponent } from '../category-add/category-add.component';
+import { CategoryUpdateComponent } from '../category-update/category-update.component';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-category-list',
@@ -23,15 +26,21 @@ import { CategoryAddComponent } from '../category-add/category-add.component';
     FormsModule,
     NzInputModule,
     CategoryAddComponent,
+    CategoryUpdateComponent,
+    NzModalModule,
   ],
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.css',
 })
 export class CategoryListComponent implements OnInit {
   private categoryService = inject(CategoryService);
+  private modal = inject(NzModalService);
+  private toastrService = inject(ToastrService);
   categories?: Pagination<Category>;
   prm = new CategoryParams();
   @ViewChild(CategoryAddComponent) categoryAddComponent!: CategoryAddComponent;
+  @ViewChild(CategoryUpdateComponent)
+  categoryUpdateComponent!: CategoryUpdateComponent;
 
   // helper add
   showAddModal() {
@@ -42,7 +51,84 @@ export class CategoryListComponent implements OnInit {
     this.categories?.data.unshift(c);
   }
 
-  // helper pagination
+  // update
+  showUpdateModal() {
+    if (this.setOfCheckedId.size === 1) {
+      const id = this.setOfCheckedId.values().next().value; // Lấy giá trị đầu tiên
+      this.categoryUpdateComponent.id = id ?? 0;
+      this.categoryUpdateComponent.showModal();
+    }
+  }
+
+  handleEventUpdate(c: Category) {
+    if (this.categories) {
+      const index = this.categories.data.findIndex((x) => x.id == c.id);
+      if (index !== -1) {
+        this.categories.data[index] = c;
+      }
+    }
+  }
+
+  //delete
+  showDeleteConfirm(): void {
+    this.modal.confirm({
+      nzTitle: 'Bạn có chắc muốn xoá dòng này?',
+      nzContent:
+        '<b style="color: red;">Sau khi xoá sẽ không thể hoàn tác lại.</b>',
+      nzOkText: 'Yes',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        if (this.setOfCheckedId.size === 1) {
+          const id = this.setOfCheckedId.values().next().value;
+          if (id) {
+            this.categoryService.delete(id).subscribe({
+              next: (_) => {
+                this.toastrService.success('Xoá danh mục đã chọn thành công');
+                if (this.categories) {
+                  const index = this.categories.data.findIndex(
+                    (x) => x.id === id
+                  );
+                  if (index !== -1) {
+                    this.categories.data.splice(index, 1);
+                  } else {
+                    this.getPagination();
+                  }
+                } else {
+                  this.getPagination();
+                }
+              },
+              error: (er) => {
+                console.log(er);
+              },
+            });
+          } else {
+            this.toastrService.error('Vui lòng chọn lại danh mục cần xoá');
+          }
+        } else if (this.setOfCheckedId.size > 1) {
+          const listId = Array.from(this.setOfCheckedId);
+          this.categoryService.deletes(listId)?.subscribe({
+            next: (_) => {
+              this.toastrService.success(
+                'Xoá những danh mục đã chọn thành công'
+              );
+              if (this.categories) {
+                this.categories.data = this.categories.data.filter(
+                  (x) => !listId.includes(x.id)
+                );
+              } else {
+                this.getPagination();
+              }
+            },
+          });
+        }
+      },
+      nzCancelText: 'No',
+      nzOnCancel: () => console.log('Cancel'),
+    });
+  }
+
+  // pagination
   onPageIndexChange(newPageNumber: number) {
     this.prm.pageIndex = newPageNumber;
     this.getPagination();
@@ -70,7 +156,7 @@ export class CategoryListComponent implements OnInit {
     this.getPagination();
   }
 
-  // Helper table
+  // table
   checked = false;
   loading = false;
   indeterminate = false;

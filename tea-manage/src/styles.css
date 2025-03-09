@@ -1,7 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
--root {
-  --bs-danger: #f46d6e;
-}
 
 /* có important vì trường hợp sử dụng của các class này được sử dụng trong button của ng zorro */
 .btn-blue {
@@ -26,6 +23,11 @@
   background: #ffd642 !important;
 }
 
+/* text */
+.text-danger {
+  color: #f46d6e !important;
+}
+
 /* Style cho ô trong table có nội dung dài */
 /* Style for table cells with long content */
 .fixed-height-box {
@@ -45,5 +47,10 @@
 /* toastr */
 .toast-success {
   background-color: #09a779 !important;
+  color: white !important;
+}
+
+.toast-error {
+  background-color: #f46d6e !important;
   color: white !important;
 }
