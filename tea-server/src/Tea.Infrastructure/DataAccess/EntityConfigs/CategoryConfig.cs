@@ -8,10 +8,10 @@ namespace Tea.Infrastructure.DataAccess.EntityConfigs
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
-            builder.HasMany(x => x.Children)
-                .WithOne()
-                .HasForeignKey(x => x.ParentId)
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(x => x.Children) // Một Parent có nhiều Children
+            .WithOne(x => x.Parent)     // Một Children có một Parent
+            .HasForeignKey(x => x.ParentId) // Khóa ngoại là ParentId
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -143,10 +143,12 @@ namespace Tea.Infrastructure.Migrations
 
             modelBuilder.Entity("Tea.Domain.Entities.Category", b =>
                 {
-                    b.HasOne("Tea.Domain.Entities.Category", null)
+                    b.HasOne("Tea.Domain.Entities.Category", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Tea.Domain.Entities.ItemCategory", b =>

@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using Tea.Domain.Common;
 using Tea.Domain.Entities;
@@ -12,17 +13,17 @@ namespace Tea.Infrastructure.Repositories
     {
         public async Task<PaginationResponse<Category>> GetPaginationAsync(PaginationRequest request)
         {
-            var query = context.Categories.AsNoTracking().Include(x => x.Children).AsQueryable();
+            var query = context.Categories
+                .AsNoTracking()
+                .Where(x => !x.IsDeleted).AsQueryable();
 
-            query = query.Where(x => !x.IsDeleted && x.ParentId == null);
-
-            if(!string.IsNullOrEmpty(request.Search))
+            if (!string.IsNullOrEmpty(request.Search))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(request.Search) 
+                query = query.Where(x => x.Name.ToLower().Contains(request.Search)
                 || x.Id.ToString().Contains(request.Search));
             }
 
-            if(!string.IsNullOrEmpty(request.OrderBy))
+            if (!string.IsNullOrEmpty(request.OrderBy))
             {
                 query = request.OrderBy switch
                 {
@@ -34,17 +35,43 @@ namespace Tea.Infrastructure.Repositories
                 };
             }
 
-            return await query.ApplyPaginationAsync(request.PageIndex, request.PageSize);
+            var allCategories = await query.ToListAsync();
+
+            // Tạo từ điển để lưu trữ danh mục theo Id
+            var categoryDictionary = allCategories.ToDictionary(x => x.Id);
+
+            var categoriesList = new List<Category>();
+            foreach (var category in allCategories)
+            {
+                var categoryListItem = new Category
+                {
+                    Id = category.Id,
+                    Name = BuildDisplayName(category, categoryDictionary), 
+                    ParentId = category.ParentId,
+                    Description = category.Description,
+                    Slug = category.Slug,
+                };
+
+                categoriesList.Add(categoryListItem);
+            }
+
+            return categoriesList.ApplyPagination(request.PageIndex, request.PageSize);
         }
 
-        public override async Task<Category?> FindAsync(Expression<Func<Category, bool>>? predicate, bool tracked = false)
+        #region Helper
+        private string BuildDisplayName(Category category, Dictionary<int, Category> categoryDictionary)
         {
-            if (predicate == null)
-                return tracked ? await context.Categories.Include(x => x.Children).FirstOrDefaultAsync()
-                : await context.Categories.Include(x=> x.Children).AsNoTracking().FirstOrDefaultAsync();
+            var displayName = category.Name;
+            var parentId = category.ParentId;
 
-            return tracked ? await context.Categories.Include(x => x.Children).FirstOrDefaultAsync(predicate)
-                : await context.Categories.Include(x => x.Children).AsNoTracking().FirstOrDefaultAsync(predicate);
+            while (parentId.HasValue && categoryDictionary.TryGetValue(parentId.Value, out var parentCategory))
+            {
+                displayName = $"{parentCategory.Name} >> {displayName}";
+                parentId = parentCategory.ParentId;
+            }
+
+            return displayName;
         }
+        #endregion
     }
 }

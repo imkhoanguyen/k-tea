@@ -16,6 +16,7 @@ namespace Tea.Application.Services.Implements
         {
             logger.LogInformation($"Creating a new children category with NAME: {request.Name}");
 
+            // Tìm danh mục cha
             var parent = await unit.Category.FindAsync(x => x.Id == request.ParentId, tracked: true);
 
             if (parent == null)
@@ -24,20 +25,35 @@ namespace Tea.Application.Services.Implements
                 throw new CategoryNotFoundException(request.ParentId);
             }
 
+            // Tạo danh mục con
             var children = new Category
             {
                 Name = request.Name,
                 Description = request.Description,
                 Slug = request.Slug,
+                ParentId = request.ParentId // Gán ParentId cho danh mục con
             };
 
+            // Thêm danh mục con vào danh sách Children của danh mục cha
             parent.Children.Add(children);
 
+            // Lưu thay đổi vào cơ sở dữ liệu
             if (await unit.SaveChangesAsync())
             {
-                logger.LogInformation($"Children Crategory created successfully with ID: {children.Id}");
-                var entityToReturn = await unit.Category.FindAsync(x => x.Id == children.Id);
-                return CategoryMapper.EntityToResponse(entityToReturn!);
+                logger.LogInformation($"Children Category created successfully with ID: {children.Id}");
+
+                // Xây dựng DisplayName bằng cách duyệt qua tất cả các cấp cha
+                var displayName = await BuildDisplayName(children);
+
+                // Trả về kết quả
+                var entityToReturn = new CategoryResponse
+                {
+                    Id = children.Id,
+                    Name = displayName, // Sử dụng DisplayName đã xây dựng
+                    Description = children.Description,
+                    Slug = children.Slug,
+                };
+                return entityToReturn;
             }
 
             logger.LogError($"{Logging.SaveChangesFailed}");
@@ -60,8 +76,7 @@ namespace Tea.Application.Services.Implements
             if (await unit.SaveChangesAsync())
             {
                 logger.LogInformation($"Crategory created successfully with ID: {entity.Id}");
-                var entityToReturn = await unit.Category.FindAsync(x => x.Id == entity.Id);
-                return CategoryMapper.EntityToResponse(entityToReturn!);
+                return CategoryMapper.EntityToResponse(entity!);
             }
 
             logger.LogError($"{Logging.SaveChangesFailed}");
@@ -165,12 +180,50 @@ namespace Tea.Application.Services.Implements
             if(await unit.SaveChangesAsync())
             {
                 logger.LogInformation($"Category updated successfully with ID: ${id}");
-                var entityToReturn = await unit.Category.FindAsync(x => x.Id ==  entity.Id);
-                return CategoryMapper.EntityToResponse(entityToReturn!);
+                // Xây dựng DisplayName bằng cách duyệt qua tất cả các cấp cha
+                var displayName = await BuildDisplayName(entity);
+
+                // Trả về kết quả
+                var entityToReturn = new CategoryResponse
+                {
+                    Id = entity.Id,
+                    Name = displayName, // Sử dụng DisplayName đã xây dựng
+                    Description = entity.Description,
+                    Slug = entity.Slug,
+                };
+                return entityToReturn;
             }
 
             logger.LogError($"{Logging.SaveChangesFailed}");
             throw new SaveChangesFailedException("Category");
+
+
         }
+
+        #region Helper
+        private async Task<string> BuildDisplayName(Category category)
+        {
+            var displayName = category.Name;
+            var currentCategory = category;
+
+            // Duyệt qua tất cả các cấp cha
+            while (currentCategory.ParentId.HasValue)
+            {
+                // Tìm danh mục cha
+                var parent = await unit.Category.FindAsync(x => x.Id == currentCategory.ParentId.Value);
+
+                if (parent == null)
+                {
+                    break; 
+                }
+
+                // Thêm tên của danh mục cha vào DisplayName
+                displayName = $"{parent.Name} >> {displayName}";
+                currentCategory = parent; 
+            }
+
+            return displayName;
+        }
+        #endregion
     }
 }
