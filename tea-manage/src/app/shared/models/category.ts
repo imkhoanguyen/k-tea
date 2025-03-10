@@ -5,7 +5,6 @@ export interface Category {
   name: string;
   description: string;
   slug: string;
-  children: Category[];
 }
 
 export class CategoryParams extends PaginationRequest {
@@ -18,6 +17,13 @@ export interface CategoryAddParent {
   name: string;
   description: string;
   slug: string;
+}
+
+export interface CategoryAddChildren {
+  name: string;
+  description: string;
+  slug: string;
+  parentId: number;
 }
 
 export interface CategoryUpdate {

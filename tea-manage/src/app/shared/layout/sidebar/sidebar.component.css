@@ -15,3 +15,8 @@ img {
 a {
   text-decoration: none;
 }
+
+.active {
+  background-color: var(--primary) !important;
+  color: #fff !important;
+}

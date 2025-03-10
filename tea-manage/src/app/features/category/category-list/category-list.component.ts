@@ -44,6 +44,17 @@ export class CategoryListComponent implements OnInit {
 
   // helper add
   showAddModal() {
+    if (this.setOfCheckedId.size === 1) {
+      const id = this.setOfCheckedId.values().next().value;
+      if (id && id > 0) {
+        this.categoryAddComponent.parentId = id;
+        if (this.categories) {
+          const parentCategory = this.categories.data.find((x) => x.id === id);
+          if (parentCategory)
+            this.categoryAddComponent.parentName = parentCategory.name;
+        }
+      }
+    }
     this.categoryAddComponent.showModal();
   }
 
@@ -75,7 +86,7 @@ export class CategoryListComponent implements OnInit {
       nzTitle: 'Bạn có chắc muốn xoá dòng này?',
       nzContent:
         '<b style="color: red;">Sau khi xoá sẽ không thể hoàn tác lại.</b>',
-      nzOkText: 'Yes',
+      nzOkText: 'Xác nhận',
       nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
@@ -121,9 +132,11 @@ export class CategoryListComponent implements OnInit {
               }
             },
           });
+        } else {
+          this.toastrService.error('Vui lòng chọn lại danh mục cần xoá');
         }
       },
-      nzCancelText: 'No',
+      nzCancelText: 'Huỷ',
       nzOnCancel: () => console.log('Cancel'),
     });
   }

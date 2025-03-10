@@ -29,15 +29,6 @@
     >
       Sửa
     </button>
-    <button
-      nzSize="large"
-      nz-button
-      [ngClass]="{ 'btn-yellow': setOfCheckedId.size === 1 }"
-      [disabled]="setOfCheckedId.size != 1"
-      (click)="sendRequest()"
-    >
-      Xem
-    </button>
 
     <button
       nzSize="large"
@@ -107,7 +98,7 @@
 
 <!-- category add modal -->
 <app-category-add
-  (categoryParentAdded)="handleEventAddParent($event)"
+  (categoryAdded)="handleEventAddParent($event)"
 ></app-category-add>
 
 <!-- category update modal -->

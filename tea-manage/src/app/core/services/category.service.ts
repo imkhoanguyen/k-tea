@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   Category,
+  CategoryAddChildren,
   CategoryAddParent,
   CategoryParams,
   CategoryUpdate,
@@ -39,6 +40,10 @@ export class CategoryService {
     return this.http.post(this.apiUrl + 'categories', c);
   }
 
+  addChildren(c: CategoryAddChildren) {
+    return this.http.post(this.apiUrl + 'categories/children', c);
+  }
+
   update(c: CategoryUpdate) {
     return this.http.put(this.apiUrl + `categories/${c.id}`, c);
   }
@@ -52,15 +57,11 @@ export class CategoryService {
   }
 
   deletes(categoryIdList: number[]) {
-    if (categoryIdList.length > 0) {
-      let params = new HttpParams();
-      categoryIdList.forEach((id) => {
-        params = params.append('categoryIdList', id);
-      });
+    let params = new HttpParams();
+    categoryIdList.forEach((id) => {
+      params = params.append('categoryIdList', id);
+    });
 
-      return this.http.delete(this.apiUrl + `categories`, { params });
-    } else {
-      return;
-    }
+    return this.http.delete(this.apiUrl + `categories`, { params });
   }
 }

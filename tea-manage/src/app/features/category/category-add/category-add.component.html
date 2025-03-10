@@ -6,6 +6,12 @@
 >
   <ng-container *nzModalContent>
     <form nz-form [formGroup]="frm" (ngSubmit)="submitForm()">
+      <nz-form-item *ngIf="parentId !== 0 || parentName.length > 0">
+        <nz-form-label [nzSpan]="7">Danh mục cha</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <input nz-input formControlName="parentName" readonly />
+        </nz-form-control>
+      </nz-form-item>
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired>Tên danh mục</nz-form-label>
         <nz-form-control

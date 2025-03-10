@@ -1,37 +1,44 @@
 /* You can add global styles to this file, and also import other style files */
-
+:root {
+  --primary: #09a779;
+  --danger: #f46d6e;
+  --blue: #5a90e0;
+  --blue-light: #85b2ed;
+  --warning: #fcc419;
+  --waring-light: #ffd642;
+}
 /* có important vì trường hợp sử dụng của các class này được sử dụng trong button của ng zorro */
 .btn-blue {
-  background-color: #5a90e0 !important;
+  background-color: var(--blue) !important;
   color: #fff !important;
 }
 
 .btn-blue:hover {
   color: #fff !important;
-  border-color: #85b2ed !important;
-  background: #85b2ed !important;
+  border-color: var(--blue-light) !important;
+  background: var(--blue-light) !important;
 }
 
 .btn-yellow {
-  background-color: #fcc419 !important;
+  background-color: var(--warning) !important;
   color: #fff !important;
 }
 
 .btn-yellow:hover {
   color: #fff !important;
-  border-color: #ffd642 !important;
-  background: #ffd642 !important;
+  border-color: var(--waring-light) !important;
+  background: var(--waring-light) !important;
 }
 
 /* text */
 .text-danger {
-  color: #f46d6e !important;
+  color: var(--danger) !important;
 }
 
 /* Style cho ô trong table có nội dung dài */
 /* Style for table cells with long content */
 .fixed-height-box {
-  height: 100px;
+  height: 80px;
   max-height: 100px;
   overflow-y: auto; /* Hiển thị thanh cuộn dọc khi nội dung quá dài */
   white-space: pre-wrap; /* Bảo toàn định dạng xuống dòng trong văn bản */
@@ -46,11 +53,11 @@
 
 /* toastr */
 .toast-success {
-  background-color: #09a779 !important;
+  background-color: var(--primary) !important;
   color: white !important;
 }
 
 .toast-error {
-  background-color: #f46d6e !important;
+  background-color: var(--danger) !important;
   color: white !important;
 }

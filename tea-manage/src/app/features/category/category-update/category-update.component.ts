@@ -13,6 +13,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { CommonModule } from '@angular/common';
+import { UtilitiesService } from '../../../core/services/utilities.service';
 
 @Component({
   selector: 'app-category-update',
@@ -33,6 +34,7 @@ export class CategoryUpdateComponent {
   @Output() categoryUpdated = new EventEmitter<Category>();
   private categoryService = inject(CategoryService);
   private toastrService = inject(ToastrService);
+  private utilService = inject(UtilitiesService);
   isVisible = false;
   private fb = inject(FormBuilder);
   frm: FormGroup = new FormGroup({});
@@ -48,6 +50,11 @@ export class CategoryUpdateComponent {
       name: ['', Validators.required],
       slug: ['', Validators.required],
       description: [''],
+    });
+
+    this.frm.get('name')?.valueChanges.subscribe((name) => {
+      const slug = this.utilService.generateSlug(name); // Tạo slug từ name
+      this.frm.get('slug')?.setValue(slug, { emitEvent: false }); // Cập nhật trường slug
     });
   }
 
