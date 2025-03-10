@@ -6,7 +6,7 @@
         <input
           type="text"
           nz-input
-          placeholder="Nhập danh mục"
+          placeholder="Nhập danh mục hoặc ID"
           [(ngModel)]="prm.search"
           name="search"
         />
@@ -23,7 +23,7 @@
     <button
       nzSize="large"
       nz-button
-      [ngClass]="{ 'btn-blue': setOfCheckedId.size === 1 }"
+      [ngClass]="{ 'btn-yellow': setOfCheckedId.size === 1 }"
       [disabled]="setOfCheckedId.size != 1"
       (click)="showUpdateModal()"
     >
@@ -44,6 +44,7 @@
 </div>
 
 <nz-table
+  nzBordered
   [nzData]="categories?.data ?? []"
   [nzFrontPagination]="false"
   (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
@@ -57,9 +58,22 @@
         nzLabel="Select all"
         (nzCheckedChange)="onAllChecked($event)"
       ></th>
-      <th>Danh mục</th>
-      <th>Slug</th>
-      <th>Mô tả</th>
+      <th
+        style="width: 5%"
+        [nzSortFn]="true"
+        (nzSortOrderChange)="onSortChange('id')"
+      >
+        ID
+      </th>
+      <th
+        style="width: 50%"
+        [nzSortFn]="true"
+        (nzSortOrderChange)="onSortChange('name')"
+      >
+        Danh mục
+      </th>
+      <th style="width: 20%">Slug</th>
+      <th style="width: 20%">Mô tả</th>
     </tr>
   </thead>
   <tbody>
@@ -70,6 +84,7 @@
         [nzLabel]="data.name"
         (nzCheckedChange)="onItemChecked(data.id, $event)"
       ></td>
+      <td>#{{ data.id }}</td>
       <td>{{ data.name }}</td>
       <td>{{ data.slug }}</td>
       <td class="fixed-height-box">{{ data.description }}</td>

@@ -35,6 +35,7 @@
   color: var(--danger) !important;
 }
 
+/* table */
 /* Style cho ô trong table có nội dung dài */
 /* Style for table cells with long content */
 .fixed-height-box {
