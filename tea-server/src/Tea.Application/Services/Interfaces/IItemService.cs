@@ -20,5 +20,6 @@ namespace Tea.Application.Services.Interfaces
         Task<ItemResponse> AddSizesAsync(int itemId, List<SizeCreateRequest> requests);
         Task DeleteSizesAsync(int itemId, List<int> sizeIdList);
         Task DeleteAsync(int id);
+        Task DeletesAsync(List<int> itemIdList);
     }
 }

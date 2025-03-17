@@ -148,6 +148,31 @@ namespace Tea.Application.Services.Implements
             logger.LogInformation($"Item with ID: {id} was deleted.");
         }
 
+        public async Task DeletesAsync(List<int> itemIdList)
+        {
+            logger.LogInformation($"Deleting items with IDs: {string.Join(", ", itemIdList)}");
+
+            var entities = await unit.Item.FindAllAsync(x => itemIdList.Contains(x.Id), tracked: true);
+            if (entities == null || !entities.Any())
+            {
+                logger.LogWarning("No items found to delete.");
+                throw new EmptyItemListException();
+            }
+
+            foreach (var entity in entities)
+            {
+                entity.IsDeleted = true;
+            }
+
+            if (!await unit.SaveChangesAsync())
+            {
+                logger.LogError($"{Logging.SaveChangesFailed}");
+                throw new SaveChangesFailedException("Categories");
+            }
+
+            logger.LogInformation($"Items with IDs: {string.Join(", ", itemIdList)} were deleted.");
+        }
+
         public async Task DeleteSizesAsync(int itemId, List<int> sizeIdList)
         {
             logger.LogInformation($"delete size in item with itemID: {itemId}");

@@ -85,6 +85,16 @@ namespace Tea.Api.Controllers
             return NoContent();
         }
 
+        [HttpDelete]
+        [ProducesResponseType(typeof(ItemResponse), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Deletes([FromQuery] List<int> itemIdList)
+        {
+            await itemService.DeletesAsync(itemIdList);
+            return NoContent();
+        }
+
         [HttpDelete("{itemId:int}/sizes")]
         [ProducesResponseType(typeof(ItemResponse), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
