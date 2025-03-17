@@ -15,6 +15,14 @@ namespace Tea.Api.Controllers
             return Ok(pagination);
         }
 
+        [HttpGet("all")]
+        [ProducesResponseType(typeof(IEnumerable<CategoryResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll()
+        {
+            var all = await categoryService.GetAllAsync();
+            return Ok(all);
+        }
+
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]

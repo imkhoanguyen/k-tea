@@ -45,7 +45,8 @@ namespace Tea.Infrastructure.Migrations
                     ImgUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsPublished = table.Column<bool>(type: "bit", nullable: false)
+                    IsPublished = table.Column<bool>(type: "bit", nullable: false),
+                    IsFeatured = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -10,9 +10,10 @@ namespace Tea.Domain.Repositories
 
         void Add(T entity);
 
-        void AddRange(IEnumerable<T> entity);
+        void AddRange(IEnumerable<T> entities);
 
         void Remove(T entity);
+        void RemoveRange(IEnumerable<T> entities);
 
         Task<int> GetCountAsync();
 

@@ -23,9 +23,6 @@ namespace Tea.Application.Validators.Items
                 .MaximumLength(100)
                 .WithMessage("Slug must not exceed 100 characters.");
 
-            RuleFor(x => x.CategoryIdList)
-                .NotEmpty()
-                .WithMessage("Category is required.");
         }
     }
 }

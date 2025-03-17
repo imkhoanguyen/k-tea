@@ -130,6 +130,12 @@ namespace Tea.Application.Services.Implements
             logger.LogInformation($"Categories with IDs: {string.Join(", ", categoryIdList)} were deleted.");
         }
 
+        public async Task<IEnumerable<CategoryResponse>> GetAllAsync()
+        {
+            var allList = await unit.Category.FindAllAsync(predicate: null, tracked: false);
+            return allList.Select(CategoryMapper.EntityToResponse);
+        }
+
         public async Task<CategoryResponse> GetByIdAsync(int id)
         {
             logger.LogInformation($"Getting Category with ID: {id}.");

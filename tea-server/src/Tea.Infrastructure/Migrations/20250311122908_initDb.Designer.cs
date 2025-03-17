@@ -12,7 +12,7 @@ using Tea.Infrastructure.DataAccess;
 namespace Tea.Infrastructure.Migrations
 {
     [DbContext(typeof(TeaContext))]
-    [Migration("20250310060618_initDb")]
+    [Migration("20250311122908_initDb")]
     partial class initDb
     {
         /// <inheritdoc />
@@ -74,6 +74,9 @@ namespace Tea.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFeatured")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsPublished")

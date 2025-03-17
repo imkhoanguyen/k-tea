@@ -2,7 +2,7 @@
 {
     public class UploadFileFailedException : BadRequestException
     {
-        public UploadFileFailedException() : base("Failed to upload the file to Cloudinary.")
+        public UploadFileFailedException(string? message = null) : base($"Failed to upload the file to Cloudinary. {message}")
         {
         }
     }

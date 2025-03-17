@@ -7,5 +7,7 @@
         public string Slug { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public List<int> CategoryIdList { get; set; } = [];
+        public bool IsPublished { get; set; }
+        public bool IsFeatured { get; set; }
     }
 }

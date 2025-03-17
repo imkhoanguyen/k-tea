@@ -62,7 +62,7 @@ namespace Tea.Api.Controllers
         public async Task<IActionResult> UpdateImageOfItem([FromRoute] int id, IFormFile imgFile)
         {
             var itemResponse = await itemService.UpdateImageAsync(id, imgFile);
-            return Ok(itemResponse);
+            return Ok(new {imgUrl = itemResponse});
         }
 
         [HttpPut("{id:int}/size")]

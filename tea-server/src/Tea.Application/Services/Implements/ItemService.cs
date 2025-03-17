@@ -61,11 +61,12 @@ namespace Tea.Application.Services.Implements
             /*
              * upload img to cloudinary
              */
+
             var resultUploadImg = await cloudinaryService.AddImageAsync(request.ImgFile);
 
             if (resultUploadImg.Error != null)
             {
-                throw new UploadFileFailedException();
+                throw new UploadFileFailedException(resultUploadImg.Error);
             }
 
             try
@@ -78,6 +79,7 @@ namespace Tea.Application.Services.Implements
                     IsPublished = request.IsPublished,
                     ImgUrl = resultUploadImg.Url!,
                     PublicId = resultUploadImg.PublicId,
+                    IsFeatured = request.IsFeatured,
                 };
 
                 /*
@@ -85,11 +87,7 @@ namespace Tea.Application.Services.Implements
                  */
                 foreach (var categoryId in request.CategoryIdList)
                 {
-                    var itemCategory = new ItemCategory
-                    {
-                        CategoryId = categoryId,
-                        ItemId = item.Id,
-                    };
+                    var itemCategory = new ItemCategory(item.Id, categoryId);
                     item.ItemCategories.Add(itemCategory);
                 }
 
@@ -294,35 +292,37 @@ namespace Tea.Application.Services.Implements
             entity.Name = request.Name;
             entity.Description = request.Description;
             entity.Slug = request.Slug;
+            entity.IsFeatured = request.IsFeatured;
+            entity.IsPublished = request.IsPublished;
 
-            var itemCategoriesRequest = request.CategoryIdList.Select(categoryId => new ItemCategory
-            {
-                CategoryId = categoryId,
-                ItemId = entity.Id,
-            });
+            var categoryIdRequest = request.CategoryIdList;
 
             var currentCategoriesItem = entity.ItemCategories.ToList();
 
-            //add new category to item
-            var categoriesNeedAdd = itemCategoriesRequest
-                .Select(x => new ItemCategory { CategoryId = x.CategoryId, ItemId = x.ItemId })
-                .Except(currentCategoriesItem);
-            entity.ItemCategories.AddRange(categoriesNeedAdd);
+            // get exits list categoryId
+            // chuyen sang hashset giup truy van nhanh hon khi so voi khi su dung list (existingCategoryIds.Contains)
+            var existingCategoryIds = currentCategoriesItem.Select(x => x.CategoryId).ToHashSet();
 
-            //delete category in item
+            // itemcategory list need add
+            var categoriesNeedAdd = categoryIdRequest
+                .Where(categoryId => !existingCategoryIds.Contains(categoryId))
+                .Select(categoryId => new ItemCategory(entity.Id, categoryId))
+                .ToList();
+
+            if (categoriesNeedAdd.Count > 0)
+                unit.ItemCategory.AddRange(categoriesNeedAdd);
+
+            // itemcategory list need remove
             var categoriesNeedDelete = currentCategoriesItem
-                .Except(itemCategoriesRequest.Select(x => new ItemCategory { CategoryId = x.CategoryId, ItemId = x.ItemId }));
+                .Where(ic => !categoryIdRequest.Contains(ic.CategoryId))
+                .ToList();
 
-            foreach (var itemCategory in categoriesNeedDelete)
-            {
-                entity.ItemCategories.Remove(itemCategory);
-            }
+            if (categoriesNeedDelete.Count > 0)
+                unit.ItemCategory.RemoveRange(categoriesNeedDelete);
 
             if (await unit.SaveChangesAsync())
             {
                 logger.LogInformation($"Successfully updated item with ID: {id}");
-                // mặc dù đã tracked entity nhưng do có thêm category mới vào nó vẫn track được nhưng ko include được category
-                // => get lại
                 var entityToReturn = await unit.Item.FindAsync(x => x.Id == entity.Id);
                 return ItemMapper.EntityToResponse(entityToReturn!);
             }
@@ -330,6 +330,7 @@ namespace Tea.Application.Services.Implements
             logger.LogError(Logging.SaveChangesFailed);
             throw new SaveChangesFailedException("Item");
         }
+
 
         // update size info of item
         public async Task<ItemResponse> UpdateSizeAsync(int itemId, SizeUpdateRequest request)

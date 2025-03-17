@@ -12,9 +12,9 @@ namespace Tea.Infrastructure.Repositories
             context.Add(entity);
         }
 
-        public void AddRange(IEnumerable<T> entity)
+        public void AddRange(IEnumerable<T> entities)
         {
-            context.AddRange(entity);
+            context.AddRange(entities);
         }
 
         public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
@@ -50,6 +50,11 @@ namespace Tea.Infrastructure.Repositories
         public void Remove(T entity)
         {
             context.Remove(entity);
+        }
+
+        public void RemoveRange(IEnumerable<T> entities)
+        {
+            context.RemoveRange(entities);
         }
     }
 }

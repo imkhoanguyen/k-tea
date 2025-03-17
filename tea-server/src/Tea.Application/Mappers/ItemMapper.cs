@@ -15,6 +15,7 @@ namespace Tea.Application.Mappers
                 Slug = item.Slug,
                 ImgUrl = item.ImgUrl,
                 IsPublished = item.IsPublished,
+                IsFeatured = item.IsFeatured,
                 Sizes = item.Sizes.Select(SizeMapper.EntityToResponse).ToList(),
                 Categories = item.ItemCategories.Where(x => x.Category != null)
                 .Select(x => CategoryMapper.EntityToResponse(x.Category!)).ToList(),

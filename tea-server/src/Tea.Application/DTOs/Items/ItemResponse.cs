@@ -11,6 +11,7 @@ namespace Tea.Application.DTOs.Items
         public string Slug { get; set; } = string.Empty;
         public string ImgUrl { get; set; } = string.Empty;
         public bool IsPublished { get; set; }
+        public bool IsFeatured { get; set; }
         public List<CategoryResponse> Categories { get; set; } = [];
         public List<SizeResponse> Sizes { get; set; } = [];
     }
