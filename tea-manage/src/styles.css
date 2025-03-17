@@ -52,6 +52,13 @@
   display: none; /* Ẩn thanh cuộn trong Chrome, Edge và Safari */
 }
 
+.img-in-table {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
 /* toastr */
 .toast-success {
   background-color: var(--primary) !important;

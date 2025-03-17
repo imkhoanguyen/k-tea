@@ -1,0 +1,306 @@
+<h1>Cập nhật sản phẩm</h1>
+<nz-tabset nzSize="large">
+  <nz-tab nzTitle="Thông tin cơ bản">
+    <form
+      nz-form
+      [formGroup]="frm"
+      (ngSubmit)="submitItemForm()"
+      autocomplete="off"
+    >
+      <nz-form-item>
+        <nz-form-label [nzSpan]="3" nzRequired>Tên sản phẩm</nz-form-label>
+        <nz-form-control [nzSpan]="22" [nzErrorTip]="nameErrorTpl">
+          <input
+            nz-input
+            formControlName="name"
+            placeholder="Nhập tên danh mục"
+          />
+          <ng-template #nameErrorTpl let-control>
+            @if (control.errors?.['required']) { Vui lòng nhập tên danh mục! }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSpan]="3" nzRequired>Slug</nz-form-label>
+        <nz-form-control [nzSpan]="22" [nzErrorTip]="slugErrorTpl">
+          <input
+            nz-input
+            formControlName="slug"
+            placeholder="ex: thuc-an, nuoc-giai-khac..."
+          />
+          <ng-template #slugErrorTpl let-control>
+            @if (control.errors?.['required']) { Vui lòng nhập Slug! }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSpan]="3" nzRequired>Danh mục</nz-form-label>
+        <nz-form-control [nzErrorTip]="categoryErrorTpl">
+          <nz-select
+            [nzMaxTagCount]="5"
+            [nzMaxTagPlaceholder]="tagPlaceHolder"
+            nzMode="multiple"
+            nzPlaceHolder="Chọn danh mục"
+            formControlName="categoryIdList"
+          >
+            @for (item of categories; track item) {
+            <nz-option [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
+            }
+          </nz-select>
+          <ng-template #tagPlaceHolder let-selectedList
+            >and {{ selectedList.length }} more selected</ng-template
+          >
+          <ng-template #categoryErrorTpl let-control>
+            @if (control.errors?.['required']) { Vui lòng chọn danh mục! }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSpan]="3">Mô tả</nz-form-label>
+        <nz-form-control>
+          <quill-editor
+            style="height: 150px; width: 100%"
+            formControlName="description"
+          ></quill-editor>
+          <div innerHTML="Nhập mô tả của danh mục"></div>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control [nzOffset]="3">
+          <label nz-checkbox formControlName="isFeatured">Nổi bật</label>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control [nzOffset]="3">
+          <label nz-checkbox formControlName="isPublished">Hoạt động</label>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item *ngIf="validationErrors && validationErrors.length > 0">
+        <nz-form-control [nzOffset]="3" [nzSpan]="12">
+          <div class="mx-auto text-danger">
+            <ul>
+              <li
+                *ngFor="let error of validationErrors; let i = index"
+                class="mb-2"
+              >
+                {{ error }}
+              </li>
+            </ul>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control [nzOffset]="3" [nzSpan]="12">
+          <div class="d-flex gap-2">
+            <button
+              type="submit"
+              nz-button
+              nzType="primary"
+              [disabled]="!frm.valid"
+            >
+              Lưu
+            </button>
+            <button nz-button type="button" (click)="handleCancel()">
+              Trở về
+            </button>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-tab>
+  <nz-tab nzTitle="Sizes">
+    <form
+      nz-form
+      [formGroup]="frmSize"
+      (ngSubmit)="submitSizeForm()"
+      autocomplete="off"
+    >
+      <nz-form-item>
+        <div class="d-flex gap-2">
+          <nz-form-control [nzSpan]="22" [nzErrorTip]="nameSizeErrorTpl">
+            <div class="d-flex flex-column gap-1">
+              <nz-form-label class="text-left mt-3" nzRequired
+                >Tên</nz-form-label
+              >
+              <input
+                nz-input
+                placeholder="Lớn, Vừa, Nhỏ, M,L,S,..."
+                formControlName="name"
+              />
+            </div>
+            <ng-template #nameSizeErrorTpl let-control>
+              @if (control.errors?.['required']) { Vui lòng nhập tên size! }
+            </ng-template>
+          </nz-form-control>
+
+          <nz-form-control [nzSpan]="22" [nzErrorTip]="priceSizeErrorTpl">
+            <div class="d-flex flex-column gap-1">
+              <nz-form-label class="text-left mt-3" nzRequired
+                >Giá</nz-form-label
+              >
+              <input
+                type="number"
+                nz-input
+                placeholder="VNĐ"
+                formControlName="price"
+              />
+            </div>
+            <ng-template #priceSizeErrorTpl let-control>
+              @if (control.errors?.['required']) { Vui lòng nhập giá! }
+            </ng-template>
+          </nz-form-control>
+
+          <nz-form-control [nzSpan]="22">
+            <div class="d-flex flex-column gap-1">
+              <nz-form-label class="text-left mt-3">Giá mới</nz-form-label>
+              <input
+                type="number"
+                nz-input
+                placeholder="Giá đã giảm nếu có"
+                formControlName="newPrice"
+              />
+            </div>
+          </nz-form-control>
+
+          <nz-form-control [nzSpan]="22">
+            <div class="d-flex flex-column gap-1">
+              <nz-form-label class="text-left mt-3">Mô tả</nz-form-label>
+              <input
+                nz-input
+                placeholder="Nhập mô tả cho size"
+                formControlName="description"
+              />
+            </div>
+          </nz-form-control>
+        </div>
+
+        <button
+          [disabled]="!frmSize.valid"
+          class="ms-2 mt-50"
+          nzType="primary"
+          nz-button
+          type="submit"
+        >
+          Thêm mới
+        </button>
+      </nz-form-item>
+
+      <nz-form-item
+        *ngIf="validationAddSizeErrors && validationAddSizeErrors.length > 0"
+      >
+        <nz-form-control [nzOffset]="0">
+          <div class="mx-auto text-danger">
+            <ul>
+              <li
+                *ngFor="let error of validationAddSizeErrors; let i = index"
+                class="mb-2"
+              >
+                {{ error }}
+              </li>
+            </ul>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+    <nz-divider nzText="Danh sách hiện tại"></nz-divider>
+    @for (size of sizes; track size.id) {
+    <div class="d-flex gap-2 mb-3">
+      <nz-form-control [nzSpan]="3">
+        <input nz-input [(ngModel)]="size.name" />
+      </nz-form-control>
+
+      <nz-form-control [nzSpan]="3">
+        <input type="number" nz-input [(ngModel)]="size.price" />
+      </nz-form-control>
+
+      <nz-form-control [nzSpan]="3">
+        <input type="number" nz-input [(ngModel)]="size.newPrice" />
+      </nz-form-control>
+
+      <nz-form-control [nzSpan]="3">
+        <input nz-input [(ngModel)]="size.description" />
+      </nz-form-control>
+
+      <button
+        class="btn-blue"
+        nz-button
+        type="button"
+        (click)="updateSize(size)"
+      >
+        Thay đổi
+      </button>
+
+      <button
+        nzType="primary"
+        nz-button
+        nzDanger
+        (click)="showDeleteConfirm(size.id)"
+      >
+        Xoá
+      </button>
+    </div>
+    }
+    <nz-form-item
+      *ngIf="
+        validationUpdateSizeErrors && validationUpdateSizeErrors.length > 0
+      "
+    >
+      <nz-form-control [nzOffset]="0">
+        <div class="mx-auto text-danger">
+          <ul>
+            <li
+              *ngFor="let error of validationUpdateSizeErrors; let i = index"
+              class="mb-2"
+            >
+              {{ error }}
+            </li>
+          </ul>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-tab>
+  <nz-tab nzTitle="Ảnh">
+    <nz-form-item>
+      <nz-form-control [nzSpan]="25">
+        <input
+          nz-input
+          type="file"
+          (change)="onFileSelected($event)"
+          accept="image/*"
+        />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item
+      *ngIf="
+        validationUpdateImageErrors && validationUpdateImageErrors.length > 0
+      "
+    >
+      <nz-form-control [nzOffset]="0">
+        <div class="mx-auto text-danger">
+          <ul>
+            <li
+              *ngFor="let error of validationUpdateImageErrors; let i = index"
+              class="mb-2"
+            >
+              {{ error }}
+            </li>
+          </ul>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-divider nzText="Ảnh hiện tại"> </nz-divider>
+    <img
+      class="preview-image"
+      nz-image
+      nzSrc="{{ item?.imgUrl }}"
+      alt="{{ item?.name }}"
+    />
+  </nz-tab>
+</nz-tabset>

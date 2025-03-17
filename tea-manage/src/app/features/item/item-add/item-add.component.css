@@ -1,0 +1,15 @@
+.text-left {
+  text-align: left !important;
+}
+
+.mt-50 {
+  margin-top: 50px;
+}
+
+.preview-image {
+  width: 100px;
+  height: 100px;
+  opacity: 0.9;
+  object-fit: contain;
+  cursor: pointer;
+}

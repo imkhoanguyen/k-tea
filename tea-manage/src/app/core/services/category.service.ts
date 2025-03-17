@@ -64,4 +64,8 @@ export class CategoryService {
 
     return this.http.delete(this.apiUrl + `categories`, { params });
   }
+
+  getAll() {
+    return this.http.get<Category[]>(this.apiUrl + `categories/all`);
+  }
 }

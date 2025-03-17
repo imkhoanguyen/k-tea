@@ -95,7 +95,14 @@ export class CategoryListComponent implements OnInit {
           if (id) {
             this.categoryService.delete(id).subscribe({
               next: (_) => {
+                // show success message
                 this.toastrService.success('Xoá danh mục đã chọn thành công');
+
+                // update checked status
+                this.refreshCheckedStatus();
+                this.setOfCheckedId.clear();
+
+                // update categories table
                 if (this.categories) {
                   const index = this.categories.data.findIndex(
                     (x) => x.id === id
@@ -120,9 +127,16 @@ export class CategoryListComponent implements OnInit {
           const listId = Array.from(this.setOfCheckedId);
           this.categoryService.deletes(listId)?.subscribe({
             next: (_) => {
+              // show success message
               this.toastrService.success(
                 'Xoá những danh mục đã chọn thành công'
               );
+
+              // update checked status
+              this.refreshCheckedStatus();
+              this.setOfCheckedId.clear();
+
+              // update categories table
               if (this.categories) {
                 this.categories.data = this.categories.data.filter(
                   (x) => !listId.includes(x.id)
@@ -145,6 +159,7 @@ export class CategoryListComponent implements OnInit {
   onPageIndexChange(newPageNumber: number) {
     this.prm.pageIndex = newPageNumber;
     this.getPagination();
+    this.refreshCheckedStatus();
   }
 
   onPageSizeChange(newPageSize: number) {
@@ -173,7 +188,6 @@ export class CategoryListComponent implements OnInit {
   checked = false;
   loading = false;
   indeterminate = false;
-  listOfCurrentPageData: readonly Category[] = [];
   setOfCheckedId = new Set<number>();
 
   ngOnInit(): void {
@@ -184,7 +198,6 @@ export class CategoryListComponent implements OnInit {
     this.categoryService.getPagination(this.prm).subscribe({
       next: (res) => {
         this.categories = res;
-        this.listOfCurrentPageData = res.data; // Cập nhật dữ liệu trang hiện tại
       },
       error: (er) => console.log(er),
     });
@@ -198,42 +211,28 @@ export class CategoryListComponent implements OnInit {
     }
   }
 
-  pdateCheckedSet(id: number, checked: boolean): void {
-    if (checked) {
-      this.setOfCheckedId.add(id);
-    } else {
-      this.setOfCheckedId.delete(id);
-    }
-  }
-
   onItemChecked(id: number, checked: boolean): void {
     this.updateCheckedSet(id, checked);
     this.refreshCheckedStatus();
   }
 
   onAllChecked(value: boolean): void {
-    this.listOfCurrentPageData.forEach((item) =>
-      this.updateCheckedSet(item.id, value)
-    );
-    this.refreshCheckedStatus();
-  }
-
-  onCurrentPageDataChange($event: readonly Category[]): void {
-    this.listOfCurrentPageData = $event;
-    this.refreshCheckedStatus();
+    if (this.categories) {
+      this.categories.data.forEach((item) =>
+        this.updateCheckedSet(item.id, value)
+      );
+      this.refreshCheckedStatus();
+    }
   }
 
   refreshCheckedStatus(): void {
-    this.checked = this.listOfCurrentPageData.every((item) =>
-      this.setOfCheckedId.has(item.id)
-    );
-    this.indeterminate =
-      this.listOfCurrentPageData.some((item) =>
+    if (this.categories) {
+      this.checked = this.categories.data.every((item) =>
         this.setOfCheckedId.has(item.id)
-      ) && !this.checked;
-  }
-
-  sendRequest(): void {
-    console.log('Selected IDs:', Array.from(this.setOfCheckedId));
+      );
+      this.indeterminate =
+        this.categories.data.some((item) => this.setOfCheckedId.has(item.id)) &&
+        !this.checked;
+    }
   }
 }

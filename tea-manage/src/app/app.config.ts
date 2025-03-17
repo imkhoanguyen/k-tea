@@ -16,6 +16,7 @@ import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { EyeOutline } from '@ant-design/icons-angular/icons';
 import { provideToastr } from 'ngx-toastr';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { QuillModule } from 'ngx-quill';
 
 registerLocaleData(vi);
 const icons = [EyeOutline];
@@ -25,7 +26,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideNzI18n(vi_VN),
-    importProvidersFrom(FormsModule),
+    importProvidersFrom(FormsModule, QuillModule.forRoot()),
     provideAnimationsAsync(),
     provideHttpClient(withInterceptors([errorInterceptor])),
     provideNzIcons(icons),

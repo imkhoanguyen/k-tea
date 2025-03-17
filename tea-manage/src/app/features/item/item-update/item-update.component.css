@@ -1,0 +1,18 @@
+.text-left {
+    text-align: left !important;
+  }
+  
+  .mt-50 {
+    margin-top: 50px;
+  }
+  
+  .preview-image {
+    width: 300px;
+    height: 300px;
+    opacity: 0.9;
+    object-fit: contain;
+    cursor: pointer;
+  }
+
+
+  

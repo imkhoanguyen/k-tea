@@ -1,5 +1,5 @@
 <div class="d-flex align-items-center justify-content-between">
-  <h1>Quản lý danh mục</h1>
+  <h1>Quản lý sản phẩm</h1>
   <div>
     <form (ngSubmit)="onSearch()" autocomplete="off">
       <nz-input-group [nzSuffix]="suffixIconSearch">
@@ -17,15 +17,21 @@
     </form>
   </div>
   <div class="d-flex gap-2">
-    <button nzType="primary" nzSize="large" nz-button (click)="showAddModal()">
+    <button
+      nzType="primary"
+      nzSize="large"
+      nz-button
+      routerLink="/them-san-pham"
+    >
       Thêm
     </button>
+
     <button
       nzSize="large"
       nz-button
-      [ngClass]="{ 'btn-yellow': setOfCheckedId.size === 1 }"
+      [ngClass]="{ 'btn-blue': setOfCheckedId.size === 1 }"
       [disabled]="setOfCheckedId.size != 1"
-      (click)="showUpdateModal()"
+      (click)="goUpdatePage()"
     >
       Sửa
     </button>
@@ -43,11 +49,7 @@
   </div>
 </div>
 
-<nz-table
-  nzBordered
-  [nzData]="categories?.data ?? []"
-  [nzFrontPagination]="false"
->
+<nz-table [nzData]="items?.data ?? []" [nzFrontPagination]="false">
   <thead>
     <tr>
       <th
@@ -57,49 +59,61 @@
         nzLabel="Select all"
         (nzCheckedChange)="onAllChecked($event)"
       ></th>
-      <th
-        style="width: 5%"
-        [nzSortFn]="true"
-        (nzSortOrderChange)="onSortChange('id')"
-      >
-        ID
-      </th>
+
+      <th class="text-center" style="width: 5%">Hình ảnh</th>
       <th
         style="width: 50%"
         [nzSortFn]="true"
         (nzSortOrderChange)="onSortChange('name')"
       >
-        Danh mục
+        Tên sản phẩm
       </th>
-      <th style="width: 20%">Slug</th>
-      <th style="width: 20%">Mô tả</th>
+      <th class="text-center" style="width: 7%">Nổi bật</th>
+      <th class="text-center" style="width: 7%">Hoạt động</th>
     </tr>
   </thead>
   <tbody>
-    @for (data of categories?.data; track data.id) {
+    @for (data of items?.data; track data.id) {
     <tr>
       <td
         [nzChecked]="setOfCheckedId.has(data.id)"
         [nzLabel]="data.name"
         (nzCheckedChange)="onItemChecked(data.id, $event)"
       ></td>
-      <td>#{{ data.id }}</td>
+      <td class="text-center">
+        <img
+          class="img-in-table"
+          nz-image
+          nzSrc="{{ data.imgUrl }}"
+          alt="{{ data.name }}"
+        />
+      </td>
+
       <td>{{ data.name }}</td>
-      <td>{{ data.slug }}</td>
-      <td class="fixed-height-box">{{ data.description }}</td>
+      <td class="text-center">
+        <i
+          [ngClass]="data.isFeatured ? 'bi bi-circle-fill' : 'bi bi-circle'"
+        ></i>
+      </td>
+
+      <td class="text-center">
+        <i
+          [ngClass]="data.isPublished ? 'bi bi-circle-fill' : 'bi bi-circle'"
+        ></i>
+      </td>
     </tr>
     }
   </tbody>
 </nz-table>
 <div
-  *ngIf="categories != null"
+  *ngIf="items != null"
   class="d-flex align-items-center justify-content-center mt-3"
 >
   <nz-pagination
-    [nzPageIndex]="categories.pageIndex"
-    [nzTotal]="categories.count"
+    [nzPageIndex]="items.pageIndex"
+    [nzTotal]="items.count"
     [nzSize]="'default'"
-    [nzPageSize]="categories.pageSize"
+    [nzPageSize]="items.pageSize"
     (nzPageIndexChange)="onPageIndexChange($event)"
     (nzPageSizeChange)="onPageSizeChange($event)"
     [nzShowTotal]="totalTemplate"
@@ -109,13 +123,3 @@
   ></nz-pagination>
   <ng-template #totalTemplate let-total>Tổng {{ total }} danh mục</ng-template>
 </div>
-
-<!-- category add modal -->
-<app-category-add
-  (categoryAdded)="handleEventAddParent($event)"
-></app-category-add>
-
-<!-- category update modal -->
-<app-category-update
-  (categoryUpdated)="handleEventUpdate($event)"
-></app-category-update>
