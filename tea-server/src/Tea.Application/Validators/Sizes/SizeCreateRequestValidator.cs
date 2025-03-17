@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-using FluentValidation;
-using Newtonsoft.Json;
+﻿using FluentValidation;
 using Tea.Application.DTOs.Sizes;
 
 namespace Tea.Application.Validators.Sizes
