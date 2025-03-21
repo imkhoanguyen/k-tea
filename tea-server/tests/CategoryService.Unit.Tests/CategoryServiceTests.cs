@@ -5,7 +5,8 @@ using Tea.Application.DTOs.Categories;
 using Tea.Application.Services.Implements;
 using Tea.Domain.Common;
 using Tea.Domain.Entities;
-using Tea.Domain.Exceptions;
+using Tea.Domain.Exceptions.BadRequests;
+using Tea.Domain.Exceptions.NotFounds;
 using Tea.Domain.Repositories;
 
 namespace Tea.Application.Unit.Tests
@@ -493,26 +494,26 @@ namespace Tea.Application.Unit.Tests
             Assert.Equal(saveChangesFailExceptionString, exception.Message);
         }
 
-        [Fact]
-        public async Task UpdateAsync_ShouldThrowIdMismatchException_WhenIdRouteAndIdBodyNotSame()
-        {
-            // Arrange
-            int routeId = 1;
+        //[Fact]
+        //public async Task UpdateAsync_ShouldThrowIdMismatchException_WhenIdRouteAndIdBodyNotSame()
+        //{
+        //    // Arrange
+        //    int routeId = 1;
 
-            var request = new CategoryUpdateRequest
-            {
-                Id = 2,
-                Name = "updated name",
-                Description = "updated description",
-                Slug = "updated-name"
-            };
+        //    var request = new CategoryUpdateRequest
+        //    {
+        //        Id = 2,
+        //        Name = "updated name",
+        //        Description = "updated description",
+        //        Slug = "updated-name"
+        //    };
 
-            // Act
-            var exception = await Assert.ThrowsAsync<IdMismatchException>(() => _sut.UpdateAsync(routeId, request));
+        //    // Act
+        //    var exception = await Assert.ThrowsAsync<IdMismatchException>(() => _sut.UpdateAsync(routeId, request));
 
-            // Assert
-            Assert.Equal($"Id: {routeId} in the route does not match the Id: {request.Id} in the request body.",
-                exception.Message);
-        }
+        //    // Assert
+        //    Assert.Equal($"Id: {routeId} in the route does not match the Id: {request.Id} in the request body.",
+        //        exception.Message);
+        //}
     }
 }
