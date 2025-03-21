@@ -6,6 +6,8 @@ using Tea.Domain.Common;
 using Tea.Domain.Constants;
 using Tea.Domain.Entities;
 using Tea.Domain.Exceptions;
+using Tea.Domain.Exceptions.BadRequests;
+using Tea.Domain.Exceptions.NotFounds;
 using Tea.Domain.Repositories;
 
 namespace Tea.Application.Services.Implements
@@ -57,7 +59,7 @@ namespace Tea.Application.Services.Implements
             }
 
             logger.LogError($"{Logging.SaveChangesFailed}");
-            throw new SaveChangesFailedException("Category");
+            throw new SaveChangesFailedException();
         }
 
         public async Task<CategoryResponse> CreateParentAsync(CategoryCreateParentRequest request)
@@ -80,7 +82,7 @@ namespace Tea.Application.Services.Implements
             }
 
             logger.LogError($"{Logging.SaveChangesFailed}");
-            throw new SaveChangesFailedException("Category");
+            throw new SaveChangesFailedException();
         }
 
         public async Task DeleteAsync(int id)
@@ -99,7 +101,7 @@ namespace Tea.Application.Services.Implements
             if(!await unit.SaveChangesAsync())
             {
                 logger.LogError($"{Logging.SaveChangesFailed}");
-                throw new SaveChangesFailedException("Category");
+                throw new SaveChangesFailedException();
             }
 
             logger.LogInformation($"Category with ID: {id} was deleted.");
@@ -124,7 +126,7 @@ namespace Tea.Application.Services.Implements
             if (!await unit.SaveChangesAsync())
             {
                 logger.LogError($"{Logging.SaveChangesFailed}");
-                throw new SaveChangesFailedException("Categories");
+                throw new SaveChangesFailedException();
             }
 
             logger.LogInformation($"Categories with IDs: {string.Join(", ", categoryIdList)} were deleted.");
@@ -168,7 +170,7 @@ namespace Tea.Application.Services.Implements
             if(id != request.Id)
             {
                 logger.LogWarning($"{Logging.IdMismatch(routeId: id, bodyId: request.Id)}");
-                throw new IdMismatchException(routeId: id, bodyId: request.Id);
+                throw new IdMismatchException("Vui lòng chọn lại danh mục cần cập nhật.");
             }
 
             var entity = await unit.Category.FindAsync(x => x.Id == request.Id, tracked: true);
@@ -201,7 +203,7 @@ namespace Tea.Application.Services.Implements
             }
 
             logger.LogError($"{Logging.SaveChangesFailed}");
-            throw new SaveChangesFailedException("Category");
+            throw new SaveChangesFailedException();
 
 
         }

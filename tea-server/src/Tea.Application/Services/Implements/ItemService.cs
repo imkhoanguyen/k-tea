@@ -10,6 +10,8 @@ using Tea.Domain.Common;
 using Tea.Domain.Constants;
 using Tea.Domain.Entities;
 using Tea.Domain.Exceptions;
+using Tea.Domain.Exceptions.BadRequests;
+using Tea.Domain.Exceptions.NotFounds;
 using Tea.Domain.Repositories;
 
 namespace Tea.Application.Services.Implements
@@ -52,7 +54,7 @@ namespace Tea.Application.Services.Implements
             }
 
             logger.LogError(Logging.SaveChangesFailed);
-            throw new SaveChangesFailedException("Item");
+            throw new SaveChangesFailedException();
         }
 
         public async Task<ItemResponse> CreateAsync(ItemCreateRequest request)
@@ -118,7 +120,7 @@ namespace Tea.Application.Services.Implements
                 }
 
                 logger.LogError(Logging.SaveChangesFailed);
-                throw new SaveChangesFailedException("Item");
+                throw new SaveChangesFailedException();
             }
             catch
             {
@@ -143,7 +145,7 @@ namespace Tea.Application.Services.Implements
             if (!await unit.SaveChangesAsync())
             {
                 logger.LogError($"{Logging.SaveChangesFailed}");
-                throw new SaveChangesFailedException("Item");
+                throw new SaveChangesFailedException();
             }
             logger.LogInformation($"Item with ID: {id} was deleted.");
         }
@@ -167,7 +169,7 @@ namespace Tea.Application.Services.Implements
             if (!await unit.SaveChangesAsync())
             {
                 logger.LogError($"{Logging.SaveChangesFailed}");
-                throw new SaveChangesFailedException("Categories");
+                throw new SaveChangesFailedException();
             }
 
             logger.LogInformation($"Items with IDs: {string.Join(", ", itemIdList)} were deleted.");
@@ -206,7 +208,7 @@ namespace Tea.Application.Services.Implements
             if (!await unit.SaveChangesAsync())
             {
                 logger.LogError(Logging.SaveChangesFailed);
-                throw new SaveChangesFailedException("Item");
+                throw new SaveChangesFailedException();
             }
 
             logger.LogInformation("Delete size in item successfully");
@@ -280,7 +282,7 @@ namespace Tea.Application.Services.Implements
                 }
 
                 logger.LogWarning(Logging.SaveChangesFailed);
-                throw new SaveChangesFailedException("Item");
+                throw new SaveChangesFailedException();
 
             }
             catch
@@ -298,7 +300,7 @@ namespace Tea.Application.Services.Implements
             if (id != request.Id)
             {
                 logger.LogWarning(Logging.IdMismatch(routeId: id, bodyId: request.Id));
-                throw new IdMismatchException(routeId: id, bodyId: request.Id);
+                throw new IdMismatchException("Vui lòng chọn lại sản phẩm cần cập nhật");
             }
 
             if (request.CategoryIdList.Count == 0)
@@ -353,7 +355,7 @@ namespace Tea.Application.Services.Implements
             }
 
             logger.LogError(Logging.SaveChangesFailed);
-            throw new SaveChangesFailedException("Item");
+            throw new SaveChangesFailedException();
         }
 
 
@@ -364,7 +366,7 @@ namespace Tea.Application.Services.Implements
             if (itemId != request.ItemId)
             {
                 logger.LogWarning(Logging.IdMismatch(routeId: itemId, request.ItemId));
-                throw new IdMismatchException(routeId: itemId, bodyId: request.ItemId);
+                throw new IdMismatchException("Vui lòng chọn lại sản phẩm của size cần cập nhật.");
             }
 
             var item = await unit.Item.FindAsync(x => x.Id == itemId, tracked: true);
@@ -393,7 +395,7 @@ namespace Tea.Application.Services.Implements
             }
 
             logger.LogError(Logging.SaveChangesFailed);
-            throw new SaveChangesFailedException("Item");
+            throw new SaveChangesFailedException();
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Tea.Domain.Entities;
 using Tea.Infrastructure.DataAccess.EntityConfigs;
 
 namespace Tea.Infrastructure.DataAccess
 {
-    public class TeaContext : DbContext
+    public class TeaContext : IdentityDbContext<AppUser>
     {
         public TeaContext(DbContextOptions options) : base(options) { }
 

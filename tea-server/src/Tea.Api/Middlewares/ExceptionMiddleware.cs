@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Tea.Domain.Common;
 using Tea.Domain.Exceptions;
+using Tea.Domain.Exceptions.Bases;
 
 namespace Tea.Api.Middlewares
 {
@@ -26,6 +27,10 @@ namespace Tea.Api.Middlewares
                     case BadRequestException:
                         context.Response.StatusCode = StatusCodes.Status400BadRequest;
                         message = ex.Message;
+                        break;
+                    case UnauthorizeException:
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        message = ex.Message; 
                         break;
                     default:
                         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
