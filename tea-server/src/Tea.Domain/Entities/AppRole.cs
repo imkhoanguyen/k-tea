@@ -1,6 +1,8 @@
-﻿namespace Tea.Domain.Entities
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Tea.Domain.Entities
 {
-    public class AppRole
+    public class AppRole : IdentityRole
     {
         public string Description { get; set; } = string.Empty;
     }

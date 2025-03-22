@@ -15,6 +15,7 @@ namespace Tea.Infrastructure.DataAccess
         public DbSet<Item> Items { get; set; }
         public DbSet<Size> Sizes { get; set; }
         public DbSet<ItemCategory> ItemCategories { get; set; }
+        public DbSet<AppRole> AppRoles { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder builder)
