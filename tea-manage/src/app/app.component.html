@@ -1,3 +1,4 @@
+@if (userService.currentUser()) {
 <nz-layout class="layout">
   <nz-sider
     nzCollapsible
@@ -20,3 +21,7 @@
     <nz-footer>Ant Design ©2020 Implement By Angular</nz-footer>
   </nz-layout>
 </nz-layout>
+
+} @else {
+<app-login></app-login>
+}

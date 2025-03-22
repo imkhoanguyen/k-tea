@@ -3,10 +3,12 @@ import { CategoryListComponent } from './features/category/category-list/categor
 import { ItemListComponent } from './features/item/item-list/item-list.component';
 import { ItemAddComponent } from './features/item/item-add/item-add.component';
 import { ItemUpdateComponent } from './features/item/item-update/item-update.component';
+import { LoginComponent } from './features/login/login.component';
 
 export const routes: Routes = [
   { path: 'danh-muc', component: CategoryListComponent },
   { path: 'san-pham', component: ItemListComponent },
   { path: 'them-san-pham', component: ItemAddComponent },
   { path: 'cap-nhat-san-pham/:id', component: ItemUpdateComponent },
+  { path: 'dang-nhap', component: LoginComponent },
 ];

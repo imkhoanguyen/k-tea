@@ -1,0 +1,20 @@
+<div class="d-flex align-items-center">
+  <div
+    class="ms-auto d-flex gap-2 align-items-center justify-content-center me-4"
+  >
+    <nz-avatar
+      [nzShape]="'square'"
+      [nzSize]="'large'"
+      [nzSrc]="userService.currentUser()?.imgUrl"
+    ></nz-avatar>
+    <a nz-dropdown [nzDropdownMenu]="menu">
+      {{ userService.currentUser()?.fullName }}
+      <span nz-icon nzType="down"></span>
+    </a>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item nzDanger (click)="userService.logout()">Đăng xuất</li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+</div>

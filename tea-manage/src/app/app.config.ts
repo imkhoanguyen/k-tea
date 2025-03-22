@@ -13,13 +13,13 @@ import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideNzIcons } from 'ng-zorro-antd/icon';
-import { EyeOutline } from '@ant-design/icons-angular/icons';
+import { DownOutline, EyeOutline } from '@ant-design/icons-angular/icons';
 import { provideToastr } from 'ngx-toastr';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { QuillModule } from 'ngx-quill';
 
 registerLocaleData(vi);
-const icons = [EyeOutline];
+const icons = [EyeOutline, DownOutline];
 
 export const appConfig: ApplicationConfig = {
   providers: [
