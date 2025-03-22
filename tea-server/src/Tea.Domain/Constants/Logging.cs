@@ -7,5 +7,10 @@
         {
             return $"Id: {routeId} in the route does not match the Id: {bodyId} in the request body.";
         }
+
+        public static string IdMismatch(string routeId, string bodyId)
+        {
+            return $"Id: {routeId} in the route does not match the Id: {bodyId} in the request body.";
+        }
     }
 }

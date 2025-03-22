@@ -172,6 +172,7 @@ try
 
     await context.Database.MigrateAsync();
     await RoleSeed.SeedAsync(roleManager);
+    await RoleClaimSeed.SeedAsync(context, roleManager);
 }
 catch (Exception ex)
 {
