@@ -1,0 +1,65 @@
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzTitle="Thêm quyền"
+  (nzOnCancel)="handleCancel()"
+  [nzFooter]="null"
+>
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="frm" (ngSubmit)="submitForm()">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzRequired>Tên quyền</nz-form-label>
+        <nz-form-control [nzSpan]="22" [nzErrorTip]="nameErrorTpl">
+          <input nz-input formControlName="name" placeholder="Nhập tên quyền" />
+          <ng-template #nameErrorTpl let-control>
+            @if (control.errors?.['required']) { Vui lòng nhập tên quyền! }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6">Mô tả</nz-form-label>
+        <nz-form-control [nzSpan]="22">
+          <textarea
+            nz-input
+            placeholder="Nhập mô tả của quyền"
+            nzAutosize
+            formControlName="description"
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item *ngIf="validationErrors && validationErrors.length > 0">
+        <nz-form-control [nzOffset]="3" [nzSpan]="12">
+          <div class="mx-auto text-danger">
+            <ul>
+              <li
+                *ngFor="let error of validationErrors; let i = index"
+                class="mb-2"
+              >
+                {{ error }}
+              </li>
+            </ul>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control [nzOffset]="6">
+          <div class="d-flex gap-2">
+            <button
+              type="submit"
+              nz-button
+              nzType="primary"
+              [disabled]="!frm.valid"
+            >
+              Lưu
+            </button>
+            <button nz-button type="button" (click)="handleCancel()">
+              Đóng
+            </button>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>

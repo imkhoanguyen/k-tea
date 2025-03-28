@@ -1,0 +1,95 @@
+<div class="d-flex align-items-center justify-content-between">
+  <h1>Quản lý quyền</h1>
+  <div></div>
+</div>
+
+<nz-table [nzData]="roles?.data ?? []" [nzFrontPagination]="false">
+  <thead>
+    <tr>
+      <th style="width: 30%">
+        <div class="d-flex align-items-center">
+          <div>Tên quyền</div>
+          <div class="ms-auto">
+            <form (ngSubmit)="onSearch()" autocomplete="off">
+              <nz-input-group [nzSuffix]="suffixIconSearch">
+                <input
+                  type="text"
+                  nz-input
+                  placeholder="Nhập tên quyền"
+                  [(ngModel)]="prm.search"
+                  name="search"
+                />
+              </nz-input-group>
+              <ng-template #suffixIconSearch>
+                <span nz-icon nzType="search"></span>
+              </ng-template>
+            </form>
+          </div>
+        </div>
+      </th>
+      <th style="width: 50%">Mô tả</th>
+      <th style="width: 10%">Chức năng</th>
+      <th style="width: 10%" class="text-center">
+        <button nzType="primary" nz-button (click)="showAddModal()">
+          Thêm
+        </button>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (data of roles?.data; track data.id) {
+    <tr>
+      <td>{{ data.name }}</td>
+
+      <td>{{ data.description }}</td>
+      <td>
+        <button nz-button (click)="goChangePermission(data.id)">
+          Thay đổi
+        </button>
+      </td>
+      <td>
+        <div class="d-flex gap-2 justify-content-center align-items-center">
+          <button (click)="showUpdateModal(data.id)" nz-button class="btn-blue">
+            Sửa
+          </button>
+
+          <button
+            (click)="showDeleteConfirm(data.id)"
+            nz-button
+            nzType="primary"
+            nzDanger
+          >
+            Xoá
+          </button>
+        </div>
+      </td>
+    </tr>
+    }
+  </tbody>
+</nz-table>
+<div
+  *ngIf="roles != null"
+  class="d-flex align-items-center justify-content-center mt-3"
+>
+  <nz-pagination
+    [nzPageIndex]="roles.pageIndex"
+    [nzTotal]="roles.count"
+    [nzSize]="'default'"
+    [nzPageSize]="roles.pageSize"
+    (nzPageIndexChange)="onPageIndexChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzShowTotal]="totalTemplate"
+    [nzShowSizeChanger]="true"
+    [nzShowQuickJumper]="true"
+    [nzPageSizeOptions]="[3, 5, 10, 20, 50]"
+  ></nz-pagination>
+  <ng-template #totalTemplate let-total>Tổng {{ total }} quyền</ng-template>
+</div>
+
+<!-- add modal -->
+<app-role-add (roleAdded)="handleEventAddRole($event)"></app-role-add>
+
+<!-- update modal -->
+<app-role-update
+  (roleUpdated)="handleEventUpdateRole($event)"
+></app-role-update>

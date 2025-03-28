@@ -75,7 +75,4 @@ export class ItemService {
     });
     return this.http.delete(this.apiUrl + `items/${itemId}/sizes`, { params });
   }
-
-  //   return this.http.delete(this.apiUrl + `categories`, { params });
-  // }
 }
