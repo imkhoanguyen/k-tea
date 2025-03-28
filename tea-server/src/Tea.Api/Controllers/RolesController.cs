@@ -35,25 +35,13 @@ namespace Tea.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(PaginationResponse<RoleResponse>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IActionResult>> GetPagination([FromQuery] PaginationRequest request)
+        public async Task<IActionResult> GetPagination([FromQuery] PaginationRequest request)
         {
             var query = _roleManager.Roles.AsQueryable();
 
             if (!string.IsNullOrEmpty(request.Search))
             {
                 query = query.Where(r => r.Name!.ToLower().Contains(request.Search.ToLower()));
-            }
-
-            if (!string.IsNullOrEmpty(request.OrderBy))
-            {
-                query = request.OrderBy switch
-                {
-                    "id" => query.OrderBy(r => r.Id),
-                    "id_desc" => query.OrderByDescending(r => r.Id),
-                    "name" => query.OrderBy(r => r.Name!.ToLower()),
-                    "name_desc" => query.OrderByDescending(r => r.Name!.ToLower()),
-                    _ => query.OrderByDescending(r => r.Name),
-                };
             }
 
             // Không dùng RoleResponse.FromEntity ở đây vì phương thức này ko thể dịch sang sql
@@ -81,7 +69,7 @@ namespace Tea.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(RoleResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<AppRole>> Get(string id)
+        public async Task<IActionResult> Get(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
             if (role == null)
@@ -96,10 +84,10 @@ namespace Tea.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = AppPermission.Role_Create)]
+        //[Authorize(Policy = AppPermission.Role_Create)]
         [ProducesResponseType(typeof(RoleResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<RoleResponse>> Create(RoleCreateRequest request)
+        public async Task<IActionResult> Create(RoleCreateRequest request)
         {
             if (await RoleNameExists(request.Name))
             {
@@ -126,7 +114,7 @@ namespace Tea.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Policy = AppPermission.Role_Edit)]
+        //[Authorize(Policy = AppPermission.Role_Edit)]
         [ProducesResponseType(typeof(RoleResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -166,7 +154,7 @@ namespace Tea.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = AppPermission.Role_Delete)]
+        //[Authorize(Policy = AppPermission.Role_Delete)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -218,7 +206,7 @@ namespace Tea.Api.Controllers
         }
 
         [HttpPut("{roleId}/update-claims")]
-        [Authorize(Policy = AppPermission.Role_Edit)]
+        //[Authorize(Policy = AppPermission.Role_Edit)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
