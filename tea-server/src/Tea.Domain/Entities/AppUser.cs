@@ -5,7 +5,6 @@ namespace Tea.Domain.Entities
     public class AppUser : IdentityUser
     {
         public required string FullName { get; set; }
-        public required string ImgUrl { get; set; }
-        public string? PublicId { get; set; }
+        public DateTimeOffset Created { get; set; } = DateTimeOffset.Now;
     }
 }

@@ -167,7 +167,6 @@ namespace Tea.Infrastructure.Services
                 {
                     UserName = user.UserName,
                     FullName = user.FullName,
-                    ImgUrl = user.ImgUrl,
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
                     ExpiredDateAccessToken = expiredDateAccessToken,

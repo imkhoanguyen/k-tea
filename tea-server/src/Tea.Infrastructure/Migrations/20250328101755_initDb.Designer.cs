@@ -12,7 +12,7 @@ using Tea.Infrastructure.DataAccess;
 namespace Tea.Infrastructure.Migrations
 {
     [DbContext(typeof(TeaContext))]
-    [Migration("20250322070424_initDb")]
+    [Migration("20250328101755_initDb")]
     partial class initDb
     {
         /// <inheritdoc />
@@ -179,6 +179,9 @@ namespace Tea.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -187,10 +190,6 @@ namespace Tea.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImgUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -216,9 +215,6 @@ namespace Tea.Infrastructure.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("PublicId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

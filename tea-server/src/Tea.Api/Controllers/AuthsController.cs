@@ -65,7 +65,6 @@ namespace Tea.Api.Controllers
             {
                 UserName = user.UserName,
                 FullName = user.FullName,
-                ImgUrl = user.ImgUrl,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
                 ExpiredDateAccessToken = expiredDateAccessToken,
@@ -92,7 +91,6 @@ namespace Tea.Api.Controllers
                 UserName = request.UserName,
                 FullName = request.FullName,
                 Email = request.Email,
-                ImgUrl = @"https://res.cloudinary.com/dh1zsowbp/image/upload/v1735543269/user_pez7rf.webp"
             };
 
             await _unit.BeginTransactionAsync();
