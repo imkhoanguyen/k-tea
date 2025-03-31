@@ -1,0 +1,106 @@
+<div class="d-flex align-items-center justify-content-between">
+  <h1>Quản lý người dùng</h1>
+  <div></div>
+</div>
+
+<nz-table [nzData]="users?.data ?? []" [nzFrontPagination]="false">
+  <thead>
+    <tr>
+      <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('userName')">
+        Username
+      </th>
+      <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('fullName')">
+        Họ và tên
+      </th>
+      <th>Phone</th>
+      <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('email')">
+        Email
+      </th>
+      <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('created')">
+        Ngày tạo
+      </th>
+      <th>Quyền</th>
+      <th style="width: 10%">Trạng thái</th>
+      <th class="text-center" style="width: 10%">
+        <button nzType="primary" nz-button routerLink="/them-nguoi-dung">
+          Thêm
+        </button>
+      </th>
+    </tr>
+    <tr>
+      <th colspan="3">
+        <form (ngSubmit)="onSearch()" autocomplete="off">
+          <nz-input-group [nzSuffix]="suffixIconSearch">
+            <input
+              type="text"
+              nz-input
+              placeholder="Nhập username, họ và tên hoặc SĐT"
+              [(ngModel)]="prm.search"
+              name="search"
+            />
+          </nz-input-group>
+          <ng-template #suffixIconSearch>
+            <span nz-icon nzType="search"></span>
+          </ng-template>
+        </form>
+      </th>
+      <th colspan="5"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    @for (data of users?.data; track data.userName) {
+    <tr>
+      <td>{{ data.userName }}</td>
+      <td>{{ data.fullName }}</td>
+      <td>{{ data.phoneNumber ?? "Chưa có" }}</td>
+      <td>{{ data.email }}</td>
+      <td>{{ data.created | date : "dd/MM/yyyy, h:mm a" }}</td>
+      <td>{{ data.role }}</td>
+      <td class="text-center">
+        @if(data.isLoocked) { Đang bị khóa } @else { Đang hoạt động }
+      </td>
+      <td>
+        <div class="d-flex gap-2 justify-content-center align-items-center">
+          <button
+            (click)="goUpdatePage(data.userName)"
+            nz-button
+            class="btn-blue"
+          >
+            Sửa
+          </button>
+
+          <button
+            (click)="showDeleteConfirm(data.userName)"
+            nz-button
+            nzType="primary"
+            nzDanger
+          >
+            Xoá
+          </button>
+        </div>
+      </td>
+    </tr>
+    }
+  </tbody>
+</nz-table>
+<div
+  *ngIf="users != null"
+  class="d-flex align-items-center justify-content-center mt-3"
+>
+  <nz-pagination
+    [nzPageIndex]="users.pageIndex"
+    [nzTotal]="users.count"
+    [nzSize]="'default'"
+    [nzPageSize]="users.pageSize"
+    (nzPageIndexChange)="onPageIndexChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzShowTotal]="totalTemplate"
+    [nzShowSizeChanger]="true"
+    [nzShowQuickJumper]="true"
+    [nzPageSizeOptions]="[3, 5, 10, 20, 50]"
+  ></nz-pagination>
+  <ng-template #totalTemplate let-total
+    >Tổng {{ total }} người dùng</ng-template
+  >
+</div>

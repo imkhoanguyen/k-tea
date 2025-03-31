@@ -1,0 +1,58 @@
+<h2>Thay đổi quyền</h2>
+<div class="mb-3">
+  <label class="form-label" for="role">Quyền</label>
+  <nz-select [(ngModel)]="roleName" id="role">
+    <nz-option
+      *ngFor="let role of roles"
+      [nzValue]="role.name"
+      [nzLabel]="role.name"
+    >
+    </nz-option>
+  </nz-select>
+</div>
+
+<div
+  *ngIf="validationChangeRole && validationChangeRole.length > 0"
+  class="mx-auto mb-3 bg-danger text-white rounded"
+>
+  <ul class="list-unstyled p-3">
+    <li *ngFor="let error of validationChangeRole; let i = index" class="mb-2">
+      {{ error }}
+    </li>
+  </ul>
+</div>
+
+<div class="d-flex gap-2 justify-content-end align-items-center">
+  <button nz-button nzType="primary" type="submit" (click)="changeRole()">
+    Lưu
+  </button>
+  <button nz-button nzType="default" type="button" (click)="backUserListPage()">
+    Trở về
+  </button>
+</div>
+
+<hr class="my-3" />
+<h2>Mở/Khoá tài khoản</h2>
+<div class="d-flex gap-2 justify-content-start align-items-center">
+  <button
+    [disabled]="!isLooked"
+    nz-button
+    nzType="primary"
+    type="button"
+    (click)="changeRole()"
+  >
+    Mở
+  </button>
+  <button
+    [disabled]="isLooked"
+    nz-button
+    nzType="primary"
+    type="button"
+    (click)="backUserListPage()"
+  >
+    Khoá
+  </button>
+</div>
+
+<hr class="my-3" />
+<h2>Đặt lại mật khẩu</h2>

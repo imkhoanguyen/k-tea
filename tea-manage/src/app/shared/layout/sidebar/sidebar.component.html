@@ -34,6 +34,15 @@
       <span>Quản lý quyền</span>
     </a>
   </li>
+
+  <li nz-menu-item [class.active]="currentPage === 5" (click)="changePage(5)">
+    <a routerLink="nguoi-dung">
+      <span class="menu-icon">
+        <i class="bi bi-person-fill"></i>
+      </span>
+      <span>Quản lý người dùng</span>
+    </a>
+  </li>
   <!--
   <li nz-menu-item [class.active]="currentPage === 5" (click)="changePage(5)">
     <a routerLink="playlist">
@@ -62,14 +71,7 @@
     </a>
   </li>
 
-  <li nz-menu-item [class.active]="currentPage === 8" (click)="changePage(8)">
-    <a routerLink="user">
-      <span class="menu-icon">
-        <i class="bi bi-person-fill"></i>
-      </span>
-      <span>Quản lý user</span>
-    </a>
-  </li>
+  
   <li nz-menu-item [class.active]="currentPage === 9" (click)="changePage(9)">
     <a routerLink="role">
       <span class="menu-icon">

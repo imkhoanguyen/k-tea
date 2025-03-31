@@ -6,6 +6,9 @@ import { ItemUpdateComponent } from './features/item/item-update/item-update.com
 import { LoginComponent } from './features/login/login.component';
 import { RoleListComponent } from './features/role/role-list/role-list.component';
 import { RolePermissionComponent } from './features/role/role-permission/role-permission.component';
+import { UserListComponent } from './features/user/user-list/user-list.component';
+import { UserAddComponent } from './features/user/user-add/user-add.component';
+import { UserUpdateComponent } from './features/user/user-update/user-update.component';
 
 export const routes: Routes = [
   { path: 'danh-muc', component: CategoryListComponent },
@@ -18,4 +21,7 @@ export const routes: Routes = [
     path: 'cap-nhat-chuc-nang-cua-quyen/:id',
     component: RolePermissionComponent,
   },
+  { path: 'nguoi-dung', component: UserListComponent },
+  { path: 'them-nguoi-dung', component: UserAddComponent },
+  { path: 'cap-nhat-nguoi-dung/:username', component: UserUpdateComponent },
 ];

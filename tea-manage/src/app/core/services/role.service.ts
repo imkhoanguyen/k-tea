@@ -70,4 +70,8 @@ export class RoleService {
       listClaimValue
     );
   }
+
+  getAllRoles() {
+    return this.http.get<Role[]>(this.apiUrl + `roles/all`);
+  }
 }

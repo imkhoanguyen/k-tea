@@ -1,0 +1,110 @@
+<h1>Tạo người dùng</h1>
+<form nz-form [formGroup]="frm" (ngSubmit)="submitForm()" autocomplete="off">
+  <nz-form-item>
+    <nz-form-label [nzSpan]="3" nzRequired>Username</nz-form-label>
+    <nz-form-control [nzSpan]="22" [nzErrorTip]="userNameErrorTpl">
+      <input
+        nz-input
+        formControlName="userName"
+        placeholder="Dùng để đăng nhập"
+      />
+      <ng-template #userNameErrorTpl let-control>
+        @if (control.errors?.['required']) { Vui lòng nhập username! }
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="3" nzRequired>Email</nz-form-label>
+    <nz-form-control [nzSpan]="22" [nzErrorTip]="emailErrorTpl">
+      <input nz-input formControlName="email" placeholder="ex: abc@gmail.com" />
+      <ng-template #emailErrorTpl let-control>
+        @if (control.errors?.['required']) { Vui lòng nhập email! }
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="3" nzRequired>Họ và tên</nz-form-label>
+    <nz-form-control [nzSpan]="22" [nzErrorTip]="fullNameErrorTpl">
+      <input
+        nz-input
+        formControlName="fullName"
+        placeholder="ex: Nguyễn Văn A, Nguyen Van B, ..."
+      />
+      <ng-template #fullNameErrorTpl let-control>
+        @if (control.errors?.['required']) { Vui lòng nhập họ và tên! }
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="3" nzRequired>Mật khẩu</nz-form-label>
+    <nz-form-control [nzSpan]="22" [nzErrorTip]="passwordErrorTpl">
+      <input nz-input formControlName="password" placeholder="Nhập mật khẩu" />
+      <ng-template #passwordErrorTpl let-control>
+        @if (control.errors?.['required']) { Vui lòng nhập mật khẩu! }
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="3" nzRequired>Số điện thoại</nz-form-label>
+    <nz-form-control [nzSpan]="22" [nzErrorTip]="phoneNumberErrorTpl">
+      <input
+        nz-input
+        formControlName="phoneNumber"
+        placeholder="Số điện thoại Việt Nam"
+      />
+      <ng-template #phoneNumberErrorTpl let-control>
+        @if (control.errors?.['required']) { Vui lòng nhập số điện thoại! }
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="3" nzRequired>Quyền</nz-form-label>
+    <nz-form-control [nzErrorTip]="rolesErrorTpl">
+      <nz-select nzPlaceHolder="Chọn quyền" formControlName="role">
+        @for (item of roles; track item) {
+        <nz-option [nzLabel]="item.name" [nzValue]="item.name"></nz-option>
+        }
+      </nz-select>
+
+      <ng-template #rolesErrorTpl let-control>
+        @if (control.errors?.['required']) { Vui lòng chọn quyền! }
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="validationErrors && validationErrors.length > 0">
+    <nz-form-control [nzOffset]="3" [nzSpan]="12">
+      <div class="mx-auto text-danger">
+        <ul>
+          <li
+            *ngFor="let error of validationErrors; let i = index"
+            class="mb-2"
+          >
+            {{ error }}
+          </li>
+        </ul>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control [nzOffset]="3" [nzSpan]="12">
+      <div class="d-flex gap-2">
+        <button
+          type="submit"
+          nz-button
+          nzType="primary"
+          [disabled]="!frm.valid"
+        >
+          Lưu
+        </button>
+        <button nz-button type="button" (click)="handleCancel()">Trở về</button>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+</form>
