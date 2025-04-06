@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using StackExchange.Redis;
 using Tea.Api.Middlewares;
 using Tea.Application.Interfaces;
 using Tea.Application.Services.Implements;
@@ -127,6 +128,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// register and config redis
+builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("Redis");
+    if (connectionString == null)
+        throw new Exception("Can not gett redis connection string");
+    var configuration = ConfigurationOptions.Parse(connectionString, true);
+    return ConnectionMultiplexer.Connect(configuration);
+});
+
 
 // register DI
 builder.Services.Configure<CloudinaryConfig>(builder.Configuration.GetSection(CloudinaryConfig.ConfigName));
@@ -139,7 +150,11 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IDiscountService, DiscountService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
+
+builder.Services.AddSingleton<ICartService, CartService>();
 
 var app = builder.Build();
 
