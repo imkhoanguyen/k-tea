@@ -90,7 +90,7 @@ namespace Tea.Api.Controllers
 
             var user = await query.FirstOrDefaultAsync(x => x.UserName == userName);
 
-            if(user == null)
+            if (user == null)
             {
                 _logger.LogWarning($"user with username: {userName} doesn't exists");
                 throw new UserNotFoundException(userName);
@@ -139,7 +139,8 @@ namespace Tea.Api.Controllers
                 UserName = request.UserName,
                 FullName = request.FullName,
                 Email = request.Email,
-                PhoneNumber= request.PhoneNumber,
+                PhoneNumber = request.PhoneNumber,
+                Address = request.Address,
             };
 
             await _unit.BeginTransactionAsync();
@@ -177,7 +178,8 @@ namespace Tea.Api.Controllers
                 };
 
                 return CreatedAtAction(nameof(Get), new { userName = user.UserName }, res);
-            } catch
+            }
+            catch
             {
                 await _unit.RollbackTransactionAsync();
                 throw;
@@ -315,7 +317,8 @@ namespace Tea.Api.Controllers
 
                 await _unit.CommitTransactionAsync();
 
-            } catch
+            }
+            catch
             {
                 await _unit.RollbackTransactionAsync();
                 throw;

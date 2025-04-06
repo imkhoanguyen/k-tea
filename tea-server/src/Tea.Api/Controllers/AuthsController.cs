@@ -91,6 +91,7 @@ namespace Tea.Api.Controllers
                 UserName = request.UserName,
                 FullName = request.FullName,
                 Email = request.Email,
+                Address = request.Address,
             };
 
             await _unit.BeginTransactionAsync();

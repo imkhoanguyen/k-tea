@@ -16,6 +16,10 @@ namespace Tea.Infrastructure.Repositories
 
         public IItemCategoryRepository ItemCategory { get; private set; } = new ItemCategoryRepository(context);
 
+        public IDiscountRepository Discount { get; private set; } = new DiscountRepository(context);
+
+        public IOrderRepository Order { get; private set; } = new OrderRepository(context);
+
         public async Task BeginTransactionAsync()
         {
             _dbContextTransaction = await context.Database.BeginTransactionAsync();

@@ -1,6 +1,4 @@
-﻿using Tea.Domain.Exceptions.Bases;
-
-namespace Tea.Domain.Exceptions.NotFounds
+﻿namespace Tea.Domain.Exceptions.NotFounds
 {
     public class UserNotFoundException : NotFoundException
     {

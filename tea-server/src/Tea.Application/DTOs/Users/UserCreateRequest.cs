@@ -19,5 +19,6 @@ namespace Tea.Application.DTOs.Users
         public required string Role { get; set; }
         [Required(ErrorMessage = "SĐT không được trống")]
         public required string PhoneNumber { get; set; }
+        public required string Address { get; set; }
     }
 }

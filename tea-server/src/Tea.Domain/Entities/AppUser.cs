@@ -6,5 +6,7 @@ namespace Tea.Domain.Entities
     {
         public required string FullName { get; set; }
         public DateTimeOffset Created { get; set; } = DateTimeOffset.Now;
+        public required string Address { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
