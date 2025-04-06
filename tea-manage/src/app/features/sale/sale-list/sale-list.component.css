@@ -1,0 +1,82 @@
+/* CSS tương ứng */
+.sell-container {
+  display: flex;
+  gap: 1rem; /* Tương đương gap-4 */
+  padding: 1rem;
+  flex-wrap: wrap;
+}
+
+::ng-deep .inner-content {
+  background-color: #f0f2f5 !important;
+  padding: 0 !important;
+}
+
+nz-select {
+  margin: 0 8px 10px 0;
+  width: 120px;
+}
+
+.left-section {
+  flex: 1;
+  min-width: 0; /* Ngăn chặn overflow */
+  padding: 1rem;
+}
+
+.right-section {
+  flex: 0 0 30%;
+  padding: 1rem;
+}
+
+.left-section,
+.right-section {
+  background-color: #fff;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.item-name {
+  margin-top: 0.75rem;
+  font-size: 18px;
+  text-align: center;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-weight: 500;
+  text-transform: uppercase;
+  /* Ngăn xuống hàng + hiển thị "..." khi overflow */
+  white-space: nowrap; /* Không xuống hàng */
+  overflow: hidden; /* Ẩn nội dung tràn */
+  text-overflow: ellipsis; /* Hiển thị "..." */
+  display: block; /* Hoặc inline-block */
+  max-width: 100%; /* Giới hạn chiều rộng */
+}
+
+.item-price {
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .right-section {
+    flex: 1;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}

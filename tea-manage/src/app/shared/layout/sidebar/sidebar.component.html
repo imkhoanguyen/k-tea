@@ -3,6 +3,15 @@
 </a>
 <ul nz-menu nzTheme="dark" nzMode="inline">
   <li nz-menu-item [class.active]="currentPage === 1" (click)="changePage(1)">
+    <a routerLink="ban-hang">
+      <span class="menu-icon">
+        <i class="bi bi-music-note-list"></i>
+      </span>
+      <span>Bán hàng</span>
+    </a>
+  </li>
+
+  <li nz-menu-item [class.active]="currentPage === 2" (click)="changePage(2)">
     <a routerLink="/admin">
       <span class="menu-icon">
         <i class="bi bi-bar-chart-line-fill"></i>
@@ -10,7 +19,7 @@
       <span>Thống kê</span>
     </a>
   </li>
-  <li nz-menu-item [class.active]="currentPage === 2" (click)="changePage(2)">
+  <li nz-menu-item [class.active]="currentPage === 3" (click)="changePage(3)">
     <a routerLink="danh-muc">
       <span class="menu-icon">
         <i class="bi bi-music-note"></i>
@@ -18,7 +27,7 @@
       <span>Quản lý danh mục</span>
     </a>
   </li>
-  <li nz-menu-item [class.active]="currentPage === 3" (click)="changePage(3)">
+  <li nz-menu-item [class.active]="currentPage === 4" (click)="changePage(4)">
     <a routerLink="san-pham">
       <span class="menu-icon">
         <i class="bi bi-tag-fill"></i>
@@ -26,7 +35,7 @@
       <span>Quản lý sản phẩm</span>
     </a>
   </li>
-  <li nz-menu-item [class.active]="currentPage === 4" (click)="changePage(4)">
+  <li nz-menu-item [class.active]="currentPage === 5" (click)="changePage(5)">
     <a routerLink="quyen">
       <span class="menu-icon">
         <i class="bi bi-key-fill"></i>
@@ -35,7 +44,7 @@
     </a>
   </li>
 
-  <li nz-menu-item [class.active]="currentPage === 5" (click)="changePage(5)">
+  <li nz-menu-item [class.active]="currentPage === 6" (click)="changePage(6)">
     <a routerLink="nguoi-dung">
       <span class="menu-icon">
         <i class="bi bi-person-fill"></i>
@@ -44,14 +53,7 @@
     </a>
   </li>
   <!--
-  <li nz-menu-item [class.active]="currentPage === 5" (click)="changePage(5)">
-    <a routerLink="playlist">
-      <span class="menu-icon">
-        <i class="bi bi-music-note-list"></i>
-      </span>
-      <span>Quản lý danh sách phát</span>
-    </a>
-  </li>
+  
 
   <li nz-menu-item [class.active]="currentPage === 6" (click)="changePage(6)">
     <a routerLink="vip-package">

@@ -16,4 +16,29 @@ export class UtilitiesService {
       .replace(/\s+/g, '-') // Thay thế khoảng trắng bằng dấu gạch ngang
       .replace(/-+/g, '-'); // Loại bỏ nhiều dấu gạch ngang liên tiếp
   }
+
+  /**
+   * Định dạng số tiền theo chuẩn VNĐ
+   * @param amount Số tiền cần định dạng
+   * @returns Chuỗi đã được định dạng (ví dụ: 69,000 VNĐ)
+   */
+  formatVND(amount: number | string): string {
+    // Chuyển đổi thành number nếu đầu vào là string
+    const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+
+    // Kiểm tra nếu không phải là số hợp lệ
+    if (isNaN(num)) {
+      return '0 VNĐ';
+    }
+
+    // Làm tròn số nếu là float
+    const roundedNum = Math.round(num);
+
+    // Định dạng số với dấu phân cách hàng nghìn
+    const formatted = roundedNum
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    return `${formatted} VNĐ`;
+  }
 }
