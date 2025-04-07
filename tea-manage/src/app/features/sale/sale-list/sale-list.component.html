@@ -1,7 +1,25 @@
 <div class="sell-container">
   <!-- left - chiếm 70% -->
   <div class="left-section">
-    <h1>Danh sách sản phẩm</h1>
+    <div class="d-flex align-items-center justify-content-between">
+      <h1>Quản lý sản phẩm</h1>
+      <div>
+        <form (ngSubmit)="onSearch()" autocomplete="off">
+          <nz-input-group [nzSuffix]="suffixIconSearch">
+            <input
+              type="text"
+              nz-input
+              placeholder="Nhập tên sản phẩm"
+              [(ngModel)]="prm.search"
+              name="search"
+            />
+          </nz-input-group>
+          <ng-template #suffixIconSearch>
+            <span nz-icon nzType="search"></span>
+          </ng-template>
+        </form>
+      </div>
+    </div>
     <div class="product-grid">
       @if (items) { @for (item of items.data; track item.id) {
       <nz-card style="cursor: pointer" (click)="showModal(item.id)">
@@ -19,6 +37,26 @@
         </div>
       </nz-card>
       } }
+    </div>
+    <div
+      *ngIf="items != null"
+      class="d-flex align-items-center justify-content-center mt-3"
+    >
+      <nz-pagination
+        [nzPageIndex]="items.pageIndex"
+        [nzTotal]="items.count"
+        [nzSize]="'default'"
+        [nzPageSize]="items.pageSize"
+        (nzPageIndexChange)="onPageIndexChange($event)"
+        (nzPageSizeChange)="onPageSizeChange($event)"
+        [nzShowTotal]="totalTemplate"
+        [nzShowSizeChanger]="true"
+        [nzShowQuickJumper]="true"
+        [nzPageSizeOptions]="[3, 5, 10, 20, 50]"
+      ></nz-pagination>
+      <ng-template #totalTemplate let-total
+        >Tổng {{ total }} danh mục</ng-template
+      >
     </div>
   </div>
 

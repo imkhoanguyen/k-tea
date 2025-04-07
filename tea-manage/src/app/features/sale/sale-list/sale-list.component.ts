@@ -23,6 +23,7 @@ import { paymentTypeList } from '../../../constants/payment';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { OrderService } from '../../../core/services/order.service';
 import { OrderAddInStore, OrderItemAdd } from '../../../shared/models/order';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
 @Component({
   selector: 'app-sale-list',
@@ -39,6 +40,7 @@ import { OrderAddInStore, OrderItemAdd } from '../../../shared/models/order';
     ReactiveFormsModule,
     NzInputModule,
     NzSelectModule,
+    NzPaginationModule,
   ],
   templateUrl: './sale-list.component.html',
   styleUrl: './sale-list.component.css',
@@ -210,5 +212,20 @@ export class SaleListComponent implements OnInit {
     }
 
     return undefined;
+  }
+
+  // pagination
+  onPageIndexChange(newPageNumber: number) {
+    this.prm.pageIndex = newPageNumber;
+    this.getPagination();
+  }
+
+  onPageSizeChange(newPageSize: number) {
+    this.prm.pageSize = newPageSize;
+    this.getPagination();
+  }
+
+  onSearch() {
+    this.getPagination();
   }
 }

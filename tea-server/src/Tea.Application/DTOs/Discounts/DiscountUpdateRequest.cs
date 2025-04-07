@@ -3,7 +3,7 @@
 namespace Tea.Application.DTOs.Discounts
 {
     public class DiscountUpdateRequest
-    {
+    {   
         public int Id { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập tên mã giảm giá")]
         public required string Name { get; set; }
