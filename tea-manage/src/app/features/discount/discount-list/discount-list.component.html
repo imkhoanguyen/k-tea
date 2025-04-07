@@ -1,0 +1,128 @@
+<div class="d-flex align-items-center justify-content-between">
+  <h1>Quản lý mã giảm giá</h1>
+  <div class="d-flex gap-2">
+    <button nzType="primary" nzSize="large" nz-button (click)="showAddModal()">
+      Thêm
+    </button>
+    <button
+      nzSize="large"
+      nz-button
+      [ngClass]="{ 'btn-blue': setOfCheckedId.size === 1 }"
+      [disabled]="setOfCheckedId.size != 1"
+      (click)="showUpdateModal()"
+    >
+      Sửa
+    </button>
+
+    <button
+      nzSize="large"
+      nzType="primary"
+      nz-button
+      nzDanger
+      [disabled]="setOfCheckedId.size === 0"
+      (click)="showDeleteConfirm()"
+    >
+      Xoá {{ setOfCheckedId.size === 0 ? "" : setOfCheckedId.size }}
+    </button>
+  </div>
+</div>
+
+<nz-table
+  nzBordered
+  [nzData]="discounts?.data ?? []"
+  [nzFrontPagination]="false"
+>
+  <thead>
+    <tr>
+      <th
+        style="width: 5%"
+        [nzChecked]="checked"
+        [nzIndeterminate]="indeterminate"
+        nzLabel="Select all"
+        (nzCheckedChange)="onAllChecked($event)"
+      ></th>
+      <th
+        style="width: 5%"
+        [nzSortFn]="true"
+        (nzSortOrderChange)="onSortChange('id')"
+      >
+        ID
+      </th>
+      <th
+        style="width: 35%"
+        [nzSortFn]="true"
+        (nzSortOrderChange)="onSortChange('name')"
+      >
+        Tên mã giảm giá
+      </th>
+
+      <th style="width: 35%">Mã</th>
+      <th style="width: 20%">Giảm giá</th>
+    </tr>
+
+    <tr>
+      <th colspan="2"></th>
+      <th colspan="2">
+        <form (ngSubmit)="onSearch()" autocomplete="off">
+          <nz-input-group [nzSuffix]="suffixIconSearch">
+            <input
+              type="text"
+              nz-input
+              placeholder="Nhập tên mã giảm giá hoặc mã giảm giá"
+              [(ngModel)]="prm.search"
+              name="search"
+            />
+          </nz-input-group>
+          <ng-template #suffixIconSearch>
+            <span nz-icon nzType="search"></span>
+          </ng-template>
+        </form>
+      </th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (data of discounts?.data; track data.id) {
+    <tr>
+      <td
+        [nzChecked]="setOfCheckedId.has(data.id)"
+        [nzLabel]="data.name"
+        (nzCheckedChange)="onItemChecked(data.id, $event)"
+      ></td>
+      <td>{{ data.id }}</td>
+      <td>{{ data.name }}</td>
+      <td>{{ data.promotionCode }}</td>
+      <td *ngIf="data.amountOff">
+        {{ utilService.formatVND(data.amountOff) }}
+      </td>
+      <td *ngIf="data.percentOff">{{ data.percentOff }}%</td>
+    </tr>
+    }
+  </tbody>
+</nz-table>
+<div
+  *ngIf="discounts != null"
+  class="d-flex align-items-center justify-content-center mt-3"
+>
+  <nz-pagination
+    [nzPageIndex]="discounts.pageIndex"
+    [nzTotal]="discounts.count"
+    [nzSize]="'default'"
+    [nzPageSize]="discounts.pageSize"
+    (nzPageIndexChange)="onPageIndexChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzShowTotal]="totalTemplate"
+    [nzShowSizeChanger]="true"
+    [nzShowQuickJumper]="true"
+    [nzPageSizeOptions]="[3, 5, 10, 20, 50]"
+  ></nz-pagination>
+  <ng-template #totalTemplate let-total>Tổng {{ total }} danh mục</ng-template>
+</div>
+
+<!-- discount add modal -->
+<app-discount-add (discountAdded)="handleEventAdd($event)"></app-discount-add>
+
+<!-- discount update modal -->
+<app-discount-update
+  (discountUpdated)="handleEventUpdate($event)"
+></app-discount-update>

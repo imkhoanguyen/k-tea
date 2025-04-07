@@ -10,6 +10,7 @@ import { UserListComponent } from './features/user/user-list/user-list.component
 import { UserAddComponent } from './features/user/user-add/user-add.component';
 import { UserUpdateComponent } from './features/user/user-update/user-update.component';
 import { SaleListComponent } from './features/sale/sale-list/sale-list.component';
+import { DiscountListComponent } from './features/discount/discount-list/discount-list.component';
 
 export const routes: Routes = [
   { path: 'danh-muc', component: CategoryListComponent },
@@ -26,5 +27,5 @@ export const routes: Routes = [
   { path: 'them-nguoi-dung', component: UserAddComponent },
   { path: 'cap-nhat-nguoi-dung/:username', component: UserUpdateComponent },
   { path: 'ban-hang', component: SaleListComponent },
-
+  { path: 'ma-giam-gia', component: DiscountListComponent },
 ];

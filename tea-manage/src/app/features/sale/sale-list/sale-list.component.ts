@@ -153,7 +153,7 @@ export class SaleListComponent implements OnInit {
   }
 
   applyDiscount() {
-    this.discountService.get(this.promotionCode).subscribe({
+    this.discountService.checkDiscount(this.promotionCode).subscribe({
       next: (res) => {
         this.discount = res as Discount;
       },

@@ -69,3 +69,8 @@
   background-color: var(--danger) !important;
   color: white !important;
 }
+
+.inner-content.sale-styles {
+  background-color: #f0f2f5 !important;
+  padding: 0 !important;
+}

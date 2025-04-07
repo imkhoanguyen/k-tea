@@ -6,11 +6,6 @@
   flex-wrap: wrap;
 }
 
-::ng-deep .inner-content {
-  background-color: #f0f2f5 !important;
-  padding: 0 !important;
-}
-
 nz-select {
   margin: 0 8px 10px 0;
   width: 120px;

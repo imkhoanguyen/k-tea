@@ -36,6 +36,14 @@
     </a>
   </li>
   <li nz-menu-item [class.active]="currentPage === 5" (click)="changePage(5)">
+    <a routerLink="ma-giam-gia">
+      <span class="menu-icon">
+        <i class="bi bi-rocket-takeoff-fill"></i>
+      </span>
+      <span>Quản lý mã giám giá</span>
+    </a>
+  </li>
+  <li nz-menu-item [class.active]="currentPage === 6" (click)="changePage(6)">
     <a routerLink="quyen">
       <span class="menu-icon">
         <i class="bi bi-key-fill"></i>
@@ -44,7 +52,7 @@
     </a>
   </li>
 
-  <li nz-menu-item [class.active]="currentPage === 6" (click)="changePage(6)">
+  <li nz-menu-item [class.active]="currentPage === 7" (click)="changePage(7)">
     <a routerLink="nguoi-dung">
       <span class="menu-icon">
         <i class="bi bi-person-fill"></i>
@@ -55,14 +63,7 @@
   <!--
   
 
-  <li nz-menu-item [class.active]="currentPage === 6" (click)="changePage(6)">
-    <a routerLink="vip-package">
-      <span class="menu-icon">
-        <i class="bi bi-rocket-takeoff-fill"></i>
-      </span>
-      <span>Quản lý gói đăng ký</span>
-    </a>
-  </li>
+  
 
   <li nz-menu-item [class.active]="currentPage === 7" (click)="changePage(7)">
     <a routerLink="transaction">

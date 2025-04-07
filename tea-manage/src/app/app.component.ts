@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { SidebarComponent } from './shared/layout/sidebar/sidebar.component';
 import { HeaderComponent } from './shared/layout/header/header.component';
 import { UserService } from './core/services/user.service';
-import { LoginComponent } from "./features/login/login.component";
+import { LoginComponent } from './features/login/login.component';
 
 @Component({
   selector: 'app-root',
@@ -16,17 +16,25 @@ import { LoginComponent } from "./features/login/login.component";
     NzLayoutModule,
     SidebarComponent,
     HeaderComponent,
-    LoginComponent
-],
+    LoginComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
   title = 'tea-manage';
   userService = inject(UserService);
-
+  isSaleComponentActive = false;
   ngOnInit(): void {
     this.setCurrentUser();
+  }
+
+  constructor(private router: Router) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.isSaleComponentActive = event.url.includes('/ban-hang'); // Kiểm tra route
+      }
+    });
   }
 
   setCurrentUser() {

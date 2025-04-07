@@ -1,0 +1,94 @@
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzTitle="Thêm mã giảm giá"
+  (nzOnCancel)="handleCancel()"
+  [nzFooter]="null"
+>
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="frm" (ngSubmit)="submitForm()">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzRequired>Tên mã giảm giá</nz-form-label>
+        <nz-form-control [nzSpan]="22" [nzErrorTip]="nameErrorTpl">
+          <input
+            nz-input
+            formControlName="name"
+            placeholder="Nhập tên mã giảm giá"
+          />
+          <ng-template #nameErrorTpl let-control>
+            @if (control.errors?.['required']) { Vui lòng nhập tên mã giảm giá!
+            }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzRequired>Mã giảm giá</nz-form-label>
+        <nz-form-control [nzSpan]="22" [nzErrorTip]="promotionCodeErrorTpl">
+          <input
+            nz-input
+            formControlName="promotionCode"
+            placeholder="Nhập code của mã giảm giá"
+          />
+          <ng-template #promotionCodeErrorTpl let-control>
+            @if (control.errors?.['required']) { Vui lòng code của mã giảm giá!
+            }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-select formControlName="discountType">
+          <nz-option
+            nzValue="amoutOff"
+            nzLabel="Giảm theo tiền (VNĐ)"
+          ></nz-option>
+          <nz-option
+            nzValue="percentOff"
+            nzLabel="Giảm theo phần trăm"
+          ></nz-option>
+        </nz-select>
+
+        <nz-form-control [nzSpan]="22" [nzErrorTip]="discountCodeErrorTpl">
+          <input nz-input formControlName="discount" type="number" />
+          <ng-template #discountCodeErrorTpl let-control>
+            @if (control.errors?.['required']) { Vui lòng nhập giá trị giảm giá!
+            }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item *ngIf="validationErrors && validationErrors.length > 0">
+        <nz-form-control [nzOffset]="3" [nzSpan]="12">
+          <div class="mx-auto text-danger">
+            <ul>
+              <li
+                *ngFor="let error of validationErrors; let i = index"
+                class="mb-2"
+              >
+                {{ error }}
+              </li>
+            </ul>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control [nzOffset]="18">
+          <div class="d-flex gap-2">
+            <button
+              type="submit"
+              nz-button
+              nzType="primary"
+              [disabled]="!frm.valid"
+            >
+              Lưu
+            </button>
+            <button nz-button type="button" (click)="handleCancel()">
+              Đóng
+            </button>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>

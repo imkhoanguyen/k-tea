@@ -14,7 +14,7 @@
       <app-header></app-header>
     </nz-header>
     <nz-content>
-      <div class="inner-content">
+      <div class="inner-content" [class.sale-styles]="isSaleComponentActive">
         <router-outlet></router-outlet>
       </div>
     </nz-content>
