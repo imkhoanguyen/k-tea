@@ -236,6 +236,16 @@
                   {{ utilService.formatVND(size.newPrice) }}</span
                 >
               </label>
+
+              <label
+                *ngIf="!size.newPrice"
+                nz-radio
+                [nzValue]="size"
+                class="mb-2"
+              >
+                {{ size.name }} -
+                {{ utilService.formatVND(size.price) }}
+              </label>
             </div>
             }
           </nz-radio-group>

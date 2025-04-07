@@ -94,6 +94,7 @@ export class SaleListComponent implements OnInit {
   showModal(id: number): void {
     this.itemService.get(id).subscribe({
       next: (res) => {
+        console.log(res);
         this.item = res as Item;
         this.isVisible = true;
       },
@@ -122,7 +123,7 @@ export class SaleListComponent implements OnInit {
       itemImg: this.item.imgUrl,
       itemId: this.item.id,
       quantity: this.quantity,
-      price: this.size.newPrice ?? this.size.price,
+      price: this.size.newPrice || this.size.price,
     };
     this.cartService
       .addItemToCart(cartItem, cartItem.quantity)
