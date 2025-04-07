@@ -115,13 +115,14 @@ export class SaleListComponent implements OnInit {
       this.toastrService.info('Vui lòng chọn lại sản phẩm');
       return;
     }
+
     var cartItem: CartItem = {
       itemName: this.item.name,
       size: this.size.name,
       itemImg: this.item.imgUrl,
       itemId: this.item.id,
       quantity: this.quantity,
-      price: this.size.price,
+      price: this.size.newPrice ?? this.size.price,
     };
     this.cartService
       .addItemToCart(cartItem, cartItem.quantity)

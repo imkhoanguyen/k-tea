@@ -220,8 +220,21 @@
           >
             @for (size of item.sizes; track size.id) {
             <div class="d-flex flex-column">
-              <label nz-radio [nzValue]="size" class="mb-2">
-                {{ size.name }} - {{ utilService.formatVND(size.price) }}
+              <label
+                *ngIf="size.newPrice"
+                nz-radio
+                [nzValue]="size"
+                class="mb-2"
+              >
+                {{ size.name }} -
+                <span class="line-through">{{
+                  utilService.formatVND(size.price)
+                }}</span>
+
+                -
+                <span class="fw-medium" style="color: var(--danger)">
+                  {{ utilService.formatVND(size.newPrice) }}</span
+                >
               </label>
             </div>
             }

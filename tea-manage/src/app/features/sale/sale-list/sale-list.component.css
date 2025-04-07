@@ -11,6 +11,10 @@ nz-select {
   width: 120px;
 }
 
+.line-through {
+  text-decoration: line-through;
+}
+
 .left-section {
   flex: 1;
   min-width: 0; /* Ngăn chặn overflow */
