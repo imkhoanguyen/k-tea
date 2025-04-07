@@ -1,21 +1,5 @@
 <div class="d-flex align-items-center justify-content-between">
-  <h1>Quản lý sản phẩm</h1>
-  <div>
-    <form (ngSubmit)="onSearch()" autocomplete="off">
-      <nz-input-group [nzSuffix]="suffixIconSearch">
-        <input
-          type="text"
-          nz-input
-          placeholder="Nhập danh mục hoặc ID"
-          [(ngModel)]="prm.search"
-          name="search"
-        />
-      </nz-input-group>
-      <ng-template #suffixIconSearch>
-        <span nz-icon nzType="search"></span>
-      </ng-template>
-    </form>
-  </div>
+  <h1>Quản lý thực đơn</h1>
   <div class="d-flex gap-2">
     <button
       nzType="primary"
@@ -66,7 +50,25 @@
         [nzSortFn]="true"
         (nzSortOrderChange)="onSortChange('name')"
       >
-        Tên sản phẩm
+        <div class="d-flex align-items-center">
+          <div>Tên sản phẩm</div>
+          <div class="ms-auto">
+            <form (ngSubmit)="onSearch()" autocomplete="off">
+              <nz-input-group [nzSuffix]="suffixIconSearch">
+                <input
+                  type="text"
+                  nz-input
+                  placeholder="Nhập tên sản phẩm"
+                  [(ngModel)]="prm.search"
+                  name="search"
+                />
+              </nz-input-group>
+              <ng-template #suffixIconSearch>
+                <span nz-icon nzType="search"></span>
+              </ng-template>
+            </form>
+          </div>
+        </div>
       </th>
       <th class="text-center" style="width: 7%">Nổi bật</th>
       <th class="text-center" style="width: 7%">Hoạt động</th>

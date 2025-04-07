@@ -3,15 +3,6 @@
 </a>
 <ul nz-menu nzTheme="dark" nzMode="inline">
   <li nz-menu-item [class.active]="currentPage === 1" (click)="changePage(1)">
-    <a routerLink="ban-hang">
-      <span class="menu-icon">
-        <i class="bi bi-music-note-list"></i>
-      </span>
-      <span>Bán hàng</span>
-    </a>
-  </li>
-
-  <li nz-menu-item [class.active]="currentPage === 2" (click)="changePage(2)">
     <a routerLink="/admin">
       <span class="menu-icon">
         <i class="bi bi-bar-chart-line-fill"></i>
@@ -19,10 +10,20 @@
       <span>Thống kê</span>
     </a>
   </li>
+
+  <li nz-menu-item [class.active]="currentPage === 2" (click)="changePage(2)">
+    <a routerLink="ban-hang">
+      <span class="menu-icon">
+        <i class="bi bi-cup-hot-fill"></i>
+      </span>
+      <span>Bán hàng</span>
+    </a>
+  </li>
+
   <li nz-menu-item [class.active]="currentPage === 3" (click)="changePage(3)">
     <a routerLink="danh-muc">
       <span class="menu-icon">
-        <i class="bi bi-music-note"></i>
+        <i class="bi bi-tag-fill"></i>
       </span>
       <span>Quản lý danh mục</span>
     </a>
@@ -30,9 +31,9 @@
   <li nz-menu-item [class.active]="currentPage === 4" (click)="changePage(4)">
     <a routerLink="san-pham">
       <span class="menu-icon">
-        <i class="bi bi-tag-fill"></i>
+        <i class="bi bi-cup-fill"></i>
       </span>
-      <span>Quản lý sản phẩm</span>
+      <span>Quản lý thực đơn</span>
     </a>
   </li>
   <li nz-menu-item [class.active]="currentPage === 5" (click)="changePage(5)">

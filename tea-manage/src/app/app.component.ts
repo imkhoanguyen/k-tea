@@ -6,6 +6,7 @@ import { SidebarComponent } from './shared/layout/sidebar/sidebar.component';
 import { HeaderComponent } from './shared/layout/header/header.component';
 import { UserService } from './core/services/user.service';
 import { LoginComponent } from './features/login/login.component';
+import { NgxSpinnerComponent } from 'ngx-spinner';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ import { LoginComponent } from './features/login/login.component';
     SidebarComponent,
     HeaderComponent,
     LoginComponent,
+    NgxSpinnerComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

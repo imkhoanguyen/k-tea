@@ -1,21 +1,6 @@
 <div class="d-flex align-items-center justify-content-between">
   <h1>Quản lý danh mục</h1>
-  <div>
-    <form (ngSubmit)="onSearch()" autocomplete="off">
-      <nz-input-group [nzSuffix]="suffixIconSearch">
-        <input
-          type="text"
-          nz-input
-          placeholder="Nhập danh mục hoặc ID"
-          [(ngModel)]="prm.search"
-          name="search"
-        />
-      </nz-input-group>
-      <ng-template #suffixIconSearch>
-        <span nz-icon nzType="search"></span>
-      </ng-template>
-    </form>
-  </div>
+
   <div class="d-flex gap-2">
     <button nzType="primary" nzSize="large" nz-button (click)="showAddModal()">
       Thêm
@@ -23,7 +8,7 @@
     <button
       nzSize="large"
       nz-button
-      [ngClass]="{ 'btn-yellow': setOfCheckedId.size === 1 }"
+      [ngClass]="{ 'btn-blue': setOfCheckedId.size === 1 }"
       [disabled]="setOfCheckedId.size != 1"
       (click)="showUpdateModal()"
     >
@@ -74,6 +59,26 @@
       <th style="width: 20%">Slug</th>
       <th style="width: 20%">Mô tả</th>
     </tr>
+    <tr>
+      <th></th>
+      <th colspan="2">
+        <form (ngSubmit)="onSearch()" autocomplete="off">
+          <nz-input-group [nzSuffix]="suffixIconSearch">
+            <input
+              type="text"
+              nz-input
+              placeholder="Nhập tên mã hoặc tên danh mục"
+              [(ngModel)]="prm.search"
+              name="search"
+            />
+          </nz-input-group>
+          <ng-template #suffixIconSearch>
+            <span nz-icon nzType="search"></span>
+          </ng-template>
+        </form>
+      </th>
+      <th colSpan="2"></th>
+    </tr>
   </thead>
   <tbody>
     @for (data of categories?.data; track data.id) {
@@ -83,7 +88,7 @@
         [nzLabel]="data.name"
         (nzCheckedChange)="onItemChecked(data.id, $event)"
       ></td>
-      <td>#{{ data.id }}</td>
+      <td class="text-center">{{ data.id }}</td>
       <td>{{ data.name }}</td>
       <td>{{ data.slug }}</td>
       <td class="fixed-height-box">{{ data.description }}</td>

@@ -17,6 +17,8 @@ import { DownOutline, EyeOutline } from '@ant-design/icons-angular/icons';
 import { provideToastr } from 'ngx-toastr';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { QuillModule } from 'ngx-quill';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 
 registerLocaleData(vi);
 const icons = [EyeOutline, DownOutline];
@@ -26,9 +28,15 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideNzI18n(vi_VN),
-    importProvidersFrom(FormsModule, QuillModule.forRoot()),
+    importProvidersFrom(
+      FormsModule,
+      QuillModule.forRoot(),
+      NgxSpinnerModule.forRoot({
+        type: 'ball-scale-multiple',
+      })
+    ),
     provideAnimationsAsync(),
-    provideHttpClient(withInterceptors([errorInterceptor])),
+    provideHttpClient(withInterceptors([errorInterceptor, loadingInterceptor])),
     provideNzIcons(icons),
     provideToastr(),
   ],
