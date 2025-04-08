@@ -229,7 +229,7 @@ namespace Tea.Application.Services.Implements
             return ItemMapper.EntityToResponse(entity);
         }
 
-        public async Task<PaginationResponse<ItemResponse>> GetPaginationAsync(PaginationRequest request)
+        public async Task<PaginationResponse<ItemResponse>> GetPaginationAsync(ItemPaginationRequest request)
         {
             logger.LogInformation($"Retrieving items with Pagination. PageIndex: {request.PageIndex}, Page Size: {request.PageSize}");
             var pagination = await unit.Item.GetPaginationAsync(request, expression: null);
@@ -239,7 +239,7 @@ namespace Tea.Application.Services.Implements
             return new PaginationResponse<ItemResponse>(pagination.PageIndex, pagination.PageSize, pagination.Count, responseList);
         }
 
-        public async Task<PaginationResponse<ItemResponse>> GetPublicPaginationAsync(PaginationRequest request)
+        public async Task<PaginationResponse<ItemResponse>> GetPublicPaginationAsync(ItemPaginationRequest request)
         {
             logger.LogInformation($"Retrieving public items with Pagination. PageIndex: {request.PageIndex}, Page Size: {request.PageSize}");
             var pagination = await unit.Item.GetPaginationAsync(request, x => x.IsPublished);

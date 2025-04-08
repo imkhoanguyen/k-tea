@@ -7,7 +7,7 @@ namespace Tea.Infrastructure.DataAccess.Seeds
     {
         public static async Task SeedAsync(TeaContext context)
         {
-            if (await context.Categories.AnyAsync()) return;
+            if (await context.ItemCategories.AnyAsync()) return;
 
             var s = new List<ItemCategory>
             {
@@ -21,11 +21,6 @@ namespace Tea.Infrastructure.DataAccess.Seeds
 
                 new ItemCategory(3, 1),
                 new ItemCategory(3, 5),
-                new ItemCategory(2, 2),
-
-
-                new ItemCategory(3, 1),
-                new ItemCategory(3, 4),
                 new ItemCategory(3, 2),
 
 

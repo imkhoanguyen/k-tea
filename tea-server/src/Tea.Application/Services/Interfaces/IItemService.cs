@@ -7,8 +7,8 @@ namespace Tea.Application.Services.Interfaces
 {
     public interface IItemService
     {
-        Task<PaginationResponse<ItemResponse>> GetPaginationAsync(PaginationRequest request);
-        Task<PaginationResponse<ItemResponse>> GetPublicPaginationAsync(PaginationRequest request);
+        Task<PaginationResponse<ItemResponse>> GetPaginationAsync(ItemPaginationRequest request);
+        Task<PaginationResponse<ItemResponse>> GetPublicPaginationAsync(ItemPaginationRequest request);
         Task<ItemResponse> GetByIdAsync(int id);
         Task<ItemResponse> CreateAsync(ItemCreateRequest request);
         // update item info and cateogry of item

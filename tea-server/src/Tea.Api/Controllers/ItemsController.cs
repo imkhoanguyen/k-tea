@@ -10,7 +10,7 @@ namespace Tea.Api.Controllers
     {
         [HttpGet]
         [ProducesResponseType(typeof(PaginationResponse<ItemResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPagination([FromQuery] PaginationRequest request)
+        public async Task<IActionResult> GetPagination([FromQuery] ItemPaginationRequest request)
         {
             var pagination = await itemService.GetPaginationAsync(request);
             return Ok(pagination);

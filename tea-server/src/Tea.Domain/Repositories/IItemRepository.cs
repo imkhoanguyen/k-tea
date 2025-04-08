@@ -6,6 +6,6 @@ namespace Tea.Domain.Repositories
 {
     public interface IItemRepository : IRepository<Item>
     {
-        Task<PaginationResponse<Item>> GetPaginationAsync(PaginationRequest request, Expression<Func<Item, bool>>? expression);
+        Task<PaginationResponse<Item>> GetPaginationAsync(ItemPaginationRequest request, Expression<Func<Item, bool>>? expression);
     }
 }

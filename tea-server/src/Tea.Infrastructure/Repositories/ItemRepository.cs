@@ -26,7 +26,7 @@ namespace Tea.Infrastructure.Repositories
                     .AsNoTracking().FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<PaginationResponse<Item>> GetPaginationAsync(PaginationRequest request, Expression<Func<Item, bool>>? expression)
+        public async Task<PaginationResponse<Item>> GetPaginationAsync(ItemPaginationRequest request, Expression<Func<Item, bool>>? expression)
         {
             var query = context.Items.Include(x => x.Sizes)
                     .Include(x => x.ItemCategories).ThenInclude(x => x.Category)
@@ -43,6 +43,13 @@ namespace Tea.Infrastructure.Repositories
             {
                 query = query.Where(x => x.Name.ToLower().Contains(request.Search)
                 || x.Id.ToString().Contains(request.Search));
+            }
+
+            if (request.CategoryId != 0)
+            {
+                query = query.Where(x =>
+                    x.ItemCategories.Any(x => x.CategoryId == request.CategoryId)
+                );
             }
 
             if (!string.IsNullOrEmpty(request.OrderBy))
