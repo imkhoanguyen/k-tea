@@ -12,7 +12,7 @@ using Tea.Infrastructure.DataAccess;
 namespace Tea.Infrastructure.Migrations
 {
     [DbContext(typeof(TeaContext))]
-    [Migration("20250405084040_initDb")]
+    [Migration("20250408081934_initDb")]
     partial class initDb
     {
         /// <inheritdoc />

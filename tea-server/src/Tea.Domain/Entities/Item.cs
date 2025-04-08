@@ -9,7 +9,7 @@
         public required string ImgUrl { get; set; }
         public string? PublicId { get; set; }
         public bool IsDeleted { get; set; }
-        public bool IsPublished { get; set; }
+        public bool IsPublished { get; set; } = true;
         public bool IsFeatured { get; set; }
         public List<ItemCategory> ItemCategories { get; set; } = [];
         public List<Size> Sizes { get; set; } = [];

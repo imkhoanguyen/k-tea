@@ -188,6 +188,9 @@ try
     await context.Database.MigrateAsync();
     await RoleSeed.SeedAsync(roleManager);
     await RoleClaimSeed.SeedAsync(context, roleManager);
+    await CategorySeed.SeedAsync(context);
+    await ItemSeed.SeedAsync(context);
+    await ItemCategorySeed.SeedAsync(context);
 }
 catch (Exception ex)
 {
