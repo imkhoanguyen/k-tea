@@ -16,6 +16,7 @@
       <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('email')">
         Email
       </th>
+      <th>Địa chỉ</th>
       <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('created')">
         Ngày tạo
       </th>
@@ -44,7 +45,7 @@
           </ng-template>
         </form>
       </th>
-      <th colspan="5"></th>
+      <th colspan="6"></th>
     </tr>
   </thead>
 
@@ -53,8 +54,9 @@
     <tr>
       <td>{{ data.userName }}</td>
       <td>{{ data.fullName }}</td>
-      <td>{{ data.phoneNumber ?? "Chưa có" }}</td>
+      <td>{{ data.phoneNumber || "Chưa có" }}</td>
       <td>{{ data.email }}</td>
+      <td>{{ data.address }}</td>
       <td>{{ data.created | date : "dd/MM/yyyy, h:mm a" }}</td>
       <td>{{ data.role }}</td>
       <td class="text-center">

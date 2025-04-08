@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Tea.Domain.ValidationAttributes;
 
 namespace Tea.Application.DTOs.Users
 {
@@ -17,8 +18,9 @@ namespace Tea.Application.DTOs.Users
         [StringLength(100, ErrorMessage = "Họ và tên không được quá 100 ký tự")]
         public required string FullName { get; set; }
         public required string Role { get; set; }
-        [Required(ErrorMessage = "SĐT không được trống")]
+        [VietNamPhoneNumber]
         public required string PhoneNumber { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập địa chỉ")]
         public required string Address { get; set; }
     }
 }

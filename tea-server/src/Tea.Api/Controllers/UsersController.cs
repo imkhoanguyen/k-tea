@@ -72,6 +72,7 @@ namespace Tea.Api.Controllers
                     Role = roles[0],
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
+                    Address = user.Address,
                     IsLooked = user.LockoutEnd.HasValue && (user.LockoutEnd > DateTimeOffset.UtcNow || user.LockoutEnd == DateTimeOffset.MaxValue)
                 };
                 usersResponse.Add(res);
@@ -106,6 +107,7 @@ namespace Tea.Api.Controllers
                 Role = roles[0],
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
+                Address = user.Address,
                 IsLooked = user.LockoutEnd.HasValue && (user.LockoutEnd > DateTimeOffset.UtcNow || user.LockoutEnd == DateTimeOffset.MaxValue)
             };
 
@@ -174,6 +176,7 @@ namespace Tea.Api.Controllers
                     Role = roles[0],
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
+                    Address = user.Address,
                     IsLooked = user.LockoutEnd.HasValue && (user.LockoutEnd > DateTimeOffset.UtcNow || user.LockoutEnd == DateTimeOffset.MaxValue)
                 };
 
@@ -236,6 +239,7 @@ namespace Tea.Api.Controllers
                 Role = updatedRoles.FirstOrDefault(),
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
+                Address = user.Address,
                 IsLooked = user.LockoutEnd.HasValue && (user.LockoutEnd > DateTimeOffset.UtcNow || user.LockoutEnd == DateTimeOffset.MaxValue)
             };
 

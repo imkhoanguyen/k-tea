@@ -60,6 +60,7 @@ export class UserAddComponent implements OnInit {
       role: ['', Validators.required],
       email: ['', Validators.required],
       phoneNumber: ['', Validators.required],
+      address: ['', Validators.required],
     });
   }
 
@@ -85,6 +86,7 @@ export class UserAddComponent implements OnInit {
       email: this.frm.value.email,
       password: this.frm.value.password,
       role: this.frm.value.role,
+      address: this.frm.value.address,
     };
 
     this.userService.add(userAdd).subscribe({

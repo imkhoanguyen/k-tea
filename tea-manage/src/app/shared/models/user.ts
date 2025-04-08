@@ -16,6 +16,7 @@ export interface AppUser {
   isLoocked: boolean;
   created: string;
   phoneNumber: string;
+  address: string;
 }
 
 export interface UserAdd {
@@ -25,6 +26,7 @@ export interface UserAdd {
   fullName: string;
   role: string;
   phoneNumber: string;
+  address: string;
 }
 
 export class UserParams extends PaginationRequest {

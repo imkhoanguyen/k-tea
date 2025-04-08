@@ -63,6 +63,20 @@
   </nz-form-item>
 
   <nz-form-item>
+    <nz-form-label [nzSpan]="3" nzRequired>Địa chỉ</nz-form-label>
+    <nz-form-control [nzSpan]="22" [nzErrorTip]="addressErrorTpl">
+      <input
+        nz-input
+        formControlName="address"
+        placeholder="Số điện thoại Việt Nam"
+      />
+      <ng-template #addressErrorTpl let-control>
+        @if (control.errors?.['required']) { Vui lòng nhập địa chỉ! }
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
     <nz-form-label [nzSpan]="3" nzRequired>Quyền</nz-form-label>
     <nz-form-control [nzErrorTip]="rolesErrorTpl">
       <nz-select nzPlaceHolder="Chọn quyền" formControlName="role">
