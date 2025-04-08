@@ -1,0 +1,15 @@
+.text-menu {
+  color: #3a3a3a;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.icon-nav {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.icon-nav:hover,
+.text-menu:hover {
+  color: var(--primary);
+}

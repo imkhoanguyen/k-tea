@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+  --primary: #09a779;
+  --danger: #f46d6e;
+  --blue: #5a90e0;
+  --blue-light: #85b2ed;
+  --warning: #fcc419;
+  --waring-light: #ffd642;
+}
