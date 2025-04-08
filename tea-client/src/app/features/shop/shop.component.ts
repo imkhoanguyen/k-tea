@@ -23,6 +23,8 @@ import { Discount } from '../../shared/models/discount';
 import { paymentTypeList } from '../../core/constants/payment';
 import { ToastrService } from 'ngx-toastr';
 import { CartItem } from '../../shared/models/cart';
+import { CategoryService } from '../../core/services/category.service';
+import { Category } from '../../shared/models/category';
 
 @Component({
   selector: 'app-shop',
@@ -50,6 +52,7 @@ export class ShopComponent implements OnInit {
   private userService = inject(UserService);
   private discountService = inject(DiscountService);
   private orderService = inject(OrderService);
+  private categoryService = inject(CategoryService);
   utilService = inject(UtilitiesService);
   cartService = inject(CartService);
   items?: Pagination<Item>;
@@ -61,6 +64,7 @@ export class ShopComponent implements OnInit {
   promotionCode: string = '';
   paymentTypeList = paymentTypeList;
   paymentType = this.paymentTypeList[0].value;
+  categories: Category[] = [];
 
   ngOnInit(): void {
     this.getPagination();
@@ -76,7 +80,7 @@ export class ShopComponent implements OnInit {
           this.toastrService.error('Không thể tải giỏ hàng');
         },
       });
-    console.log(this.paymentTypeList);
+    this.getAllCategory();
   }
 
   getPagination() {
@@ -85,6 +89,17 @@ export class ShopComponent implements OnInit {
         this.items = res;
       },
       error: (er) => console.log(er),
+    });
+  }
+
+  getAllCategory() {
+    this.categoryService.getAll().subscribe({
+      next: (res) => {
+        this.categories = res;
+      },
+      error: (er) => {
+        console.log(er);
+      },
     });
   }
 
@@ -227,6 +242,12 @@ export class ShopComponent implements OnInit {
   }
 
   onSearch() {
+    this.getPagination();
+  }
+
+  selectCategory(categoryId: number) {
+    this.prm.categoryId = categoryId;
+
     this.getPagination();
   }
 }

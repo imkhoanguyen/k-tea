@@ -22,6 +22,10 @@ export class ItemService {
       params = params.append('orderBy', prm.orderBy);
     }
 
+    if (prm.categoryId > 0) {
+      params = params.append('categoryId', prm.categoryId);
+    }
+
     params = params.append('pageIndex', prm.pageIndex);
     params = params.append('pageSize', prm.pageSize);
 

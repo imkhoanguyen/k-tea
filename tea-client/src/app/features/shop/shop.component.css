@@ -18,7 +18,6 @@ nz-card {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
-  padding: 24px;
 }
 
 .product-image {
@@ -62,4 +61,35 @@ nz-card {
   .product-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
+}
+
+.container {
+  width: 100%; /* Hoặc kích thước cố định tùy bạn */
+  max-width: 1200px; /* Giới hạn chiều rộng tối đa */
+  margin: 0 auto; /* Căn giữa nếu cần */
+  padding: 16px; /* Thêm padding nếu muốn */
+}
+
+.category-list {
+  display: flex; /* Bật chế độ flex */
+  flex-wrap: wrap; /* Cho phép xuống dòng khi không đủ chỗ */
+  gap: 8px 16px; /* Khoảng cách giữa các item (row-gap column-gap) */
+  margin-bottom: 24px;
+}
+
+.category-item {
+  padding: 8px 16px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  white-space: nowrap; /* Ngăn chữ bị ngắt dòng */
+  cursor: pointer;
+}
+
+.search-box {
+  margin-bottom: 24px;
+}
+
+.active {
+  background-color: var(--primary);
+  color: #fff;
 }

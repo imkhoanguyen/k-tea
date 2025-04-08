@@ -27,13 +27,30 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link text-menu" routerLink="/">Trang chủ</a>
+        <a
+          class="nav-link text-menu"
+          [class.active]="currentPage === 1"
+          (click)="changePage(1)"
+          routerLink="/"
+          >Trang chủ</a
+        >
       </li>
       <li class="nav-item">
-        <a class="nav-link text-menu" routerLink="/thuc-don">Thực đơn</a>
+        <a
+          class="nav-link text-menu"
+          [class.active]="currentPage === 2"
+          (click)="changePage(2)"
+          routerLink="/thuc-don"
+          >Thực đơn</a
+        >
       </li>
       <li class="nav-item">
-        <a class="nav-link text-menu" href="#">Gợi ý thực đơn</a>
+        <a
+          class="nav-link text-menu"
+          [class.active]="currentPage === 3"
+          (click)="changePage(3)"
+          >Gợi ý thực đơn</a
+        >
       </li>
     </ul>
   </div>
