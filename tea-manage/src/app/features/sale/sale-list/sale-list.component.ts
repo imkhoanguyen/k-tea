@@ -14,7 +14,7 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { CartService } from '../../../core/services/cart.service';
-import { Cart, CartItem } from '../../../shared/models/cart';
+import { CartItem } from '../../../shared/models/cart';
 import { UserService } from '../../../core/services/user.service';
 import { Discount } from '../../../shared/models/discount';
 import { DiscountService } from '../../../core/services/discount.service';

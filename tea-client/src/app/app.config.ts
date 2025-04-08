@@ -17,6 +17,7 @@ import {
   ShoppingCartOutline,
   UserOutline,
 } from '@ant-design/icons-angular/icons';
+import { provideToastr } from 'ngx-toastr';
 
 registerLocaleData(vi);
 const icons = [UserOutline, ShoppingCartOutline];
@@ -30,5 +31,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(),
     provideNzIcons(icons),
+    provideToastr(),
   ],
 };

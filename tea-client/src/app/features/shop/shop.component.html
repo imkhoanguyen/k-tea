@@ -1,1 +1,40 @@
-<p>shop works!</p>
+<div class="container">
+  <div class="product-grid">
+    @if (items) { @for (item of items.data; track item.id) {
+    <nz-card style="cursor: pointer" (click)="showModal(item.id)">
+      <div class="d-flex flex-column gap-3">
+        <img [src]="item.imgUrl" [alt]="item.name" class="product-image" />
+        <div nz-tooltip nzTooltipTitle="{{ item.name }}" class="item-name">
+          {{ item.name }}
+        </div>
+        <div class="item-price">
+          Giá:
+          <span class="fw-medium">{{
+            utilService.formatVND(item.sizes[0].price)
+          }}</span>
+        </div>
+      </div>
+    </nz-card>
+    } }
+  </div>
+  <div
+    *ngIf="items != null"
+    class="d-flex align-items-center justify-content-center mt-3"
+  >
+    <nz-pagination
+      [nzPageIndex]="items.pageIndex"
+      [nzTotal]="items.count"
+      [nzSize]="'default'"
+      [nzPageSize]="items.pageSize"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzShowTotal]="totalTemplate"
+      [nzShowSizeChanger]="true"
+      [nzShowQuickJumper]="true"
+      [nzPageSizeOptions]="[3, 5, 10, 20, 50]"
+    ></nz-pagination>
+    <ng-template #totalTemplate let-total
+      >Tổng {{ total }} danh mục</ng-template
+    >
+  </div>
+</div>

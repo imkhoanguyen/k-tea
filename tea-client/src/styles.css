@@ -7,3 +7,14 @@
   --warning: #fcc419;
   --waring-light: #ffd642;
 }
+
+/* toastr */
+.toast-success {
+  background-color: var(--primary) !important;
+  color: white !important;
+}
+
+.toast-error {
+  background-color: var(--danger) !important;
+  color: white !important;
+}
