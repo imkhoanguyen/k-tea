@@ -191,6 +191,7 @@ try
     await CategorySeed.SeedAsync(context);
     await ItemSeed.SeedAsync(context);
     await ItemCategorySeed.SeedAsync(context);
+    await UserSeed.SeedAsync(userManager);
 }
 catch (Exception ex)
 {
