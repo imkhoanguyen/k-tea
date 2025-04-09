@@ -11,9 +11,6 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { ItemService } from '../../core/services/item.service';
-import { UserService } from '../../core/services/user.service';
-import { DiscountService } from '../../core/services/discount.service';
-import { OrderService } from '../../core/services/order.service';
 import { UtilitiesService } from '../../core/services/utilities.service';
 import { CartService } from '../../core/services/cart.service';
 import { Pagination } from '../../shared/models/base';
@@ -25,6 +22,8 @@ import { ToastrService } from 'ngx-toastr';
 import { CartItem } from '../../shared/models/cart';
 import { CategoryService } from '../../core/services/category.service';
 import { Category } from '../../shared/models/category';
+import { UserService } from '../../core/services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-shop',
@@ -49,10 +48,9 @@ import { Category } from '../../shared/models/category';
 export class ShopComponent implements OnInit {
   private itemService = inject(ItemService);
   private toastrService = inject(ToastrService);
-  private userService = inject(UserService);
-  private discountService = inject(DiscountService);
-  private orderService = inject(OrderService);
   private categoryService = inject(CategoryService);
+  private userService = inject(UserService);
+  private router = inject(Router);
   utilService = inject(UtilitiesService);
   cartService = inject(CartService);
   items?: Pagination<Item>;
@@ -60,26 +58,10 @@ export class ShopComponent implements OnInit {
   item?: Item; // selected item
   size?: Size; // selected size
   quantity: number = 1;
-  discount?: Discount;
-  promotionCode: string = '';
-  paymentTypeList = paymentTypeList;
-  paymentType = this.paymentTypeList[0].value;
   categories: Category[] = [];
 
   ngOnInit(): void {
     this.getPagination();
-    this.cartService
-      .getCart(this.userService.currentUser()?.userName || '')
-      .subscribe({
-        next: (cart) => {
-          // Cart đã được load và lưu trong cartService.cart()
-          console.log('Cart loaded', cart);
-        },
-        error: (err) => {
-          console.error('Failed to load cart', err);
-          this.toastrService.error('Không thể tải giỏ hàng');
-        },
-      });
     this.getAllCategory();
   }
 
@@ -106,6 +88,8 @@ export class ShopComponent implements OnInit {
   isVisible = false;
 
   showModal(id: number): void {
+    this.size = undefined;
+    this.quantity = 1;
     this.itemService.get(id).subscribe({
       next: (res) => {
         console.log(res);
@@ -122,6 +106,13 @@ export class ShopComponent implements OnInit {
   }
 
   addToCart(): void {
+    console.log('size', this.size);
+    if (!this.userService.currentUser()) {
+      this.router.navigate(['/dang-nhap']);
+      this.toastrService.info('Vui lòng đăng nhập');
+      return;
+    }
+
     if (!this.size) {
       this.toastrService.info('Vui lòng chọn loại sản phẩm');
       return;
@@ -160,74 +151,6 @@ export class ShopComponent implements OnInit {
 
   onSizeChange(size: Size) {
     this.size = size;
-  }
-
-  onPlus(item: CartItem) {
-    this.cartService.addItemToCart(item);
-  }
-
-  onMinus(item: CartItem) {
-    this.cartService.removeItemFromCart(item);
-  }
-
-  applyDiscount() {
-    this.discountService.checkDiscount(this.promotionCode).subscribe({
-      next: (res) => {
-        this.discount = res as Discount;
-      },
-      error: (er) => {
-        console.log('Không tìm thấy mã giảm giá');
-      },
-    });
-  }
-
-  createOrder() {
-    // const orderItemAddList: OrderItemAdd[] = [];
-    // this.cartService.cart()?.items.map((x) => {
-    //   const orderItemAdd: OrderItemAdd = {
-    //     itemName: x.itemName,
-    //     price: x.price,
-    //     itemSize: x.size,
-    //     quantity: x.quantity,
-    //     itemId: x.itemId,
-    //     itemImg: x.itemImg,
-    //   };
-    //   orderItemAddList.push(orderItemAdd);
-    // });
-    // const orderAddInStore: OrderAddInStore = {
-    //   createdById: this.userService.currentUser()?.userName ?? '',
-    //   paymentType: this.paymentType,
-    //   items: orderItemAddList,
-    //   discountId: this.discount?.id,
-    //   discountPrice: this.calculateDiscountPrice(),
-    // };
-    // this.orderService.addOrderInStore(orderAddInStore).subscribe({
-    //   next: (res) => {
-    //     this.toastrService.success('Tạo đơn thành công');
-    //     this.cartService.deleteCart();
-    //   },
-    //   error: (er) => {
-    //     console.log(er);
-    //   },
-    // });
-  }
-
-  calculateDiscountPrice(): number | undefined {
-    if (!this.discount) {
-      return undefined;
-    }
-
-    const total = this.cartService.totals();
-
-    if (this.discount.amountOff) {
-      return total - this.discount.amountOff;
-    }
-
-    if (this.discount.percentOff) {
-      return total - (total * this.discount.percentOff) / 100;
-    }
-
-    return undefined;
   }
 
   // pagination

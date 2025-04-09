@@ -30,6 +30,7 @@ export class UserService {
     return this.http.post<User>(this.apiUrl + 'auths/login', login).pipe(
       map((user) => {
         if (user) {
+          console.log('vao', user);
           this.setCurrentUser(user);
         }
       })
