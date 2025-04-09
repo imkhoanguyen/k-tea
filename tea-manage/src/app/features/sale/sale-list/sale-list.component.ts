@@ -92,6 +92,8 @@ export class SaleListComponent implements OnInit {
   isVisible = false;
 
   showModal(id: number): void {
+    this.size = undefined;
+    this.quantity = 1;
     this.itemService.get(id).subscribe({
       next: (res) => {
         console.log(res);
