@@ -44,14 +44,19 @@ namespace Tea.Application.Services.Implements
             var order = new Order
             {
                 CreatedById = userId,
-                DiscountPrice = request.DiscountPrice,
-                DiscountId = request.DiscountId,
                 OrderStatus = request.OrderStatus,
                 OrderType = request.OrderType,
                 PaymentStatus = request.PaymentStatus,
                 PaymentType = paymentType,
-                Items = listOrderItem
+                Items = listOrderItem,
+                SubTotal = listOrderItem.Sum(x => x.GetTotal())
             };
+
+            if (request.DiscountId.HasValue && request.DiscountId > 0 && request.DiscountPrice.HasValue && request.DiscountPrice > 0)
+            {
+                order.DiscountPrice = request.DiscountPrice;
+                order.DiscountId = request.DiscountId;
+            }
 
             await unit.BeginTransactionAsync();
 
@@ -69,6 +74,76 @@ namespace Tea.Application.Services.Implements
                 logger.LogError("Create order failed. (save change failed");
                 throw new SaveChangesFailedException();
             } catch
+            {
+                await unit.RollbackTransactionAsync();
+                throw;
+            }
+        }
+
+        public async Task<OrderResponse> CreateOnlineAsync(OrderCreateOnlineRequest request)
+        {
+            string userId = await GetUserIdByUserNameAsync(request.UserName);
+            if (string.IsNullOrEmpty(userId))
+            {
+                logger.LogWarning($"cant found user with username: {request.UserName}");
+                throw new UserNotFoundException($"{request.UserName}");
+            }
+
+            // Convert string to enum
+            if (!Enum.TryParse<PaymentType>(request.PaymentType, ignoreCase: true, out var paymentType))
+            {
+                logger.LogError($"Invalid payment type: {request.PaymentType}");
+                throw new ConvertStringToEnumFailedException("Lỗi khi chọn phương thức thanh toán.Vui lòng thử lại sau.");
+            }
+
+            var listOrderItem = request.Items.Select(x => new OrderItem
+            {
+                ItemName = x.ItemName,
+                Price = x.Price,
+                ItemSize = x.ItemSize,
+                ItemImg = x.ItemImg,
+                Quantity = x.Quantity,
+                ItemId = x.ItemId,
+            }).ToList();
+
+            var order = new Order
+            {
+                UserId = userId,
+                OrderStatus = request.OrderStatus,
+                OrderType = request.OrderType,
+                PaymentStatus = request.PaymentStatus,
+                PaymentType = paymentType,
+                Items = listOrderItem,
+                CustomerAddress = request.CustomerAddress,
+                CustomerName = request.CustomerName,
+                CustomerPhone = request.CustomerPhone,
+                Description = request.Description,
+                SubTotal = listOrderItem.Sum(x => x.GetTotal())
+            };
+
+            if (request.DiscountId.HasValue && request.DiscountId > 0 && request.DiscountPrice.HasValue && request.DiscountPrice > 0)
+            {
+                order.DiscountPrice = request.DiscountPrice;
+                order.DiscountId = request.DiscountId;
+            }
+
+            await unit.BeginTransactionAsync();
+
+            try
+            {
+                unit.Order.Add(order);
+
+                if (await unit.SaveChangesAsync())
+                {
+                    await unit.CommitTransactionAsync();
+                    logger.LogInformation("Create order success");
+                    return OrderMapper.EntityToResponse(order);
+                }
+
+                logger.LogError("Create order failed. (save change failed");
+                throw new SaveChangesFailedException();
+            }
+            catch
             {
                 await unit.RollbackTransactionAsync();
                 throw;

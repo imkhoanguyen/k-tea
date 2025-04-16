@@ -5,10 +5,10 @@ namespace Tea.Application.DTOs.Orders
     public class OrderResponse
     {
         public int Id { get; set; }
-        public OrderStatus OrderStatus { get; set; }
-        public OrderType OrderType { get; set; }
-        public PaymentStatus PaymentStatus { get; set; }
-        public PaymentType PaymentType { get; set; }
+        public required string OrderStatus { get; set; }
+        public required string OrderType { get; set; }
+        public required string PaymentStatus { get; set; }
+        public required string PaymentType { get; set; }
         public DateTimeOffset Created { get; set; } = DateTimeOffset.Now;
         public decimal SubTotal { get; set; } // sum price of items
         public decimal? DiscountPrice { get; set; }

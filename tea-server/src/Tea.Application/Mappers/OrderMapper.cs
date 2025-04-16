@@ -12,10 +12,10 @@ namespace Tea.Application.Mappers
             return new OrderResponse
             {
                 Id = order.Id,
-                OrderStatus = order.OrderStatus,
-                OrderType = order.OrderType,
-                PaymentStatus = order.PaymentStatus,
-                PaymentType = order.PaymentType,
+                OrderStatus = order.OrderStatus.ToString(),
+                OrderType = order.OrderType.ToString(),
+                PaymentStatus = order.PaymentStatus.ToString(),
+                PaymentType = order.PaymentType.ToString(),
                 Created = order.Created,
                 SubTotal = order.SubTotal,
                 DiscountPrice = order.DiscountPrice,

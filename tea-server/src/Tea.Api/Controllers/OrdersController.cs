@@ -23,5 +23,14 @@ namespace Tea.Api.Controllers
             var response = await orderService.CreateInStoreAsync(request);
             return CreatedAtAction(nameof(Get), new { id = response.Id }, response);
         }
+
+        [HttpPost("online")]
+        [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateOnline([FromBody] OrderCreateOnlineRequest request)
+        {
+            var response = await orderService.CreateOnlineAsync(request);
+            return CreatedAtAction(nameof(Get), new { id = response.Id }, response);
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace Tea.Application.Services.Interfaces
         Task<OrderResponse> UpdateAsync(int id, OrderUpdateRequest request);
         Task DeleteAsync(int id);
         Task DeletesAsync(List<int> orderIdList);
+        Task<OrderResponse> CreateOnlineAsync(OrderCreateOnlineRequest request);
     }
 }
