@@ -5,11 +5,12 @@ import { RouterOutlet } from '@angular/router';
 import { UserService } from './core/services/user.service';
 import { CartService } from './core/services/cart.service';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerComponent } from 'ngx-spinner';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [NzLayoutModule, HeaderComponent, RouterOutlet],
+  imports: [NzLayoutModule, HeaderComponent, RouterOutlet, NgxSpinnerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })

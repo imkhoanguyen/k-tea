@@ -18,6 +18,7 @@ import {
   UserOutline,
 } from '@ant-design/icons-angular/icons';
 import { provideToastr } from 'ngx-toastr';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 registerLocaleData(vi);
 const icons = [UserOutline, ShoppingCartOutline];
@@ -27,7 +28,12 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideNzI18n(vi_VN),
-    importProvidersFrom(FormsModule),
+    importProvidersFrom(
+      FormsModule,
+      NgxSpinnerModule.forRoot({
+        type: 'ball-scale-multiple',
+      })
+    ),
     provideAnimationsAsync(),
     provideHttpClient(),
     provideNzIcons(icons),

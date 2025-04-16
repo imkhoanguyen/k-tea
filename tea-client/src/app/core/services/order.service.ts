@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { OrderAddInStore } from '../../shared/models/order';
+import { OrderAddInStore, OrderAddOnline } from '../../shared/models/order';
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +31,10 @@ export class OrderService {
 
   addOrderInStore(order: OrderAddInStore) {
     return this.http.post(this.apiUrl + 'orders/in-store', order);
+  }
+
+  addOrderOnline(order: OrderAddOnline) {
+    return this.http.post(this.apiUrl + 'orders/online', order);
   }
 
   get(id: number) {

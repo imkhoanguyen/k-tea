@@ -208,11 +208,11 @@ export class SaleListComponent implements OnInit {
     const total = this.cartService.totals();
 
     if (this.discount.amountOff) {
-      return total - this.discount.amountOff;
+      return this.discount.amountOff;
     }
 
     if (this.discount.percentOff) {
-      return total - (total * this.discount.percentOff) / 100;
+      return (total * this.discount.percentOff) / 100;
     }
 
     return undefined;

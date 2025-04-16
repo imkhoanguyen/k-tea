@@ -1,0 +1,191 @@
+<section
+  *ngIf="order"
+  class="min-vh-100 pb-4 pt-5"
+  style="background-color: #eef0f7"
+>
+  <div class="container">
+    <form method="post">
+      <div class="row">
+        <div class="col-7">
+          <!-- @* address *@ -->
+          <div class="card box-shadow">
+            <div class="card-body">
+              <div class="d-flex gap-2 align-items-center mt-5">
+                <i
+                  class="fa-regular fa-circle-check fa-2xl"
+                  style="color: var(--primary); font-size: 80px"
+                ></i>
+                <div class="d-flex flex-column">
+                  <h5 class="fw-bold">Đơn của bạn đã được đặt thành công!</h5>
+                  <span>Cảm ơn bạn đã ủng hộ sản phẩm của chúng tôi</span>
+                </div>
+              </div>
+
+              <h5 class="mb-4 mt-5 fw-bold">Thông tin đơn hàng</h5>
+
+              <table class="table table-bordered">
+                <tbody class="align-midle">
+                  <tr>
+                    <th scope="row">Mã đơn hàng:</th>
+                    <td>#{{ order.id }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Tên:</th>
+                    <td>{{ order.customerName }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Số điện thoại:</th>
+                    <td>{{ order.customerPhone }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Địa chỉ:</th>
+                    <td>{{ order.customerAddress }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Ghi chú:</th>
+                    <td>{{ order.description }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Phương thức thanh toán:</th>
+                    <td>
+                      {{ order.paymentType }}
+                    </td>
+                  </tr>
+                  <!-- <tr>
+                    <th scope="row">Phương thức vận chuyển:</th>
+                    <td>
+                      {{ order.shippingName }}
+                    </td>
+                  </tr> -->
+                  <tr>
+                    <th scope="row">Trạng thái thanh toán:</th>
+                    <td>{{ order.paymentStatus }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Trạng thái đơn hàng:</th>
+                    <td>
+                      {{ order.orderStatus }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="text-end">
+                <a
+                  routerLink="/thuc-don"
+                  class="btn fw-bold text-uppercase p-3"
+                  style="background-color: var(--primary); color: #fff"
+                >
+                  <div
+                    class="d-flex gap-2 align-items-center justify-content-center"
+                  >
+                    <span>Tiếp tục đặt món</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- @* order sumary *@ -->
+        <div class="col-5">
+          <!-- @* order items *@ -->
+          <div class="card box-shadow">
+            <h5 class="card-header fw-bold p-3">Tóm tắt đơn hàng</h5>
+            <div class="card-body">
+              <table class="table">
+                <tbody class="align-midle">
+                  @for (item of order.items; track $index) {
+                  <tr>
+                    <th scope="row">
+                      <img
+                        src="{{ item.itemImg }}"
+                        style="height: 80px; width: 80px; object-fit: cover"
+                      />
+                    </th>
+                    <td>
+                      <div class="d-flex flex-column">
+                        <a
+                          class="fw-bold text-primary"
+                          style="text-decoration: none"
+                        >
+                          {{ item.quantity }} x {{ item.itemName }}
+                        </a>
+                        <div class="fs-sm text-muted">
+                          Size: {{ item.itemSize }}
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-end">
+                      <span class="fw-bold">{{
+                        utilService.formatVND(item.price)
+                      }}</span>
+                    </td>
+                  </tr>
+                  }
+                  <tr style="font-size: 16px">
+                    <th scope="row" colspan="2">
+                      <span class="fw-bold">Giá sản phẩm</span>
+                    </th>
+                    <td class="text-end">
+                      <span class="fw-bold">{{
+                        utilService.formatVND(order.subTotal)
+                      }}</span>
+                      <input hidden placeholder="subtotal" />
+                    </td>
+                  </tr>
+                  <!-- <tr style="font-size: 16px">
+                    <th scope="row" colspan="2">
+                      <span class="fw-bold">Phí giao hàng</span>
+                    </th>
+                    <td class="text-end">
+                      <span class="fw-bold shipping-fee-display"
+                        >${{ order.shippingFee }}</span
+                      >
+                    </td>
+                  </tr> -->
+                  <tr style="font-size: 16px">
+                    <th scope="row" colspan="2">
+                      <span class="fw-bold">Thành tiền</span>
+                    </th>
+                    <td class="text-end">
+                      <span class="fw-bold total-display">{{
+                        utilService.formatVND(calTotal())
+                      }}</span>
+                    </td>
+                  </tr>
+                  <tr style="font-size: 16px">
+                    <th scope="row" colspan="2">
+                      <span class="fw-bold">Khuyến mãi </span>
+                    </th>
+                    <td class="text-end">
+                      @if(order.discountPrice) {
+                      <span class="fw-bold"
+                        >-{{ utilService.formatVND(order.discountPrice) }}</span
+                      >
+                      } @else {
+                      <span class="fw-bold">{{
+                        utilService.formatVND(0)
+                      }}</span>
+                      }
+                    </td>
+                  </tr>
+                  <tr style="font-size: 16px">
+                    <th scope="row" colspan="2">
+                      <span class="fw-bold">Tổng cộng </span>
+                    </th>
+                    <td class="text-end">
+                      <span class="fw-bold">{{
+                        utilService.formatVND(calFinal())
+                      }}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
