@@ -19,6 +19,7 @@ import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { QuillModule } from 'ngx-quill';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
+import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
 
 registerLocaleData(vi);
 const icons = [EyeOutline, DownOutline];
@@ -36,7 +37,9 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     provideAnimationsAsync(),
-    provideHttpClient(withInterceptors([errorInterceptor, loadingInterceptor])),
+    provideHttpClient(
+      withInterceptors([errorInterceptor, loadingInterceptor, jwtInterceptor])
+    ),
     provideNzIcons(icons),
     provideToastr(),
   ],

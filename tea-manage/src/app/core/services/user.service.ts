@@ -82,4 +82,34 @@ export class UserService {
   delete(username: string) {
     return this.http.delete(this.apiUrl + `users/${username}`);
   }
+
+  callRefreshToken(refreshToken: string) {
+    return this.http.post<any>(this.apiUrl + 'auths/refresh-token', {
+      refreshToken,
+    });
+  }
+
+  private decodeToken(token: string): any {
+    const payload = token.split('.')[1];
+    return JSON.parse(atob(payload));
+  }
+
+  hasClaim(claim: string): boolean {
+    const userString = localStorage.getItem('user');
+    let token = null;
+
+    if (userString) {
+      const user = JSON.parse(userString);
+      token = user.accessToken;
+    }
+    if (!token) return false;
+    const decodedToken = this.decodeToken(token);
+    // console.log(decodedToken);
+    // console.log(decodedToken.Permission);
+    return (
+      decodedToken &&
+      decodedToken.Permission &&
+      decodedToken.Permission.includes(claim)
+    );
+  }
 }
