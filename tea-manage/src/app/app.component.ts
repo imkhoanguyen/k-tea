@@ -26,9 +26,21 @@ import { NgxSpinnerComponent } from 'ngx-spinner';
 export class AppComponent implements OnInit {
   title = 'tea-manage';
   userService = inject(UserService);
+  isSaleComponentActive = false;
+  isReportComponentActive = false;
   ngOnInit(): void {
     this.setCurrentUser();
   }
+
+  constructor(private router: Router) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.isSaleComponentActive = event.url.includes('/ban-hang');
+        this.isReportComponentActive = event.url.includes('/thong-ke');
+      }
+    });
+  }
+
   setCurrentUser() {
     const userString = localStorage.getItem('user');
     if (!userString) return;

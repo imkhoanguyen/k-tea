@@ -11,8 +11,12 @@ import { UserAddComponent } from './features/user/user-add/user-add.component';
 import { UserUpdateComponent } from './features/user/user-update/user-update.component';
 import { SaleListComponent } from './features/sale/sale-list/sale-list.component';
 import { DiscountListComponent } from './features/discount/discount-list/discount-list.component';
+import { ReportComponent } from './features/report/report.component';
+import { NotfoundComponent } from './shared/errors/notfound/notfound.component';
+import { ServererrorComponent } from './shared/errors/servererror/servererror.component';
 
 export const routes: Routes = [
+  { path: '', component: ReportComponent },
   { path: 'danh-muc', component: CategoryListComponent },
   { path: 'san-pham', component: ItemListComponent },
   { path: 'them-san-pham', component: ItemAddComponent },
@@ -28,4 +32,8 @@ export const routes: Routes = [
   { path: 'cap-nhat-nguoi-dung/:username', component: UserUpdateComponent },
   { path: 'ban-hang', component: SaleListComponent },
   { path: 'ma-giam-gia', component: DiscountListComponent },
+  { path: 'thong-ke', component: ReportComponent },
+  { path: 'not-found', component: NotfoundComponent },
+  { path: 'server-error', component: ServererrorComponent },
+  { path: '**', component: ReportComponent, pathMatch: 'full' },
 ];

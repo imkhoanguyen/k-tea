@@ -1,0 +1,258 @@
+<div *ngIf="report" class="row mb-5">
+  <div class="col-4">
+    <nz-card>
+      <div class="row">
+        <div class="col-4 d-flex justify-content-center align-items-center">
+          <i class="bi bi-person-fill icon-bg"></i>
+        </div>
+        <div class="col-8">
+          <div class="d-flex flex-column">
+            <span class="title-card">Tổng số lượng người dùng</span>
+            <span class="text-number">{{ report.totalUser }}</span>
+          </div>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+  <div class="col-4">
+    <nz-card>
+      <div class="row">
+        <div class="col-4 d-flex justify-content-center align-items-center">
+          <i class="bi bi-bag-fill icon-bg"></i>
+        </div>
+        <div class="col-8">
+          <div class="d-flex flex-column">
+            <span class="title-card">Đơn hàng hôm nay</span>
+            <span class="text-number">{{ report.totalOrderPerDay }}</span>
+          </div>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+
+  <div class="col-4">
+    <nz-card>
+      <div class="row">
+        <div class="col-4 d-flex justify-content-center align-items-center">
+          <i class="bi bi-cash icon-bg"></i>
+        </div>
+        <div class="col-8">
+          <div class="d-flex flex-column">
+            <span class="title-card">Doanh thu hôm nay</span>
+            <span class="text-number">
+              {{ utilService.formatVND(report.totalRevenuePerDay) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+</div>
+
+<div class="row mb-5">
+  <div class="col-8">
+    <nz-card>
+      <div class="d-flex align-items-center mb-3">
+        <h2 class="title-card mb-3">
+          Biểu đồ doanh thu tháng {{ month }}/{{ year }}
+        </h2>
+        <div
+          class="ms-auto d-flex gap-2 justify-content-center align-items-center"
+        >
+          <nz-select [(ngModel)]="month">
+            <nz-option
+              *ngFor="let m of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
+              [nzValue]="m"
+              [nzLabel]="'Tháng ' + m"
+            >
+            </nz-option>
+          </nz-select>
+          <nz-select [(ngModel)]="year">
+            <nz-option
+              *ngFor="let y of generateYears()"
+              [nzValue]="y"
+              [nzLabel]="y.toString()"
+            >
+            </nz-option>
+          </nz-select>
+          <button
+            nz-button
+            nzValue="small"
+            nzType="primary"
+            (click)="loadDailyRevenueInMonth()"
+          >
+            Áp dụng
+          </button>
+
+          <button nz-button nzValue="small" (click)="refeshMonthAndYear()">
+            Làm mới
+          </button>
+        </div>
+      </div>
+
+      <div echarts [options]="chartOptions ?? null" class="demo-chart"></div>
+    </nz-card>
+  </div>
+
+  <div class="col-4">
+    <nz-card>
+      <div class="d-flex align-items-center mb-3">
+        <h2 class="title-card">
+          Top {{ topCountItem }} sản phẩm bán chạy nhất
+        </h2>
+        <div class="ms-auto w-25">
+          <input
+            nz-input
+            [(ngModel)]="topCountItem"
+            type="number"
+            (ngModelChange)="loadTopSellingItems()"
+          />
+        </div>
+      </div>
+
+      <div class="table-responsive-custom">
+        <nz-table
+          [nzData]="topSellingItem"
+          nzTableLayout="auto"
+          [nzFrontPagination]="false"
+          [nzBordered]="false"
+          [nzShowPagination]="false"
+        >
+          <thead>
+            <tr>
+              <th class="text-center">#</th>
+              <th>Hình ảnh</th>
+              <th>Thông tin sản phẩm</th>
+            </tr>
+          </thead>
+          <tbody class="align-middle">
+            <tr *ngFor="let item of topSellingItem; let i = index">
+              <td class="text-center fw-bold">#{{ i + 1 }}</td>
+              <td>
+                <img
+                  nz-image
+                  [nzSrc]="item.imgUrl || 'assets/images/default-product.png'"
+                  [alt]="item.name"
+                  class="img-in-table"
+                />
+              </td>
+              <td>
+                <div class="d-flex flex-column">
+                  <span
+                    class="fw-bold text-ellipsis"
+                    nz-tooltip
+                    [nzTooltipTitle]="item.name"
+                  >
+                    {{ item.name }}
+                  </span>
+                  <span>Số lượng: {{ item.totalSold }}</span>
+                  <span
+                    >Doanh thu:
+                    {{ utilService.formatVND(item.totalRevenue) }}</span
+                  >
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </nz-card>
+  </div>
+</div>
+<!-- pagination -->
+<nz-card>
+  <h2 class="title-card mb-3">Đơn hàng</h2>
+  <div class="mb-3 d-flex gap-2">
+    <input
+      nz-input
+      class="w-25"
+      type="text"
+      [(ngModel)]="prm.search"
+      placeholder="Nhập id người tạo hoặc tên người đặt"
+    />
+    <input
+      nz-input
+      style="width: 15%"
+      type="number"
+      [(ngModel)]="prm.minAmount"
+      placeholder="Giá thấp nhất"
+    />
+    <input
+      style="width: 15%"
+      nz-input
+      [(ngModel)]="prm.maxAmount"
+      placeholder="Giá cao nhất"
+      type="number"
+    />
+    <nz-range-picker
+      [(ngModel)]="dateRange"
+      [nzRenderExtraFooter]="footerRender"
+    ></nz-range-picker>
+    <button
+      nz-button
+      nzValue="small"
+      nzType="primary"
+      (click)="loadOrderList()"
+    >
+      Áp dụng
+    </button>
+
+    <button nz-button nzValue="small" (click)="refreshOrderList()">
+      Làm mới
+    </button>
+  </div>
+  <nz-table [nzData]="orders?.data ?? []" [nzFrontPagination]="false">
+    <thead>
+      <tr>
+        <th class="text-center" style="width: 5%">#</th>
+        <th>Loại đơn hàng</th>
+        <th>Trạng thái đơn hàng</th>
+        <th>Loại thanh toán</th>
+        <th>Trạng thái thanh toán</th>
+        <th>Người đặt</th>
+        <th>Tạo bởi</th>
+        <th>Tổng cộng</th>
+        <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('created')">
+          Ngày tạo
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of orders?.data; track data.id) {
+      <tr>
+        <td class="text-center">{{ data.id }}</td>
+        <td>{{ data.orderType }}</td>
+        <td>{{ data.orderStatus }}</td>
+        <td>{{ data.paymentType }}</td>
+        <td>{{ data.paymentStatus }}</td>
+
+        <td>{{ data.customerName }}</td>
+        <td>{{ data.createdById }}</td>
+        <td>{{ utilService.formatVND(data.total) }}</td>
+        <td>{{ data.created }}</td>
+      </tr>
+      }
+    </tbody>
+  </nz-table>
+
+  <div
+    *ngIf="orders != null"
+    class="d-flex align-items-center justify-content-center mt-3"
+  >
+    <nz-pagination
+      [nzPageIndex]="orders.pageIndex"
+      [nzTotal]="orders.count"
+      [nzSize]="'default'"
+      [nzPageSize]="orders.pageSize"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzShowTotal]="totalTemplate"
+      [nzShowSizeChanger]="true"
+      [nzShowQuickJumper]="true"
+      [nzPageSizeOptions]="[3, 5, 10, 20, 50]"
+    ></nz-pagination>
+    <ng-template #totalTemplate let-total
+      >Tổng {{ total }} danh mục</ng-template
+    >
+  </div>
+</nz-card>

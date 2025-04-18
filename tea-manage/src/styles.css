@@ -70,7 +70,8 @@
   color: white !important;
 }
 
-.inner-content.sale-styles {
+.inner-content.sale-styles,
+.inner-content.report-styles {
   background-color: #f0f2f5 !important;
   padding: 0 !important;
 }
