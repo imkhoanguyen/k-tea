@@ -176,9 +176,10 @@ namespace Tea.Application.Services.Implements
             return OrderMapper.EntityToResponse(order);
         }
 
-        public Task<PaginationResponse<OrderResponse>> GetPaginationAsync(PaginationRequest request)
+        public async Task<PaginationResponse<OrderListResponse>> GetPaginationAsync(OrderPaginationRequest request)
         {
-            throw new NotImplementedException();
+            var response = await unit.Order.GetPaginationAsync(request);
+            return response;
         }
 
         public Task<OrderResponse> UpdateAsync(int id, OrderUpdateRequest request)

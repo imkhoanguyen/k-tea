@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Tea.Application.DTOs.Orders;
+using Tea.Domain.Common;
 using Tea.Domain.Entities;
 using Tea.Infrastructure.DataAccess.EntityConfigs;
 
@@ -7,6 +9,9 @@ namespace Tea.Infrastructure.DataAccess
 {
     public class TeaContext : IdentityDbContext<AppUser>
     {
+        public virtual DbSet<OrderListResponse> OrderListResponses { get; set; }
+        public virtual DbSet<TopSellingItemResponse> TopSellingItemResponses { get; set; }
+        public virtual DbSet<DailyRevenueInMonthResponse> DailyRevenueInMonthResponses { get; set; }
         public TeaContext(DbContextOptions options) : base(options) { }
 
 
@@ -23,6 +28,9 @@ namespace Tea.Infrastructure.DataAccess
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<OrderListResponse>().HasNoKey();
+            builder.Entity<TopSellingItemResponse>().HasNoKey();
+            builder.Entity<DailyRevenueInMonthResponse>().HasNoKey();
             builder.ApplyConfigurationsFromAssembly(typeof(CategoryConfig).Assembly);
         }
     }

@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+﻿using Tea.Application.DTOs.Orders;
 using Tea.Domain.Common;
 using Tea.Domain.Entities;
 
@@ -6,6 +6,11 @@ namespace Tea.Domain.Repositories
 {
     public interface IOrderRepository : IRepository<Order>
     {
-        Task<PaginationResponse<Order>> GetPaginationAsync(PaginationRequest request, Expression<Func<Order, bool>>? expression);
+        Task<PaginationResponse<OrderListResponse>> GetPaginationAsync(OrderPaginationRequest request);
+        Task<int> GetTotalOrdersPerToDayAsync();
+        Task<decimal> GetRevenuePerDayAsync();
+        Task<IEnumerable<TopSellingItemResponse>> GetTopSellingItemsAsync(int topCount);
+        Task<IEnumerable<DailyRevenueInMonthResponse>> GetDailyRevenueInMonthAsync(int monthNumber, int year);
+
     }
 }

@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Tea.Application\Tea.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DataAccess\Sql\" />
+  </ItemGroup>
+
 </Project>

@@ -154,6 +154,7 @@ builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IDiscountService, DiscountService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 
 builder.Services.AddSingleton<ICartService, CartService>();
