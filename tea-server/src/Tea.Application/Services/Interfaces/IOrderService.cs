@@ -9,7 +9,8 @@ namespace Tea.Application.Services.Interfaces
         Task<OrderResponse> GetByIdAsync(int id);
         Task<IEnumerable<OrderResponse>> GetAllAsync();
         Task<OrderResponse> CreateInStoreAsync(OrderCreateInStoreRequest request);
-        Task<OrderResponse> UpdateAsync(int id, OrderUpdateRequest request);
+        Task UpdateOrderStatusAsync(int orderId, string status);
+        Task UpdatePaymentStatusAsync(int orderId, string status);
         Task DeleteAsync(int id);
         Task DeletesAsync(List<int> orderIdList);
         Task<OrderResponse> CreateOnlineAsync(OrderCreateOnlineRequest request);

@@ -178,13 +178,63 @@ namespace Tea.Application.Services.Implements
 
         public async Task<PaginationResponse<OrderListResponse>> GetPaginationAsync(OrderPaginationRequest request)
         {
+            if(request.UserName != null && request.UserName.Length> 0)
+            {
+                var user = await userManager.FindByNameAsync(request.UserName);
+                if (user == null)
+                {
+                    throw new UserNotFoundException(request.UserName);
+                }
+                request.UserName = user.Id;
+            }
             var response = await unit.Order.GetPaginationAsync(request);
             return response;
         }
 
-        public Task<OrderResponse> UpdateAsync(int id, OrderUpdateRequest request)
+        public async Task UpdateOrderStatusAsync(int orderId, string status)
         {
-            throw new NotImplementedException();
+            // Convert string to enum
+            if (!Enum.TryParse<OrderStatus>(status, ignoreCase: true, out var orderStatus))
+            {
+                logger.LogError($"Invalid order status : {status}");
+                throw new ConvertStringToEnumFailedException("Lỗi khi thay đổi trạng thái đơn hàng. Vui lòng thử lại sau");
+            }
+
+            var order = await unit.Order.FindAsync(x => x.Id == orderId, tracked: true);
+            if(order == null)
+            {
+                throw new OrderNotFoundException(orderId);
+            }
+
+            order.OrderStatus = orderStatus;
+
+            if (!await unit.SaveChangesAsync())
+            {
+                throw new SaveChangesFailedException();
+            }
+        }
+
+        public async Task UpdatePaymentStatusAsync(int orderId, string status)
+        {
+            // Convert string to enum
+            if (!Enum.TryParse<PaymentStatus>(status, ignoreCase: true, out var paymentStatus))
+            {
+                logger.LogError($"Invalid order status : {status}");
+                throw new ConvertStringToEnumFailedException("Lỗi khi thay đổi trạng thái thanh toán. Vui lòng thử lại sau");
+            }
+
+            var order = await unit.Order.FindAsync(x => x.Id == orderId, tracked: true);
+            if (order == null)
+            {
+                throw new OrderNotFoundException(orderId);
+            }
+
+            order.PaymentStatus = paymentStatus;
+
+            if (!await unit.SaveChangesAsync())
+            {
+                throw new SaveChangesFailedException();
+            }
         }
 
 

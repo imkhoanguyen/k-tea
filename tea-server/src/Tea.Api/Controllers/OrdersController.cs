@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
 using Tea.Application.DTOs.Orders;
 using Tea.Application.Services.Interfaces;
 using Tea.Domain.Common;
@@ -32,6 +33,27 @@ namespace Tea.Api.Controllers
             var response = await orderService.CreateInStoreAsync(request);
             return CreatedAtAction(nameof(Get), new { id = response.Id }, response);
         }
+
+        [HttpPut("{id}/order-status")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateOrderStatus([FromRoute] int id, [FromBody] UpdateOrderStatusRequest request)
+        {
+            await orderService.UpdateOrderStatusAsync(id, request.Status);
+            return NoContent();
+        }
+
+        [HttpPut("{id}/payment-status")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdatePaymentStatus([FromRoute] int id, [FromBody] UpdatePaymentStatusRequest request)
+        {
+            await orderService.UpdatePaymentStatusAsync(id, request.Status);
+            return NoContent();
+        }
+
 
         [HttpPost("online")]
         [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status201Created)]
