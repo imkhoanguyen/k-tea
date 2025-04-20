@@ -61,4 +61,16 @@ export class OrderService {
   get(id: number) {
     return this.http.get(this.apiUrl + `orders/${id}`);
   }
+
+  updateOrderStatus(id: number, status: string) {
+    return this.http.put(this.apiUrl + `orders/${id}/order-status`, {
+      status: status,
+    });
+  }
+
+  updatePaymenttatus(id: number, status: string) {
+    return this.http.put(this.apiUrl + `orders/${id}/payment-status`, {
+      status: status,
+    });
+  }
 }

@@ -38,4 +38,5 @@ export class ItemParams extends PaginationRequest {
   constructor() {
     super();
   }
+  override pageSize: number = 6;
 }

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -45,6 +45,7 @@ import { OrderService } from '../../core/services/order.service';
 import { Pagination } from '../../shared/models/base';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-report',
@@ -65,6 +66,7 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
     NzButtonModule,
     NzPaginationModule,
     NzDatePickerModule,
+    DatePipe,
   ],
   templateUrl: './report.component.html',
   styleUrl: './report.component.css',
@@ -74,6 +76,7 @@ export class ReportComponent implements OnInit, OnDestroy {
   private reportService = inject(ReportService);
   private orderService = inject(OrderService);
   utilService = inject(UtilitiesService);
+  private router = inject(Router);
 
   topCountItem = 5;
   month: number;
@@ -316,5 +319,9 @@ export class ReportComponent implements OnInit, OnDestroy {
     this.prm.minAmount = undefined;
     this.dateRange = null;
     this.loadOrderList();
+  }
+
+  goDetail(id: number) {
+    this.router.navigate(['/chi-tiet-don-hang', id]);
   }
 }

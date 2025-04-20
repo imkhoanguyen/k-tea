@@ -14,6 +14,7 @@ import { DiscountListComponent } from './features/discount/discount-list/discoun
 import { ReportComponent } from './features/report/report.component';
 import { NotfoundComponent } from './shared/errors/notfound/notfound.component';
 import { ServererrorComponent } from './shared/errors/servererror/servererror.component';
+import { OrderDetailComponent } from './features/order-detail/order-detail.component';
 
 export const routes: Routes = [
   { path: '', component: ReportComponent },
@@ -33,6 +34,8 @@ export const routes: Routes = [
   { path: 'ban-hang', component: SaleListComponent },
   { path: 'ma-giam-gia', component: DiscountListComponent },
   { path: 'thong-ke', component: ReportComponent },
+  { path: 'chi-tiet-don-hang/:id', component: OrderDetailComponent },
+
   { path: 'not-found', component: NotfoundComponent },
   { path: 'server-error', component: ServererrorComponent },
   { path: '**', component: ReportComponent, pathMatch: 'full' },
