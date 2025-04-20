@@ -1,0 +1,107 @@
+<!-- pagination -->
+<div class="container my-5">
+  <h1 class="text-center mb-3" style="text-transform: uppercase">
+    Đơn hàng đã đặt
+  </h1>
+  <div class="mb-3 d-flex gap-2">
+    <input
+      nz-input
+      class="w-25"
+      type="text"
+      [(ngModel)]="prm.search"
+      placeholder="Nhập id người tạo hoặc tên người đặt"
+    />
+    <input
+      nz-input
+      style="width: 15%"
+      type="number"
+      [(ngModel)]="prm.minAmount"
+      placeholder="Giá thấp nhất"
+    />
+    <input
+      style="width: 15%"
+      nz-input
+      [(ngModel)]="prm.maxAmount"
+      placeholder="Giá cao nhất"
+      type="number"
+    />
+    <nz-range-picker
+      [(ngModel)]="dateRange"
+      [nzRenderExtraFooter]="footerRender"
+    ></nz-range-picker>
+    <button
+      nz-button
+      nzValue="small"
+      nzType="primary"
+      (click)="loadOrderList()"
+    >
+      Áp dụng
+    </button>
+
+    <button nz-button nzValue="small" (click)="refreshOrderList()">
+      Làm mới
+    </button>
+  </div>
+  <nz-table [nzData]="orders?.data ?? []" [nzFrontPagination]="false">
+    <thead>
+      <tr>
+        <th class="text-center" style="width: 5%">#</th>
+        <th>Loại đơn hàng</th>
+        <th>Trạng thái đơn hàng</th>
+        <th>Loại thanh toán</th>
+        <th>Trạng thái thanh toán</th>
+        <th>Người đặt</th>
+        <th>Tạo bởi</th>
+        <th>Tổng cộng</th>
+        <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('created')">
+          Ngày tạo
+        </th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of orders?.data; track data.id) {
+      <tr>
+        <td class="text-center">{{ data.id }}</td>
+        <td>{{ data.orderType }}</td>
+        <td>{{ data.orderStatus }}</td>
+        <td>{{ data.paymentType }}</td>
+        <td>{{ data.paymentStatus }}</td>
+
+        <td>{{ data.customerName }}</td>
+        <td>{{ data.createdById }}</td>
+        <td>{{ utilService.formatVND(data.total) }}</td>
+        <td>{{ data.created }}</td>
+        <td>
+          <i
+            class="fa-solid fa-eye"
+            style="cursor: pointer"
+            (click)="goDetail(data.id)"
+          ></i>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </nz-table>
+
+  <div
+    *ngIf="orders != null"
+    class="d-flex align-items-center justify-content-center mt-3"
+  >
+    <nz-pagination
+      [nzPageIndex]="orders.pageIndex"
+      [nzTotal]="orders.count"
+      [nzSize]="'default'"
+      [nzPageSize]="orders.pageSize"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzShowTotal]="totalTemplate"
+      [nzShowSizeChanger]="true"
+      [nzShowQuickJumper]="true"
+      [nzPageSizeOptions]="[3, 5, 10, 20, 50]"
+    ></nz-pagination>
+    <ng-template #totalTemplate let-total
+      >Tổng {{ total }} danh mục</ng-template
+    >
+  </div>
+</div>

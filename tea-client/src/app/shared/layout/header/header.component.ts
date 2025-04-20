@@ -96,6 +96,15 @@ export class HeaderComponent {
     this.cartService.removeItemFromCart(item);
   }
 
+  goHistoryOrder() {
+    var user = this.userService.currentUser();
+    if (!user) {
+      this.toastrService.info('Vui lòng đăng nhập');
+      return;
+    }
+    this.router.navigate(['/lich-su-dat-hang', user?.userName]);
+  }
+
   applyDiscount() {
     this.discountService.checkDiscount(this.promotionCode).subscribe({
       next: (res) => {

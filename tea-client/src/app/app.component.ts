@@ -6,11 +6,18 @@ import { UserService } from './core/services/user.service';
 import { CartService } from './core/services/cart.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerComponent } from 'ngx-spinner';
+import { FooterComponent } from './shared/layout/footer/footer.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [NzLayoutModule, HeaderComponent, RouterOutlet, NgxSpinnerComponent],
+  imports: [
+    NzLayoutModule,
+    HeaderComponent,
+    RouterOutlet,
+    NgxSpinnerComponent,
+    FooterComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
