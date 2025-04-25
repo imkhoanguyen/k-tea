@@ -11,5 +11,13 @@
             ItemId = itemId;
             CategoryId = categoryId;
         }
+
+        public ItemCategory(Category c, int itemId, int categoryId)
+        {
+            Category = c;
+            CategoryId = categoryId;
+            ItemId = itemId;
+        }
+       
     }
 }
