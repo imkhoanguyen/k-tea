@@ -9,7 +9,7 @@ using Tea.Application.Services.Interfaces;
 using Tea.Domain.Common;
 using Tea.Domain.Constants;
 using Tea.Domain.Entities;
-using Tea.Domain.Exceptions;
+using Tea.Domain.Exceptions;    
 using Tea.Domain.Exceptions.BadRequests;
 using Tea.Domain.Exceptions.NotFounds;
 using Tea.Domain.Repositories;
@@ -34,27 +34,37 @@ namespace Tea.Application.Services.Implements
                 throw new ItemNotFoundException(itemId);
             }
 
-            foreach (var sizeCreateRequest in requests)
+            await unit.BeginTransactionAsync();
+
+            try
             {
-                var size = new Size
+                foreach (var sizeCreateRequest in requests)
                 {
-                    Name = sizeCreateRequest.Name,
-                    Description = sizeCreateRequest.Description,
-                    Price = sizeCreateRequest.Price,
-                    NewPrice = sizeCreateRequest.NewPrice,
-                };
+                    var size = new Size
+                    {
+                        Name = sizeCreateRequest.Name,
+                        Description = sizeCreateRequest.Description,
+                        Price = sizeCreateRequest.Price,
+                        NewPrice = sizeCreateRequest.NewPrice,
+                    };
 
-                entity.Sizes.Add(size);
-            }
+                    entity.Sizes.Add(size);
+                }
 
-            if (await unit.SaveChangesAsync())
+                if (await unit.SaveChangesAsync())
+                {
+                    await unit.CommitTransactionAsync();
+                    logger.LogInformation("Add sizes to item successfully");
+                    return ItemMapper.EntityToResponse(entity);
+                }
+
+                logger.LogError(Logging.SaveChangesFailed);
+                throw new SaveChangesFailedException();
+            } catch
             {
-                logger.LogInformation("Add sizes to item successfully");
-                return ItemMapper.EntityToResponse(entity);
+                await unit.RollbackTransactionAsync();
+                throw;
             }
-
-            logger.LogError(Logging.SaveChangesFailed);
-            throw new SaveChangesFailedException();
         }
 
         public async Task<ItemResponse> CreateAsync(ItemCreateRequest request)
@@ -70,6 +80,8 @@ namespace Tea.Application.Services.Implements
             {
                 throw new UploadFileFailedException(resultUploadImg.Error);
             }
+
+            await unit.BeginTransactionAsync();
 
             try
             {
@@ -112,6 +124,7 @@ namespace Tea.Application.Services.Implements
 
                 if (await unit.SaveChangesAsync())
                 {
+                    await unit.CommitTransactionAsync();
                     logger.LogInformation($"Crategory created successfully with ID: {item.Id}");
                     // do chỉ có categoryId nên phải get lại để get thông tin category 
                     // => get lại
@@ -124,6 +137,7 @@ namespace Tea.Application.Services.Implements
             }
             catch
             {
+                await unit.RollbackTransactionAsync();
                 await cloudinaryService.DeleteFileAsync(resultUploadImg.PublicId!);
                 throw;
             }
@@ -266,6 +280,8 @@ namespace Tea.Application.Services.Implements
                 throw new UploadFileFailedException();
             }
 
+            await unit.BeginTransactionAsync();
+
             try
             {
                 // delete current image of item (cloudinary)
@@ -277,6 +293,7 @@ namespace Tea.Application.Services.Implements
 
                 if (await unit.SaveChangesAsync())
                 {
+                    await unit.CommitTransactionAsync();
                     logger.LogInformation($"Successfully updated image of item with ID: {itemId}");
                     return entity.ImgUrl;
                 }
@@ -288,6 +305,7 @@ namespace Tea.Application.Services.Implements
             catch
             {
                 // rollback: delete image new uploaded
+                await unit.RollbackTransactionAsync();
                 await cloudinaryService.DeleteFileAsync(resultUploadImage.PublicId!);
                 throw;
             }
@@ -309,53 +327,66 @@ namespace Tea.Application.Services.Implements
                 throw new ItemMustHaveAtLeastOneCategoryException();
             }
 
-            var entity = await unit.Item.FindAsync(x => x.Id == id, tracked: true);
-            if (entity == null)
+            await unit.BeginTransactionAsync();
+
+            try
             {
-                logger.LogWarning($"Item with ID: {id} not found.");
-                throw new ItemNotFoundException(id);
+                var entity = await unit.Item.FindAsync(x => x.Id == id, tracked: true);
+                if (entity == null)
+                {
+                    logger.LogWarning($"Item with ID: {id} not found.");
+                    throw new ItemNotFoundException(id);
+                }
+
+                entity.Name = request.Name;
+                entity.Description = request.Description;
+                entity.Slug = request.Slug;
+                entity.IsFeatured = request.IsFeatured;
+                entity.IsPublished = request.IsPublished;
+
+                var categoryIdRequest = request.CategoryIdList;
+
+                var currentCategoriesItem = entity.ItemCategories.ToList();
+
+                // get exits list categoryId
+                // chuyen sang hashset giup truy van nhanh hon khi so voi khi su dung list (existingCategoryIds.Contains)
+                var existingCategoryIds = currentCategoriesItem.Select(x => x.CategoryId).ToHashSet();
+
+                // itemcategory list need add
+                var categoriesNeedAdd = categoryIdRequest
+                    .Where(categoryId => !existingCategoryIds.Contains(categoryId))
+                    .Select(categoryId => new ItemCategory(entity.Id, categoryId))
+                    .ToList();
+
+                if (categoriesNeedAdd.Count > 0)
+                    unit.ItemCategory.AddRange(categoriesNeedAdd);
+
+                // itemcategory list need remove
+                var categoriesNeedDelete = currentCategoriesItem
+                    .Where(ic => !categoryIdRequest.Contains(ic.CategoryId))
+                    .ToList();
+
+                if (categoriesNeedDelete.Count > 0)
+                    unit.ItemCategory.RemoveRange(categoriesNeedDelete);
+
+                if (await unit.SaveChangesAsync())
+                {
+                    await unit.CommitTransactionAsync();
+                    logger.LogInformation($"Successfully updated item with ID: {id}");
+                    
+                    var entityToReturn = await unit.Item.FindAsync(x => x.Id == entity.Id);
+                    return ItemMapper.EntityToResponse(entityToReturn!);
+                }
+
+                logger.LogError(Logging.SaveChangesFailed);
+                throw new SaveChangesFailedException();
+            } catch
+            {
+                await unit.RollbackTransactionAsync();
+                throw;
             }
 
-            entity.Name = request.Name;
-            entity.Description = request.Description;
-            entity.Slug = request.Slug;
-            entity.IsFeatured = request.IsFeatured;
-            entity.IsPublished = request.IsPublished;
-
-            var categoryIdRequest = request.CategoryIdList;
-
-            var currentCategoriesItem = entity.ItemCategories.ToList();
-
-            // get exits list categoryId
-            // chuyen sang hashset giup truy van nhanh hon khi so voi khi su dung list (existingCategoryIds.Contains)
-            var existingCategoryIds = currentCategoriesItem.Select(x => x.CategoryId).ToHashSet();
-
-            // itemcategory list need add
-            var categoriesNeedAdd = categoryIdRequest
-                .Where(categoryId => !existingCategoryIds.Contains(categoryId))
-                .Select(categoryId => new ItemCategory(entity.Id, categoryId))
-                .ToList();
-
-            if (categoriesNeedAdd.Count > 0)
-                unit.ItemCategory.AddRange(categoriesNeedAdd);
-
-            // itemcategory list need remove
-            var categoriesNeedDelete = currentCategoriesItem
-                .Where(ic => !categoryIdRequest.Contains(ic.CategoryId))
-                .ToList();
-
-            if (categoriesNeedDelete.Count > 0)
-                unit.ItemCategory.RemoveRange(categoriesNeedDelete);
-
-            if (await unit.SaveChangesAsync())
-            {
-                logger.LogInformation($"Successfully updated item with ID: {id}");
-                var entityToReturn = await unit.Item.FindAsync(x => x.Id == entity.Id);
-                return ItemMapper.EntityToResponse(entityToReturn!);
-            }
-
-            logger.LogError(Logging.SaveChangesFailed);
-            throw new SaveChangesFailedException();
+            
         }
 
 
@@ -368,6 +399,7 @@ namespace Tea.Application.Services.Implements
                 logger.LogWarning(Logging.IdMismatch(routeId: itemId, request.ItemId));
                 throw new IdMismatchException("Vui lòng chọn lại sản phẩm của size cần cập nhật.");
             }
+
 
             var item = await unit.Item.FindAsync(x => x.Id == itemId, tracked: true);
             if (item == null)
