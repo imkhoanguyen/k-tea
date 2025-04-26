@@ -1,0 +1,45 @@
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <nz-card nzTitle="GỢI Ý ĐÒ UỐNG BẰNG AI">
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="requestText"
+            placeholder="Nhập yêu cầu của bạn..."
+          />
+          <button class="btn btn-primary" (click)="getDrinkRecommend()">
+            <i class="bi bi-send-fill"></i>
+          </button>
+        </div>
+
+        <div *ngIf="recommends.length > 0" class="mt-4">
+          <h4>Kết quả gợi ý:</h4>
+          <div class="row">
+            <div *ngFor="let item of recommends" class="col-md-4 mb-4">
+              <div class="card h-100">
+                <img
+                  [src]="item.imgUrl || 'assets/default-drink.jpg'"
+                  class="card-img-top"
+                  [alt]="item.name"
+                  style="height: 200px; object-fit: cover"
+                />
+                <div class="card-body">
+                  <h5 class="card-title">{{ item.name }}</h5>
+                  <p class="card-text">{{ item.description }}</p>
+                  <p class="text-muted">
+                    <small>{{ item.reason }}</small>
+                  </p>
+                </div>
+                <div class="card-footer">
+                  <button nz-button nzType="primary">Xem chi tiết</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nz-card>
+    </div>
+  </div>
+</div>

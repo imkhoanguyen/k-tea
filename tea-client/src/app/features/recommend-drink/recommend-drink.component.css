@@ -1,0 +1,59 @@
+/* chat-bot.component.css */
+.chat-container {
+  max-width: 600px;
+  margin: 0 auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.message-area {
+  height: 400px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+
+.user-message,
+.bot-message {
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 4px;
+  max-width: 80%;
+}
+
+.user-message {
+  background: #007bff;
+  color: white;
+  margin-left: auto;
+}
+
+.bot-message {
+  background: #e9ecef;
+  margin-right: auto;
+}
+
+.input-area {
+  display: flex;
+  gap: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.loading-indicator {
+  color: #666;
+  font-style: italic;
+}
+
+nz-card {
+  max-width: 900px;
+  width: 800px;
+}

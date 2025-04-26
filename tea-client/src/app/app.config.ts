@@ -14,6 +14,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient } from '@angular/common/http';
 import { provideNzIcons } from 'ng-zorro-antd/icon';
 import {
+  SendOutline,
   ShoppingCartOutline,
   UserOutline,
 } from '@ant-design/icons-angular/icons';
@@ -21,7 +22,7 @@ import { provideToastr } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
 registerLocaleData(vi);
-const icons = [UserOutline, ShoppingCartOutline];
+const icons = [UserOutline, ShoppingCartOutline, SendOutline];
 
 export const appConfig: ApplicationConfig = {
   providers: [
