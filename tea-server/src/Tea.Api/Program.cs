@@ -144,6 +144,8 @@ builder.Services.Configure<CloudinaryConfig>(builder.Configuration.GetSection(Cl
 builder.Services.Configure<TokenConfig>(builder.Configuration.GetSection(TokenConfig.ConfigName));
 builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection(EmailConfig.ConfigName));
 builder.Services.Configure<VNPayConfig>(builder.Configuration.GetSection(VNPayConfig.ConfigName));
+builder.Services.Configure<GeminiAIConfig>(builder.Configuration.GetSection(GeminiAIConfig.ConfigName));
+
 
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -155,6 +157,8 @@ builder.Services.AddScoped<IDiscountService, DiscountService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IGeminiService, GeminiService>();
+
 
 
 builder.Services.AddSingleton<ICartService, CartService>();
