@@ -8,6 +8,7 @@ import { PaymentFailedComponent } from './features/payment/payment-failed/paymen
 import { OrderListComponent } from './features/order/order-list/order-list.component';
 import { OrderDetailComponent } from './features/order/order-detail/order-detail.component';
 import { RecommendDrinkComponent } from './features/recommend-drink/recommend-drink.component';
+import { RegisterComponent } from './features/register/register.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,4 +20,5 @@ export const routes: Routes = [
   { path: 'lich-su-dat-hang/:username', component: OrderListComponent },
   { path: 'chi-tiet-don-hang/:id', component: OrderDetailComponent },
   { path: 'goi-y-mon-ai', component: RecommendDrinkComponent },
+  { path: 'dang-ky', component: RegisterComponent },
 ];

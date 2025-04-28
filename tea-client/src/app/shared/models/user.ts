@@ -19,12 +19,11 @@ export interface AppUser {
   address: string;
 }
 
-export interface UserAdd {
+export interface Register {
   userName: string;
   email: string;
   password: string;
   fullName: string;
-  role: string;
   phoneNumber: string;
   address: string;
 }
