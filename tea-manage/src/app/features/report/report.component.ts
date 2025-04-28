@@ -46,6 +46,7 @@ import { Pagination } from '../../shared/models/base';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-report',
@@ -77,6 +78,7 @@ export class ReportComponent implements OnInit, OnDestroy {
   private orderService = inject(OrderService);
   utilService = inject(UtilitiesService);
   private router = inject(Router);
+  private toastrService = inject(ToastrService);
 
   topCountItem = 5;
   month: number;
@@ -323,5 +325,17 @@ export class ReportComponent implements OnInit, OnDestroy {
 
   goDetail(id: number) {
     this.router.navigate(['/chi-tiet-don-hang', id]);
+  }
+
+  downloadOrderPdf(orderId: number) {
+    this.reportService.exportPdf(orderId).subscribe({
+      next: (res) => {
+        this.utilService.downloadPdf(res, `HoaDon_${orderId}.pdf`);
+        this.toastrService.success('Xuất hóa đơn thành cônng');
+      },
+      error: (er) => {
+        console.log(er);
+      },
+    });
   }
 }

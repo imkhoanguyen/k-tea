@@ -6,6 +6,7 @@ import {
   Report,
   TopSellingItem,
 } from '../../shared/models/report';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -36,5 +37,12 @@ export class ReportService {
       this.apiUrl + 'reports/get-daily-revenue-in-month',
       { params }
     );
+  }
+
+  // order.service.ts
+  exportPdf(orderId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}reports/print?orderId=${orderId}`, {
+      responseType: 'blob',
+    });
   }
 }

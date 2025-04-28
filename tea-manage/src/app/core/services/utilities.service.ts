@@ -41,4 +41,16 @@ export class UtilitiesService {
 
     return `${formatted} VNĐ`;
   }
+
+  downloadPdf(blob: Blob, filename: string) {
+    //  Native JavaScript
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+  }
 }

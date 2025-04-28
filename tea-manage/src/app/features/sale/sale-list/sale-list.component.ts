@@ -22,8 +22,13 @@ import { UtilitiesService } from '../../../core/services/utilities.service';
 import { paymentTypeList } from '../../../constants/payment';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { OrderService } from '../../../core/services/order.service';
-import { OrderAddInStore, OrderItemAdd } from '../../../shared/models/order';
+import {
+  Order,
+  OrderAddInStore,
+  OrderItemAdd,
+} from '../../../shared/models/order';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { ReportService } from '../../../core/services/report.service';
 
 @Component({
   selector: 'app-sale-list',
@@ -51,6 +56,7 @@ export class SaleListComponent implements OnInit {
   private userService = inject(UserService);
   private discountService = inject(DiscountService);
   private orderService = inject(OrderService);
+  private reportService = inject(ReportService);
   utilService = inject(UtilitiesService);
   cartService = inject(CartService);
   items?: Pagination<Item>;
@@ -191,8 +197,19 @@ export class SaleListComponent implements OnInit {
     };
     this.orderService.addOrderInStore(orderAddInStore).subscribe({
       next: (res) => {
+        const order = res as Order;
         this.toastrService.success('Tạo đơn thành công');
         this.cartService.deleteCart();
+        this.reportService.exportPdf(order.id).subscribe({
+          next: (res) => {
+            this.utilService.downloadPdf(res, `HoaDon_${order.id}.pdf`);
+            this.toastrService.success('Xuất hóa đơn thành cônng');
+          },
+          error: (er) => {
+            console.log(er);
+            this.toastrService.error('Xuất hóa đơn thất bại');
+          },
+        });
       },
       error: (er) => {
         console.log(er);
