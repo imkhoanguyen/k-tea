@@ -108,4 +108,16 @@ export class OrderListComponent implements OnInit {
   goDetail(id: number) {
     this.router.navigate(['/chi-tiet-don-hang', id]);
   }
+
+  downloadOrderPdf(orderId: number) {
+    this.orderService.exportPdf(orderId).subscribe({
+      next: (res) => {
+        this.utilService.downloadPdf(res, `HoaDon_${orderId}.pdf`);
+        this.toastrService.success('Xuất hóa đơn thành cônng');
+      },
+      error: (er) => {
+        console.log(er);
+      },
+    });
+  }
 }

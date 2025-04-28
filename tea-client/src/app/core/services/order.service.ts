@@ -8,6 +8,7 @@ import {
   OrderParams,
 } from '../../shared/models/order';
 import { Pagination } from '../../shared/models/base';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -65,5 +66,11 @@ export class OrderService {
 
   get(id: number) {
     return this.http.get(this.apiUrl + `orders/${id}`);
+  }
+
+  exportPdf(orderId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}reports/print?orderId=${orderId}`, {
+      responseType: 'blob',
+    });
   }
 }

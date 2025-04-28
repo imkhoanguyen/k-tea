@@ -73,11 +73,18 @@
         <td>{{ utilService.formatVND(data.total) }}</td>
         <td>{{ data.created }}</td>
         <td>
-          <i
-            class="fa-solid fa-eye"
-            style="cursor: pointer"
-            (click)="goDetail(data.id)"
-          ></i>
+          <div class="d-flex gap-2 align-items-center justify-content-center">
+            <i
+              class="fa-solid fa-eye"
+              style="cursor: pointer"
+              (click)="goDetail(data.id)"
+            ></i>
+            <i
+              class="fa-solid fa-file-pdf"
+              style="cursor: pointer"
+              (click)="downloadOrderPdf(data.id)"
+            ></i>
+          </div>
         </td>
       </tr>
       }
