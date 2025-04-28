@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using DinkToPdf.Contracts;
+using DinkToPdf;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -145,6 +147,7 @@ builder.Services.Configure<TokenConfig>(builder.Configuration.GetSection(TokenCo
 builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection(EmailConfig.ConfigName));
 builder.Services.Configure<VNPayConfig>(builder.Configuration.GetSection(VNPayConfig.ConfigName));
 builder.Services.Configure<GeminiAIConfig>(builder.Configuration.GetSection(GeminiAIConfig.ConfigName));
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
 
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
@@ -158,10 +161,8 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IGeminiService, GeminiService>();
-
-
-
 builder.Services.AddSingleton<ICartService, CartService>();
+builder.Services.AddTransient<IPdfService, PdfService>();
 
 var app = builder.Build();
 
