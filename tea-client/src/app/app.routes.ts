@@ -9,6 +9,8 @@ import { OrderListComponent } from './features/order/order-list/order-list.compo
 import { OrderDetailComponent } from './features/order/order-detail/order-detail.component';
 import { RecommendDrinkComponent } from './features/recommend-drink/recommend-drink.component';
 import { RegisterComponent } from './features/register/register.component';
+import { ForgotPasswordComponent } from './features/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './features/reset-password/reset-password.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -21,4 +23,6 @@ export const routes: Routes = [
   { path: 'chi-tiet-don-hang/:id', component: OrderDetailComponent },
   { path: 'goi-y-mon-ai', component: RecommendDrinkComponent },
   { path: 'dang-ky', component: RegisterComponent },
+  { path: 'quen-mat-khau', component: ForgotPasswordComponent },
+  { path: 'dat-lai-mat-khau', component: ResetPasswordComponent },
 ];

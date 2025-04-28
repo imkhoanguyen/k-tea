@@ -1,7 +1,13 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AppUser, Register, User, UserParams } from '../../shared/models/user';
+import {
+  AppUser,
+  Register,
+  ResetPassword,
+  User,
+  UserParams,
+} from '../../shared/models/user';
 import { map } from 'rxjs';
 import { Pagination } from '../../shared/models/base';
 
@@ -47,25 +53,6 @@ export class UserService {
     this.currentUser.set(user);
   }
 
-  getPagination(prm: UserParams) {
-    let params = new HttpParams();
-
-    if (prm.search.length > 0) {
-      params = params.append('search', prm.search);
-    }
-
-    if (prm.orderBy.length > 0) {
-      params = params.append('orderBy', prm.orderBy);
-    }
-
-    params = params.append('pageIndex', prm.pageIndex);
-    params = params.append('pageSize', prm.pageSize);
-
-    return this.http.get<Pagination<AppUser>>(this.apiUrl + 'users', {
-      params,
-    });
-  }
-
   register(r: Register) {
     return this.http.post<AppUser>(this.apiUrl + 'auths/register', r);
   }
@@ -76,5 +63,17 @@ export class UserService {
 
   delete(username: string) {
     return this.http.delete(this.apiUrl + `users/${username}`);
+  }
+
+  forgotPassword(email: string) {
+    let params = new HttpParams();
+    params = params.append('email', email);
+    return this.http.get<any>(this.apiUrl + 'auths/forgot-password', {
+      params,
+    });
+  }
+
+  resetPassword(resetPassword: ResetPassword) {
+    return this.http.post(this.apiUrl + 'auths/reset-password', resetPassword);
   }
 }

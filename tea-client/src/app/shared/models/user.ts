@@ -28,6 +28,12 @@ export interface Register {
   address: string;
 }
 
+export interface ResetPassword {
+  email: string;
+  password: string;
+  token: string;
+}
+
 export class UserParams extends PaginationRequest {
   constructor() {
     super();
