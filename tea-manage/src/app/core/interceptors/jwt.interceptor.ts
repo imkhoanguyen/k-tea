@@ -44,6 +44,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
             toastrService.info(
               'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại'
             );
+            userService.logout();
             router.navigate(['/dang-nhap']);
             return throwError(() => new Error('Phiên đăng nhập đã hết hạn 2'));
           }

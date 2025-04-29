@@ -12,6 +12,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { UserService } from '../../core/services/user.service';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -33,6 +34,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   frm: FormGroup = new FormGroup({});
   validationErrors?: string[];
   private toastrSevice = inject(ToastrService);
+  private router = inject(Router);
 
   ngOnInit(): void {
     this.initForm();
@@ -56,6 +58,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.userService.login(userName, password).subscribe({
       next: (_) => {
         this.toastrSevice.success('Đăng nhập thành công');
+        this.router.navigate(['/']);
       },
       error: (er) => {
         console.log(er);
