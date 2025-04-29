@@ -1,12 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { OrderService } from '../../core/services/order.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UtilitiesService } from '../../core/services/utilities.service';
 import { Order } from '../../shared/models/order';
 import { CommonModule, DatePipe } from '@angular/common';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
 
 enum OrderStatus {
   PENDING = 'Pending',
@@ -30,6 +33,10 @@ enum PaymentStatus {
     NzSelectModule,
     FormsModule,
     ReactiveFormsModule,
+    NzAlertModule,
+    NzButtonModule,
+    NzCardModule,
+    RouterLink,
   ],
   templateUrl: './order-detail.component.html',
   styleUrl: './order-detail.component.css',
