@@ -1,159 +1,157 @@
 <div class="container my-5">
+  <h1 class="text-center my-5">Chi tiết đơn hàng</h1>
   <main *ngIf="order" class="content">
-    <div class="container-fluid p-0">
-      <h1 class="mb-3 text-center">Chi tiết đơn hàng</h1>
-
-      <div class="row">
-        <!-- @* order imformation *@ -->
-        <div class="col-8">
-          <div class="card">
-            <div class="card-header fw-bold">
-              <div class="d-flex">
-                <h5 class="fw-bold">Thông tin đơn hàng #{{ order.id }}</h5>
-                <div class="ms-auto">
-                  <i class="fa-sharp fa-solid fa-clock"></i>
-                  {{ order.created }}
-                </div>
-              </div>
-            </div>
-            <div class="card-body">
-              <!-- @* desscription *@ -->
-              <h4 class="mb-3 fw-bold">Mô tả</h4>
-              <div class="alert alert-success mb-4" role="alert">
-                {{ order.description }}
-              </div>
-
-              <!-- @* product *@ -->
-              <h4 class="mb-3 fw-bold">Dánh sách sản phẩm</h4>
-              <div class="table-responsive mb-4">
-                <table class="table table-bordered">
-                  <thead class="fw-bold align-middle">
-                    <tr>
-                      <td>Tên sản phẩm</td>
-                      <td>Loại</td>
-                      <td>Số lượng</td>
-                      <td>Đơn giá</td>
-                      <td>Thành tiền</td>
-                    </tr>
-                  </thead>
-                  <tbody class="align-middle table-border-bottom-0">
-                    @for (item of order.items; track $index) {
-                    <tr>
-                      <td>
-                        <div class="d-flex gap-2 align-items-center">
-                          <img
-                            src="{{ item.itemImg }}"
-                            alt="{{ item.itemName }}"
-                            style="width: 80px; height: 80px; object-fit: cover"
-                          />
-                          <span>{{ item.itemName }}</span>
-                        </div>
-                      </td>
-                      <td>{{ item.itemSize }}</td>
-                      <td class="fw-bold">{{ item.quantity }}</td>
-                      <td class="fw-bold">
-                        {{ utilService.formatVND(item.price) }}
-                      </td>
-                      <td class="fw-bold">
-                        {{ utilService.formatVND(item.price * item.quantity) }}
-                      </td>
-                    </tr>
-                    }
-                    <tr>
-                      <td colspan="5" class="fw-bold text-end">
-                        Tổng giá sản phẩm:
-                      </td>
-                      <td class="fw-bold">
-                        {{ utilService.formatVND(order.subTotal) }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colspan="5" class="fw-bold text-end">
-                        Phí vận chuyển:
-                      </td>
-                      <td class="fw-bold">
-                        {{ utilService.formatVND(order.shippingFee ?? 0) }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colspan="5" class="fw-bold text-end">Giảm giá:</td>
-                      <td class="fw-bold">
-                        {{ utilService.formatVND(order.discountPrice ?? 0) }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colspan="5" class="fw-bold text-end">Thành tiền:</td>
-                      <td class="fw-bold">
-                        {{ utilService.formatVND(calTotal(order)) }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <hr />
-            </div>
-          </div>
-        </div>
-
-        <!-- @* customer/shipping information *@ -->
-        <div
-          *ngIf="
-            order.customerAddress && order.customerName && order.customerPhone
-          "
-          class="col-4"
+    <div class="row">
+      <!-- @* order imformation *@ -->
+      <div class="col-8">
+        <nz-card
+          nzTitle="Thông tin đơn hàng #{{ order.id }}"
+          [nzExtra]="main"
+          nzType="inner"
         >
-          <div class="d-flex flex-column gap-3">
-            <!-- @* shipping info *@ -->
-            <div class="card w-100">
-              <div class="card-header">
-                <h5 class="fw-bold">Thông tin giao hàng</h5>
-              </div>
-              <div class="card-body">
-                <h4 class="fw-bold">{{ order.customerAddress }}</h4>
-                <hr />
-                <div class="mb-0 d-flex gap-2 align-items-center">
-                  <i class="fa-sharp fa-solid fa-phone"></i
-                  >{{ order.customerPhone + " - " + order.customerName }}
-                </div>
-              </div>
-            </div>
+          <!-- @* desscription *@ -->
+          <div class="mb-3">
+            <div class="mb-2 fw-medium">Mô tả</div>
+            <nz-alert
+              nzType="info"
+              nzMessage=" {{ order.description }}"
+            ></nz-alert>
+          </div>
 
-            <!-- @* payment status *@ -->
-            <div class="card w-100">
-              <div class="card-header">
-                <h5 class="fw-bold">Thanh toán</h5>
-              </div>
-              <div class="card-body">
-                <div class="d-flex gap-2">
-                  <span class="fw-bold">Loại thanh toán: </span>
-                  <span>{{ order.paymentType }}</span>
-                </div>
-                <hr />
-                <div class="d-flex gap-2">
-                  <span class="fw-bold">Trạng thái: </span>
-                  <span>{{ order.paymentStatus }}</span>
-                </div>
-              </div>
-            </div>
+          <!-- @* product *@ -->
+          <div class="mb-2 fw-medium">Danh sách sản phẩm</div>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead class="fw-medium align-middle">
+                <tr>
+                  <td>Tên sản phẩm</td>
+                  <td>Loại</td>
+                  <td>Số lượng</td>
+                  <td>Đơn giá</td>
+                  <td colspan="2">Thành tiền</td>
+                </tr>
+              </thead>
+              <tbody class="align-middle table-border-bottom-0">
+                @for (item of order.items; track $index) {
+                <tr>
+                  <td>
+                    <div class="d-flex gap-2 align-items-center">
+                      <img
+                        src="{{ item.itemImg }}"
+                        alt="{{ item.itemName }}"
+                        style="width: 80px; height: 80px; object-fit: cover"
+                      />
+                      <span>{{ item.itemName }}</span>
+                    </div>
+                  </td>
+                  <td>{{ item.itemSize }}</td>
+                  <td class="fw-medium">{{ item.quantity }}</td>
+                  <td class="fw-medium">
+                    {{ utilService.formatVND(item.price) }}
+                  </td>
+                  <td class="fw-medium" colspan="2">
+                    {{ utilService.formatVND(item.price * item.quantity) }}
+                  </td>
+                </tr>
+                }
+                <tr>
+                  <td colspan="5" class="fw-bold text-end">
+                    Tổng giá sản phẩm:
+                  </td>
+                  <td class="fw-medium">
+                    {{ utilService.formatVND(order.subTotal) }}
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="fw-bold text-end">Phí vận chuyển:</td>
+                  <td class="fw-medium">
+                    {{ utilService.formatVND(order.shippingFee ?? 0) }}
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="fw-bold text-end">Giảm giá:</td>
+                  <td class="fw-medium">
+                    {{ utilService.formatVND(order.discountPrice ?? 0) }}
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="fw-bold text-end">Thành tiền:</td>
+                  <td class="fw-medium">
+                    {{ utilService.formatVND(calTotal(order)) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </nz-card>
+        <ng-template #main>
+          <i class="fa-sharp fa-solid fa-clock"></i>
+          {{ order.created | date : "dd/MM/yyyy, h:mm a" }}
+        </ng-template>
+      </div>
 
-            <!-- @* order status *@ -->
-            <div class="card w-100">
-              <div class="card-header">
-                <h5 class="fw-bold">Trạng thái đơn hàng</h5>
-              </div>
-              <div class="card-body">
-                <div class="d-flex gap-2">
-                  <span class="fw-bold">Loại đơn: </span>
-                  <span>{{ order.orderType }}</span>
-                </div>
-                <hr />
-                <div class="d-flex gap-2">
-                  <span class="fw-bold">Trạng thái: </span>
-                  <span>{{ order.orderStatus }}</span>
-                </div>
-              </div>
+      <!-- @* customer/shipping information *@ -->
+      <div
+        *ngIf="
+          order.customerAddress && order.customerName && order.customerPhone
+        "
+        class="col-4"
+      >
+        <div class="d-flex flex-column gap-3">
+          <!-- @* shipping info *@ -->
+          <nz-card nzTitle="Thông tin giao hàng" nzType="inner">
+            <div class="fw-medium">{{ order.customerAddress }}</div>
+            <hr />
+            <div class="mb-0 d-flex gap-2 align-items-center">
+              <i class="fa-sharp fa-solid fa-phone"></i
+              >{{ order.customerPhone + " - " + order.customerName }}
             </div>
+          </nz-card>
+
+          <!-- @* payment status *@ -->
+          <nz-card nzTitle="Thông tin thanh toán" nzType="inner">
+            <div class="d-flex gap-2">
+              <span class="fw-medium">Loại thanh toán: </span>
+              <span>{{ order.paymentType }}</span>
+            </div>
+            <hr />
+            <div class="d-flex gap-2">
+              <span class="fw-medium">Trạng thái: </span>
+              <span>{{ order.paymentStatus }}</span>
+            </div>
+          </nz-card>
+
+          <!-- @* order status *@ -->
+          <nz-card nzTitle="Trạng thái đơn hàng" nzType="inner">
+            <div class="d-flex gap-2">
+              <span class="fw-medium">Loại đơn: </span>
+              <span>{{ order.orderType }}</span>
+            </div>
+            <hr />
+            <div class="d-flex gap-2">
+              <span class="fw-medium">Trạng thái: </span>
+              <span>{{ order.orderStatus }}</span>
+            </div>
+          </nz-card>
+
+          <nz-alert
+            *ngIf="order.orderStatus === 'Processing'"
+            nzType="info"
+            nzMessage="Đơn hàng đang chuẩn bị không thể hủy đơn. Vui lòng liên hệ dịch vụ chăm sóc khách hàng Zalo: 0987654321 để được hỗ trợ hủy đơn."
+          ></nz-alert>
+
+          <div class="d-flex justify-content-end align-items-center gap-2">
+            <button
+              [disabled]="order.orderStatus !== 'Pending'"
+              nz-button
+              nzDanger
+              nzType="primary"
+            >
+              Hủy đơn
+            </button>
+            <button nz-button nzType="primary" routerLink="/thuc-don">
+              Tiếp tục đặt hàng
+            </button>
           </div>
         </div>
       </div>

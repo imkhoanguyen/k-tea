@@ -1,6 +1,6 @@
 <!-- pagination -->
 <div class="container my-5">
-  <h1 class="text-center mb-3" style="text-transform: uppercase">
+  <h1 class="text-center my-5" style="text-transform: uppercase">
     Đơn hàng đã đặt
   </h1>
   <div class="mb-3 d-flex gap-2">
@@ -50,8 +50,6 @@
         <th>Trạng thái đơn hàng</th>
         <th>Loại thanh toán</th>
         <th>Trạng thái thanh toán</th>
-        <th>Người đặt</th>
-        <th>Tạo bởi</th>
         <th>Tổng cộng</th>
         <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('created')">
           Ngày tạo
@@ -67,11 +65,8 @@
         <td>{{ data.orderStatus }}</td>
         <td>{{ data.paymentType }}</td>
         <td>{{ data.paymentStatus }}</td>
-
-        <td>{{ data.customerName }}</td>
-        <td>{{ data.createdById }}</td>
         <td>{{ utilService.formatVND(data.total) }}</td>
-        <td>{{ data.created }}</td>
+        <td>{{ data.created | date : "dd/MM/yyyy, h:mm a" }}</td>
         <td>
           <div class="d-flex gap-2 align-items-center justify-content-center">
             <i

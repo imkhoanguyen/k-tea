@@ -1,14 +1,24 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { OrderService } from '../../../core/services/order.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Order } from '../../../shared/models/order';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { UtilitiesService } from '../../../core/services/utilities.service';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'app-order-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    NzCardModule,
+    DatePipe,
+    NzAlertModule,
+    NzButtonModule,
+    RouterLink,
+  ],
   templateUrl: './order-detail.component.html',
   styleUrl: './order-detail.component.css',
 })

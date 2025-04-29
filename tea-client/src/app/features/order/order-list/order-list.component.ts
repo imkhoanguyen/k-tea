@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -27,6 +27,7 @@ import { ToastrService } from 'ngx-toastr';
     NzButtonModule,
     NzPaginationModule,
     NzDatePickerModule,
+    DatePipe,
   ],
   templateUrl: './order-list.component.html',
   styleUrl: './order-list.component.css',
