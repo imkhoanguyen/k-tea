@@ -14,6 +14,7 @@ using Tea.Infrastructure.Utilities;
 
 namespace Tea.Api.Controllers
 {
+    [Authorize]
     public class UsersController : BaseApiController
     {
         private readonly UserManager<AppUser> _userManager;
@@ -29,6 +30,7 @@ namespace Tea.Api.Controllers
             _unit = unit;
         }
 
+        [Authorize(Policy = AppPermission.User_View)]
         [HttpGet]
         public async Task<IActionResult> GetPagination([FromQuery] PaginationRequest request)
         {
@@ -83,6 +85,7 @@ namespace Tea.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize(Policy = AppPermission.User_View)]
         [HttpGet("{userName}")]
         [AllowAnonymous]
         public async Task<ActionResult<UserResponse>> Get(string userName)
@@ -115,7 +118,7 @@ namespace Tea.Api.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Policy = AppPermission.User_Create)]
+        [Authorize(Policy = AppPermission.User_Create)]
         public async Task<IActionResult> Create([FromBody] UserCreateRequest request)
         {
             if (!ModelState.IsValid)
@@ -281,7 +284,7 @@ namespace Tea.Api.Controllers
         }
 
         [HttpPut("{userName}/change-role")]
-        //[Authorize(Policy = AppPermission.Role_ChangePermission)]
+        [Authorize(Policy = AppPermission.Role_ChangePermission)]
         public async Task<ActionResult> ChangeRole(string userName, ChangeRoleRequest request)
         {
             if (!ModelState.IsValid)

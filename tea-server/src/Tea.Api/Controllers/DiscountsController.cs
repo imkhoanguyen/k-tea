@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Tea.Application.DTOs.Discounts;
 using Tea.Application.Services.Interfaces;
 using Tea.Domain.Common;
+using Tea.Domain.Constants;
 
 namespace Tea.Api.Controllers
 {
+    [Authorize]
     public class DiscountsController(IDiscountService discountService) : BaseApiController
     {
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(typeof(PaginationResponse<DiscountResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPagination([FromQuery] PaginationRequest request)
@@ -15,6 +19,7 @@ namespace Tea.Api.Controllers
             return Ok(pagination);
         }
 
+        [AllowAnonymous]
         [HttpGet("all")]
         [ProducesResponseType(typeof(IEnumerable<DiscountResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
@@ -23,6 +28,7 @@ namespace Tea.Api.Controllers
             return Ok(all);
         }
 
+        [AllowAnonymous]
         [HttpGet("{code}")]
         [ProducesResponseType(typeof(DiscountResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -32,6 +38,8 @@ namespace Tea.Api.Controllers
             return Ok(response);
         }
 
+
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(DiscountResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -41,7 +49,7 @@ namespace Tea.Api.Controllers
             return Ok(response);
         }
 
-
+        [Authorize(Policy = AppPermission.Discount_Create)]
         [HttpPost]
         [ProducesResponseType(typeof(DiscountResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -52,6 +60,7 @@ namespace Tea.Api.Controllers
         }
 
 
+        [Authorize(Policy = AppPermission.Discount_Edit)]
         [HttpPut("{id:int}")]
         [ProducesResponseType(typeof(DiscountResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -62,6 +71,7 @@ namespace Tea.Api.Controllers
             return Ok(DiscountResponse);
         }
 
+        [Authorize(Policy = AppPermission.Discount_Delete)]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -72,6 +82,7 @@ namespace Tea.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = AppPermission.Discount_Delete)]
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]

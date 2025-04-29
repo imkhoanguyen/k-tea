@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Tea.Application.DTOs.Categories;
 using Tea.Application.Services.Interfaces;
 using Tea.Domain.Common;
+using Tea.Domain.Constants;
 
 namespace Tea.Api.Controllers
 {
+    [Authorize]
     public class CategoriesController(ICategoryService categoryService) : BaseApiController
     {
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(typeof(PaginationResponse<CategoryResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPagination([FromQuery] PaginationRequest request)
@@ -15,6 +19,7 @@ namespace Tea.Api.Controllers
             return Ok(pagination);
         }
 
+        [AllowAnonymous]
         [HttpGet("all")]
         [ProducesResponseType(typeof(IEnumerable<CategoryResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
@@ -23,6 +28,7 @@ namespace Tea.Api.Controllers
             return Ok(all);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -32,6 +38,7 @@ namespace Tea.Api.Controllers
             return Ok(categoryResponse);
         }
 
+        [Authorize(Policy = AppPermission.Category_Create)]
         [HttpPost]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -42,6 +49,7 @@ namespace Tea.Api.Controllers
             return CreatedAtAction(nameof(Get), new { id = categoryResponse.Id }, categoryResponse);
         }
 
+        [Authorize(Policy = AppPermission.Category_Create)]
         [HttpPost("children")]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -52,6 +60,7 @@ namespace Tea.Api.Controllers
             return CreatedAtAction(nameof(Get), new { id = categoryResponse.Id }, categoryResponse);
         }
 
+        [Authorize(Policy = AppPermission.Category_Edit)]
         [HttpPut("{id:int}")]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -62,6 +71,7 @@ namespace Tea.Api.Controllers
             return Ok(categoryResponse);
         }
 
+        [Authorize(Policy = AppPermission.Category_Delete)]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -72,6 +82,7 @@ namespace Tea.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = AppPermission.Category_Delete)]
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]

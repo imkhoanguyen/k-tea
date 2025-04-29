@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Tea.Application.Interfaces;
 using Tea.Domain.Entities;
 using Tea.Domain.Exceptions.BadRequests;
@@ -6,6 +7,7 @@ using Tea.Domain.Exceptions.NotFounds;
 
 namespace Tea.Api.Controllers
 {
+    [Authorize]
     public class CartsController(ICartService cartService) : BaseApiController
     {
         [HttpGet]

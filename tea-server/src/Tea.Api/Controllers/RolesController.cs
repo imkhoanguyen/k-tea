@@ -17,6 +17,7 @@ using Tea.Infrastructure.Utilities;
 
 namespace Tea.Api.Controllers
 {
+    [Authorize]
     public class RolesController : BaseApiController
     {
         private readonly RoleManager<AppRole> _roleManager;
@@ -33,6 +34,7 @@ namespace Tea.Api.Controllers
             _unit = unit;
         }
 
+        [Authorize(Policy = AppPermission.Role_View)]
         [HttpGet]
         [ProducesResponseType(typeof(PaginationResponse<RoleResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPagination([FromQuery] PaginationRequest request)
@@ -57,6 +59,7 @@ namespace Tea.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize(Policy = AppPermission.Role_View)]
         [HttpGet("all")]
         [ProducesResponseType(typeof(IEnumerable<RoleResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
@@ -65,7 +68,7 @@ namespace Tea.Api.Controllers
             return Ok(roles.Select(RoleMapper.EntityToRoleResponse));
         }
 
-
+        [AllowAnonymous]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(RoleResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -83,8 +86,8 @@ namespace Tea.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize(Policy = AppPermission.Role_Create)]
         [HttpPost]
-        //[Authorize(Policy = AppPermission.Role_Create)]
         [ProducesResponseType(typeof(RoleResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(RoleCreateRequest request)
@@ -113,6 +116,7 @@ namespace Tea.Api.Controllers
             throw new AddNewRoleFailedException("Đã xảy ra lỗi khi thêm quyền. Vui lòng thử lại sau");
         }
 
+        [Authorize(Policy = AppPermission.Role_Edit)]
         [HttpPut("{id}")]
         //[Authorize(Policy = AppPermission.Role_Edit)]
         [ProducesResponseType(typeof(RoleResponse), StatusCodes.Status200OK)]
@@ -153,8 +157,8 @@ namespace Tea.Api.Controllers
             throw new UpdateRoleFailedException("Đã xảy ra lỗi khi cập nhật quyền");
         }
 
+        [Authorize(Policy = AppPermission.Role_Delete)]
         [HttpDelete("{id}")]
-        //[Authorize(Policy = AppPermission.Role_Delete)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -206,7 +210,7 @@ namespace Tea.Api.Controllers
         }
 
         [HttpPut("{roleId}/update-claims")]
-        //[Authorize(Policy = AppPermission.Role_Edit)]
+        [Authorize(Policy = AppPermission.Role_Edit)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]

@@ -23,6 +23,8 @@ using Tea.Infrastructure.DataAccess.Seeds;
 using Tea.Infrastructure.Interfaces;
 using Tea.Infrastructure.Repositories;
 using Tea.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
+using Tea.Api.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -163,6 +165,10 @@ builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IGeminiService, GeminiService>();
 builder.Services.AddSingleton<ICartService, CartService>();
 builder.Services.AddTransient<IPdfService, PdfService>();
+
+
+// register policy
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
 var app = builder.Build();
 

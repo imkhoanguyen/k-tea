@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Tea.Application.DTOs.Payments;
 using Tea.Infrastructure.Interfaces;
 
 namespace Tea.Api.Controllers
 {
+    [Authorize]
     public class PaymentsController : BaseApiController
     {
         private readonly IPaymentService _paymentService;

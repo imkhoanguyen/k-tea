@@ -1,11 +1,14 @@
 ﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tea.Application.DTOs.Orders;
 using Tea.Application.Services.Interfaces;
 using Tea.Domain.Common;
+using Tea.Domain.Constants;
 
 namespace Tea.Api.Controllers
 {
+    [Authorize]
     public class OrdersController(IOrderService orderService) : BaseApiController
     {
         [HttpGet("{id}")]
@@ -25,6 +28,7 @@ namespace Tea.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize(Policy = AppPermission.Order_Create)]
         [HttpPost("in-store")]
         [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -34,6 +38,7 @@ namespace Tea.Api.Controllers
             return CreatedAtAction(nameof(Get), new { id = response.Id }, response);
         }
 
+        [Authorize(Policy = AppPermission.Order_Edit)]
         [HttpPut("{id}/order-status")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

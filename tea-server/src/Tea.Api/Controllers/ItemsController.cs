@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Tea.Application.DTOs.Items;
 using Tea.Application.DTOs.Sizes;
 using Tea.Application.Services.Interfaces;
 using Tea.Domain.Common;
+using Tea.Domain.Constants;
 
 namespace Tea.Api.Controllers
 {
+    [Authorize]
     public class ItemsController(IItemService itemService) : BaseApiController
     {
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(typeof(PaginationResponse<ItemResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPagination([FromQuery] ItemPaginationRequest request)
@@ -16,6 +20,7 @@ namespace Tea.Api.Controllers
             return Ok(pagination);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(ItemResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -25,6 +30,7 @@ namespace Tea.Api.Controllers
             return Ok(itemResponse);
         }
 
+        [Authorize(Policy = AppPermission.Item_Create)]
         [HttpPost]
         [ProducesResponseType(typeof(ItemResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -35,6 +41,7 @@ namespace Tea.Api.Controllers
             return CreatedAtAction(nameof(Get), new { id = itemResponse.Id }, itemResponse);
         }
 
+        [Authorize(Policy = AppPermission.Item_Create)]
         [HttpPost("{itemId:int}/sizes")]
         [ProducesResponseType(typeof(ItemResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -45,6 +52,7 @@ namespace Tea.Api.Controllers
             return CreatedAtAction(nameof(Get), new { id = itemResponse.Id }, itemResponse);
         }
 
+        [Authorize(Policy = AppPermission.Item_Edit)]
         [HttpPut("{id:int}")]
         [ProducesResponseType(typeof(ItemResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -55,6 +63,7 @@ namespace Tea.Api.Controllers
             return Ok(itemResponse);
         }
 
+        [Authorize(Policy = AppPermission.Item_Edit)]
         [HttpPut("{id:int}/image")]
         [ProducesResponseType(typeof(ItemResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -65,6 +74,7 @@ namespace Tea.Api.Controllers
             return Ok(new {imgUrl = itemResponse});
         }
 
+        [Authorize(Policy = AppPermission.Item_Edit)]
         [HttpPut("{id:int}/size")]
         [ProducesResponseType(typeof(ItemResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -75,6 +85,7 @@ namespace Tea.Api.Controllers
             return Ok(itemResponse);
         }
 
+        [Authorize(Policy = AppPermission.Item_Delete)]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(typeof(ItemResponse), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -85,6 +96,7 @@ namespace Tea.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = AppPermission.Item_Delete)]
         [HttpDelete]
         [ProducesResponseType(typeof(ItemResponse), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -95,6 +107,7 @@ namespace Tea.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = AppPermission.Item_Delete)]
         [HttpDelete("{itemId:int}/sizes")]
         [ProducesResponseType(typeof(ItemResponse), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]

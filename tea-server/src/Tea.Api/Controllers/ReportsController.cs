@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tea.Api.Extensions;
 using Tea.Application.DTOs.Orders;
@@ -9,6 +10,7 @@ using Tea.Infrastructure.Interfaces;
 
 namespace Tea.Api.Controllers
 {
+    [Authorize]
     public class ReportsController(IReportService reportService, IPdfService pdfService, IOrderService orderService) : BaseApiController
     {
         [HttpGet]
