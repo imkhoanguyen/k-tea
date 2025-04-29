@@ -15,26 +15,56 @@ import { ReportComponent } from './features/report/report.component';
 import { NotfoundComponent } from './shared/errors/notfound/notfound.component';
 import { ServererrorComponent } from './shared/errors/servererror/servererror.component';
 import { OrderDetailComponent } from './features/order-detail/order-detail.component';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
-  { path: '', component: ReportComponent },
-  { path: 'danh-muc', component: CategoryListComponent },
-  { path: 'san-pham', component: ItemListComponent },
-  { path: 'them-san-pham', component: ItemAddComponent },
-  { path: 'cap-nhat-san-pham/:id', component: ItemUpdateComponent },
+  { path: '', component: ReportComponent, canActivate: [adminGuard] },
+  {
+    path: 'danh-muc',
+    component: CategoryListComponent,
+    canActivate: [adminGuard],
+  },
+  { path: 'san-pham', component: ItemListComponent, canActivate: [adminGuard] },
+  {
+    path: 'them-san-pham',
+    component: ItemAddComponent,
+    canActivate: [adminGuard],
+  },
+  {
+    path: 'cap-nhat-san-pham/:id',
+    component: ItemUpdateComponent,
+    canActivate: [adminGuard],
+  },
   { path: 'dang-nhap', component: LoginComponent },
-  { path: 'quyen', component: RoleListComponent },
+  { path: 'quyen', component: RoleListComponent, canActivate: [adminGuard] },
   {
     path: 'cap-nhat-chuc-nang-cua-quyen/:id',
     component: RolePermissionComponent,
+    canActivate: [adminGuard],
   },
   { path: 'nguoi-dung', component: UserListComponent },
-  { path: 'them-nguoi-dung', component: UserAddComponent },
-  { path: 'cap-nhat-nguoi-dung/:username', component: UserUpdateComponent },
-  { path: 'ban-hang', component: SaleListComponent },
-  { path: 'ma-giam-gia', component: DiscountListComponent },
-  { path: 'thong-ke', component: ReportComponent },
-  { path: 'chi-tiet-don-hang/:id', component: OrderDetailComponent },
+  {
+    path: 'them-nguoi-dung',
+    component: UserAddComponent,
+    canActivate: [adminGuard],
+  },
+  {
+    path: 'cap-nhat-nguoi-dung/:username',
+    component: UserUpdateComponent,
+    canActivate: [adminGuard],
+  },
+  { path: 'ban-hang', component: SaleListComponent, canActivate: [adminGuard] },
+  {
+    path: 'ma-giam-gia',
+    component: DiscountListComponent,
+    canActivate: [adminGuard],
+  },
+  { path: 'thong-ke', component: ReportComponent, canActivate: [adminGuard] },
+  {
+    path: 'chi-tiet-don-hang/:id',
+    component: OrderDetailComponent,
+    canActivate: [adminGuard],
+  },
 
   { path: 'not-found', component: NotfoundComponent },
   { path: 'server-error', component: ServererrorComponent },
