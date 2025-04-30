@@ -1,0 +1,174 @@
+<!-- cart drawer -->
+<nz-drawer
+  [nzBodyStyle]="{ overflow: 'auto' }"
+  [nzMaskClosable]="false"
+  [nzWidth]="500"
+  [nzVisible]="visible"
+  nzTitle="GIỎ HÀNG CỦA BẠN"
+  [nzFooter]="footerTpl"
+  (nzOnClose)="close()"
+>
+  <div *nzDrawerContent>
+    @for (item of cartService.cart()?.items; track item.itemId) {
+    <div class="d-flex gap-3">
+      <img
+        nz-image
+        [nzSrc]="item.itemImg"
+        [alt]="item.itemName"
+        class="img-in-table mb-3"
+      />
+      <div class="d-flex flex-column gap-1">
+        <div
+          class="item-name"
+          style="font-size: 14px; text-align: start; padding: 0; margin: 0"
+          nz-tooltip
+          nzTooltipTitle="  {{ item.itemName }} - {{ item.size }}"
+        >
+          {{ item.itemName }} - {{ item.size }}
+        </div>
+        <div>
+          Giá:
+          <span class="fw-medium">{{ utilService.formatVND(item.price) }}</span>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+          <button nz-button type="default" (click)="onMinus(item)">-</button>
+          <span>SL: {{ item.quantity }}</span>
+          <button nz-button type="default" (click)="onPlus(item)">+</button>
+        </div>
+      </div>
+    </div>
+    }
+
+    <div class="d-flex gap-3 align-items-center mt-5">
+      <label for="code" style="font-size: 18px" class="fw-medium"
+        >Mã giảm giá:
+      </label>
+      <input
+        class="w-50"
+        nz-input
+        placeholder="Mã giảm giá"
+        id="code"
+        [(ngModel)]="promotionCode"
+      />
+      <button
+        type="button"
+        nz-button
+        nzType="primary"
+        (click)="applyDiscount()"
+      >
+        Áp dụng
+      </button>
+    </div>
+
+    <hr />
+    <div style="font-size: 18px" class="d-flex">
+      <div class="fw-medium">Tổng:</div>
+      <div class="ms-auto">
+        {{ utilService.formatVND(cartService.totals()) }}
+      </div>
+    </div>
+
+    <hr *ngIf="discount" />
+    <div *ngIf="discount" style="font-size: 18px" class="d-flex">
+      @if(discount.amountOff) {
+      <div class="fw-medium">Giảm giá (tiền):</div>
+      <div class="ms-auto">
+        -{{ utilService.formatVND(discount.amountOff) }}
+      </div>
+      } @else {
+      <div class="fw-medium">Giảm giá ({{ discount.percentOff }}%):</div>
+      <div class="ms-auto">
+        -{{
+          utilService.formatVND(
+            (cartService.totals() * discount.percentOff!) / 100
+          )
+        }}
+      </div>
+      }
+    </div>
+
+    <hr />
+    <div style="font-size: 18px" class="d-flex">
+      <div class="fw-medium">Thành tiền:</div>
+      @if(discount) { @if(discount.amountOff) {
+      <div class="ms-auto">
+        {{ utilService.formatVND(cartService.totals() - discount.amountOff) }}
+      </div>
+      } @else {
+      <div class="ms-auto">
+        {{
+          utilService.formatVND(
+            cartService.totals() -
+              (cartService.totals() * discount.percentOff!) / 100
+          )
+        }}
+      </div>
+      } } @else {
+      <div class="ms-auto">
+        {{ utilService.formatVND(cartService.totals()) }}
+      </div>
+      }
+    </div>
+
+    <hr />
+    <div style="font-size: 18px" class="d-flex">
+      <div class="fw-medium">Phương thức thanh toán:</div>
+      <div class="ms-auto">
+        <nz-select [(ngModel)]="paymentType">
+          @for (item of paymentTypeList; track item) {
+          <nz-option
+            [nzValue]="item.value"
+            [nzLabel]="item.displayName"
+          ></nz-option>
+          }
+        </nz-select>
+      </div>
+    </div>
+
+    <hr />
+    <div style="font-size: 18px">
+      <div class="fw-medium">Số điện thoại</div>
+      <input
+        type="text"
+        nz-input
+        [value]="phoneNumber()"
+        placeholder="Nhập số điện thoại người nhận"
+        (input)="updatePhoneNumber($event)"
+      />
+    </div>
+
+    <hr />
+    <div style="font-size: 18px">
+      <div class="fw-medium">Địa chỉ</div>
+      <input
+        type="text"
+        nz-input
+        [value]="address()"
+        placeholder="Nhập địa chỉa giao hàng"
+        (input)="updateAddress($event)"
+      />
+    </div>
+
+    <hr />
+    <div style="font-size: 18px">
+      <div class="fw-medium">Mô tả</div>
+      <textarea
+        nz-input
+        placeholder="Nhập mô tả của đơn hàng"
+        nzAutosize
+        [(ngModel)]="description"
+      ></textarea>
+    </div>
+  </div>
+
+  <ng-template #footerTpl>
+    <div style="float: right">
+      <button nz-button style="margin-right: 8px" (click)="close()">
+        Đóng
+      </button>
+      <button type="button" nz-button nzType="primary" (click)="createOrder()">
+        Đặt hàng
+      </button>
+    </div>
+  </ng-template>
+</nz-drawer>
