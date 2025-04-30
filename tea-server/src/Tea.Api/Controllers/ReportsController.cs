@@ -11,7 +11,8 @@ using Tea.Infrastructure.Interfaces;
 namespace Tea.Api.Controllers
 {
     [Authorize]
-    public class ReportsController(IReportService reportService, IPdfService pdfService, IOrderService orderService) : BaseApiController
+    public class ReportsController(IReportService reportService, IPdfService pdfService, 
+        IOrderService orderService, IExcelService excelService) : BaseApiController
     {
         [HttpGet]
         [ProducesResponseType(typeof(ReportResponse), StatusCodes.Status200OK)]
@@ -48,6 +49,19 @@ namespace Tea.Api.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet("export")]
+        public async Task<IActionResult> ExportExcelOrders([FromQuery] OrderPaginationRequest request)
+        {
+            request.PageSize = int.MaxValue;
+
+            var paginationResponse = await orderService.GetPaginationAsync(request);
+
+            var stream = await excelService.Export<OrderListResponse>(paginationResponse.Data.ToList());
+
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"OrderReport{DateTime.Now.Ticks}.xlsx");
+        }
+
 
         [HttpGet("print")]
         public async Task<IActionResult> ExportPdfOrder([FromQuery]int orderId)

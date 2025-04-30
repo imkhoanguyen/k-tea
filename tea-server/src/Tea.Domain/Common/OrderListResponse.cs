@@ -3,10 +3,10 @@
     public class OrderListResponse
     {
         public int Id { get; set; }
-        public required string OrderStatus { get; set; }
-        public required string OrderType { get; set; }
-        public required string PaymentStatus { get; set; }
-        public required string PaymentType { get; set; }
+        public string? OrderStatus { get; set; }
+        public string? OrderType { get; set; }
+        public string PaymentStatus { get; set; }
+        public string? PaymentType { get; set; }
         public DateTimeOffset Created { get; set; } 
         public decimal SubTotal { get; set; } // sum price of items
         public decimal? DiscountPrice { get; set; }

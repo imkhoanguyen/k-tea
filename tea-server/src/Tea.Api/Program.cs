@@ -165,6 +165,7 @@ builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IGeminiService, GeminiService>();
 builder.Services.AddSingleton<ICartService, CartService>();
 builder.Services.AddTransient<IPdfService, PdfService>();
+builder.Services.AddTransient<IExcelService, ExcelService>();
 
 
 // register policy
