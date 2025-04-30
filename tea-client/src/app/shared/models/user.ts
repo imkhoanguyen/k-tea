@@ -6,6 +6,8 @@ export interface User {
   accessToken: string;
   refreshToken: string;
   expiredDateAccessToken: string;
+  address: string;
+  phoneNumber: string;
 }
 
 export interface AppUser {

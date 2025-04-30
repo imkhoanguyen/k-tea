@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
@@ -66,13 +66,32 @@ export class HeaderComponent {
   private discountService = inject(DiscountService);
   private paymentService = inject(PaymentService);
   private router = inject(Router);
+
   discount?: Discount;
   promotionCode: string = '';
   paymentTypeList = paymentTypeList;
   paymentType = this.paymentTypeList[0].value;
-  phoneNumber: string = '';
-  address: string = '';
+  phoneNumber = computed(
+    () => this.userService.currentUser()?.phoneNumber?.toString() || ''
+  );
+  address = computed(
+    () => this.userService.currentUser()?.address.toString() || ''
+  );
+
+  phoneNumberInput = '';
+  addressInput = '';
+
   description: string = '';
+
+  updatePhoneNumber(event: Event) {
+    const newValue = (event.target as HTMLInputElement).value;
+    this.phoneNumberInput = newValue;
+  }
+
+  updateAddress(event: Event) {
+    const newValue = (event.target as HTMLInputElement).value;
+    this.addressInput = newValue;
+  }
 
   changePage(page: number) {
     this.currentPage = page;
@@ -82,6 +101,7 @@ export class HeaderComponent {
 
   open(): void {
     this.visible = true;
+    console.log(this.userService.currentUser());
   }
 
   close(): void {
@@ -121,6 +141,15 @@ export class HeaderComponent {
       this.goPayment();
       return;
     }
+
+    if (this.phoneNumberInput === '') {
+      this.phoneNumberInput = this.phoneNumber();
+    }
+
+    if (this.addressInput === '') {
+      this.addressInput = this.address();
+    }
+
     const orderItemAddList: OrderItemAdd[] = [];
     this.cartService.cart()?.items.map((x) => {
       const orderItemAdd: OrderItemAdd = {
@@ -140,8 +169,8 @@ export class HeaderComponent {
       discountId: this.discount?.id,
       discountPrice: this.calculateDiscountPrice(),
       customerName: this.userService.currentUser()?.fullName ?? '',
-      customerAddress: this.address,
-      customerPhone: this.phoneNumber,
+      customerAddress: this.addressInput,
+      customerPhone: this.phoneNumberInput,
       description: this.description,
     };
     this.orderService.addOrderOnline(orderAddOnline).subscribe({
@@ -185,9 +214,9 @@ export class HeaderComponent {
     const paymentResponse: PaymentResponse = {
       username: this.userService.currentUser()?.userName || '',
       total: this.cartService.totals(),
-      address: this.address,
+      address: this.address(),
       description: this.description,
-      phoneNumber: this.phoneNumber,
+      phoneNumber: this.phoneNumber(),
     };
 
     if (this.discount) {

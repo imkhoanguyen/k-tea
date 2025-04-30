@@ -235,8 +235,9 @@
       <input
         type="text"
         nz-input
-        [(ngModel)]="phoneNumber"
+        [value]="phoneNumber()"
         placeholder="Nhập số điện thoại người nhận"
+        (input)="updatePhoneNumber($event)"
       />
     </div>
 
@@ -246,8 +247,9 @@
       <input
         type="text"
         nz-input
-        [(ngModel)]="address"
+        [value]="address()"
         placeholder="Nhập địa chỉa giao hàng"
+        (input)="updateAddress($event)"
       />
     </div>
 
