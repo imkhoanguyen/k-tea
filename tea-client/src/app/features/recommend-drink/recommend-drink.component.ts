@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { GeminiService } from '../../core/services/gemini.service';
 import { ToastrService } from 'ngx-toastr';
 import { RecommendDrink } from '../../shared/models/gemini';
@@ -8,6 +8,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { ItemModalComponent } from '../item-modal/item-modal.component';
 
 @Component({
   selector: 'app-recommend-drink',
@@ -20,6 +21,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     NzInputModule,
     NzIconModule,
     NzButtonModule,
+    ItemModalComponent,
   ],
   templateUrl: './recommend-drink.component.html',
   styleUrl: './recommend-drink.component.css',
@@ -29,6 +31,7 @@ export class RecommendDrinkComponent {
   private toastrService = inject(ToastrService);
   requestText: string = '';
   recommends: RecommendDrink[] = [];
+  @ViewChild(ItemModalComponent) itemComponent!: ItemModalComponent;
 
   getDrinkRecommend() {
     console.log(this.requestText);
@@ -45,5 +48,9 @@ export class RecommendDrinkComponent {
         console.log(er);
       },
     });
+  }
+
+  showModal(id: number) {
+    this.itemComponent.showModal(id);
   }
 }

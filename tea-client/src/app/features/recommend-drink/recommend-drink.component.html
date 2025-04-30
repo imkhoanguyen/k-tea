@@ -33,7 +33,13 @@
                   </p>
                 </div>
                 <div class="card-footer">
-                  <button nz-button nzType="primary">Xem chi tiết</button>
+                  <button
+                    nz-button
+                    nzType="primary"
+                    (click)="showModal(item.id)"
+                  >
+                    Xem chi tiết
+                  </button>
                 </div>
               </div>
             </div>
@@ -43,3 +49,6 @@
     </div>
   </div>
 </div>
+
+<!-- item modal -->
+<app-item-modal></app-item-modal>
