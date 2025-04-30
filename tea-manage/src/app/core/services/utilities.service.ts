@@ -42,7 +42,7 @@ export class UtilitiesService {
     return `${formatted} VNĐ`;
   }
 
-  downloadPdf(blob: Blob, filename: string) {
+  downloadFile(blob: Blob, filename: string) {
     //  Native JavaScript
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
