@@ -202,7 +202,7 @@ export class SaleListComponent implements OnInit {
         this.cartService.deleteCart();
         this.reportService.exportPdf(order.id).subscribe({
           next: (res) => {
-            this.utilService.downloadPdf(res, `HoaDon_${order.id}.pdf`);
+            this.utilService.downloadFile(res, `HoaDon_${order.id}.pdf`);
             this.toastrService.success('Xuất hóa đơn thành cônng');
           },
           error: (er) => {

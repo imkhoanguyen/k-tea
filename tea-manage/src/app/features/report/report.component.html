@@ -162,7 +162,7 @@
 <!-- pagination -->
 <nz-card>
   <h2 class="title-card mb-3">Đơn hàng</h2>
-  <div class="mb-3 d-flex gap-2">
+  <div class="mb-3 d-flex gap-2 align-items-center">
     <input
       nz-input
       class="w-25"
@@ -191,11 +191,21 @@
     <button
       nz-button
       nzValue="small"
-      nzType="primary"
+      class="btn-blue"
       (click)="loadOrderList()"
     >
       Áp dụng
     </button>
+
+    <button nz-button nzValue="small" (click)="exportExcel()" nzType="primary">
+      Export Excel
+    </button>
+
+    <span
+      nz-tooltip
+      nzTooltipTitle="Để export excel có filter theo ngày tháng hoặc theo giá thì chọn ngày tháng, nhập giá rồi nhấn 'Áp dụng'. Sau đó nhấn 'Export Excel'"
+      ><i class="bi bi-info-circle-fill" style="color: var(--primary)"></i
+    ></span>
 
     <button nz-button nzValue="small" (click)="refreshOrderList()">
       Làm mới

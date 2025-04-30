@@ -330,11 +330,25 @@ export class ReportComponent implements OnInit, OnDestroy {
   downloadOrderPdf(orderId: number) {
     this.reportService.exportPdf(orderId).subscribe({
       next: (res) => {
-        this.utilService.downloadPdf(res, `HoaDon_${orderId}.pdf`);
+        this.utilService.downloadFile(res, `HoaDon_${orderId}.pdf`);
         this.toastrService.success('Xuất hóa đơn thành cônng');
       },
       error: (er) => {
         console.log(er);
+      },
+    });
+  }
+
+  exportExcel() {
+    let name = 'TatCaHoaDon.xlsx';
+
+    if (this.prm.fromDate && this.prm.toDate) {
+      name = `HoaDon_${this.prm.fromDate}_${this.prm.toDate}.xlsx`;
+    }
+
+    this.reportService.exportExcel(this.prm).subscribe({
+      next: (res) => {
+        this.utilService.downloadFile(res, name);
       },
     });
   }
