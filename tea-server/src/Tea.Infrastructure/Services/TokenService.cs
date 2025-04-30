@@ -170,6 +170,8 @@ namespace Tea.Infrastructure.Services
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
                     ExpiredDateAccessToken = expiredDateAccessToken,
+                    Address = user.Address,
+                    PhoneNumber = user.PhoneNumber
                 };
             }
 

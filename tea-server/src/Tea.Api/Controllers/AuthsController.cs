@@ -68,6 +68,8 @@ namespace Tea.Api.Controllers
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
                 ExpiredDateAccessToken = expiredDateAccessToken,
+                Address = user.Address,
+                PhoneNumber = user.PhoneNumber
             });
         }
 
@@ -92,6 +94,7 @@ namespace Tea.Api.Controllers
                 FullName = request.FullName,
                 Email = request.Email,
                 Address = request.Address,
+                PhoneNumber = request.PhoneNumber,
             };
 
             await _unit.BeginTransactionAsync();

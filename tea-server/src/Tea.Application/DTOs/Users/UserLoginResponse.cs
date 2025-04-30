@@ -7,5 +7,7 @@
         public required string AccessToken { get; set; }
         public required string RefreshToken { get; set; }
         public required DateTime ExpiredDateAccessToken { get; set; }
+        public required string Address { get; set; }
+        public required string PhoneNumber { get; set; }
     }
 }
