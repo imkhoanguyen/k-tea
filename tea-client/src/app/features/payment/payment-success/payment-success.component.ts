@@ -28,14 +28,12 @@ export class PaymentSuccessComponent implements OnInit, OnDestroy {
       this.orderService.get(id).subscribe({
         next: (res) => {
           this.order = res as Order;
-          console.log(this.order);
         },
         error: (er) => {
           console.log(er);
         },
       });
     });
-    this.cartService.deleteCart();
   }
 
   ngOnDestroy(): void {
