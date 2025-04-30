@@ -88,13 +88,16 @@
     </div>
 
     <!-- @* customer/shipping information *@ -->
-    <div
-      *ngIf="order.customerAddress && order.customerName && order.customerPhone"
-      class="col-4"
-    >
+    <div class="col-4">
       <div class="d-flex flex-column gap-3">
         <!-- @* shipping info *@ -->
-        <nz-card nzTitle="Thông tin giao hàng" nzType="inner">
+        <nz-card
+          *ngIf="
+            order.customerAddress && order.customerName && order.customerPhone
+          "
+          nzTitle="Thông tin giao hàng"
+          nzType="inner"
+        >
           <div class="fw-medium">{{ order.customerAddress }}</div>
           <hr />
           <div class="mb-0 d-flex gap-2 align-items-center">
