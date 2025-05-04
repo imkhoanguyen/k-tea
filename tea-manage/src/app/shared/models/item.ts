@@ -34,6 +34,11 @@ export interface ItemUpdate {
   isFeatured: boolean;
 }
 
+export interface ImportResult {
+  rowChange: number;
+  errors: string[];
+}
+
 export class ItemParams extends PaginationRequest {
   constructor() {
     super();

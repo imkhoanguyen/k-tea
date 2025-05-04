@@ -2,6 +2,41 @@
   <h1>Quản lý thực đơn</h1>
   <div class="d-flex gap-2">
     <button
+      nz-button
+      nz-dropdown
+      nzType="primary"
+      nzSize="large"
+      [nzDropdownMenu]="menu4"
+    >
+      Import Excel
+      <i class="bi bi-chevron-down ms-2"></i>
+    </button>
+
+    <nz-dropdown-menu #menu4="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item>
+          <button nz-button (click)="exportTemplate()" nzType="link">
+            <i nz-icon nzType="download"></i>
+            Export Template Update
+          </button>
+        </li>
+        <li nz-menu-item>
+          <nz-upload
+            [nzBeforeUpload]="beforeUpload"
+            [nzAccept]="'.xlsx'"
+            [nzShowUploadList]="false"
+          >
+            <button nz-button nzType="link">
+              <i nz-icon nzType="upload"></i>
+              Import File Update
+            </button>
+          </nz-upload>
+        </li>
+        <li nz-menu-item>menu4 3rd menu item</li>
+      </ul>
+    </nz-dropdown-menu>
+
+    <button
       nzType="primary"
       nzSize="large"
       nz-button
@@ -125,3 +160,25 @@
   ></nz-pagination>
   <ng-template #totalTemplate let-total>Tổng {{ total }} danh mục</ng-template>
 </div>
+
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzTitle="Kết quả Import"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()"
+>
+  <ng-container *nzModalContent>
+    <div style="color: var(--primary)">
+      RowChanges: {{ importResult?.rowChange }}
+    </div>
+    @for (er of importResult?.errors; track $index) {
+    <div style="color: var(--danger)">Error: {{ er }}</div>
+    }
+    <div
+      style="color: var(--primary)"
+      *ngIf="!importResult?.errors || importResult?.errors?.length === 0"
+    >
+      Import thành công. Load lại để xem thay đổi
+    </div>
+  </ng-container>
+</nz-modal>

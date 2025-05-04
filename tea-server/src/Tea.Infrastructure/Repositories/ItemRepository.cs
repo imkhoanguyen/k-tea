@@ -26,6 +26,22 @@ namespace Tea.Infrastructure.Repositories
                     .AsNoTracking().FirstOrDefaultAsync(predicate);
         }
 
+        public override async Task<IEnumerable<Item>> FindAllAsync(Expression<Func<Item, bool>>? predicate, bool tracked = false)
+        {
+            if (predicate == null)
+                return tracked ? await context.Items.Include(x => x.Sizes)
+                    .Include(x => x.ItemCategories).ThenInclude(x => x.Category).ToListAsync()
+                : await context.Items.Include(x => x.Sizes)
+                    .Include(x => x.ItemCategories).ThenInclude(x => x.Category)
+                    .AsNoTracking().ToListAsync();
+
+            return tracked ? await context.Items.Include(x => x.Sizes)
+                    .Include(x => x.ItemCategories).ThenInclude(x => x.Category).Where(predicate).ToListAsync()
+                : await context.Items.Include(x => x.Sizes)
+                    .Include(x => x.ItemCategories).ThenInclude(x => x.Category)
+                    .AsNoTracking().Where(predicate).ToListAsync();
+        }
+
         public async Task<PaginationResponse<Item>> GetPaginationAsync(ItemPaginationRequest request, Expression<Func<Item, bool>>? expression)
         {
             var query = context.Items.Include(x => x.Sizes)

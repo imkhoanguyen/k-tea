@@ -8,11 +8,14 @@ import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { ToastrService } from 'ngx-toastr';
-import { Item, ItemParams } from '../../../shared/models/item';
+import { ImportResult, Item, ItemParams } from '../../../shared/models/item';
 import { Pagination } from '../../../shared/models/base';
 import { ItemService } from '../../../core/services/item.service';
 import { NzImageModule } from 'ng-zorro-antd/image';
 import { Router, RouterLink } from '@angular/router';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { UtilitiesService } from '../../../core/services/utilities.service';
+import { NzUploadFile, NzUploadModule } from 'ng-zorro-antd/upload';
 
 @Component({
   selector: 'app-item-list',
@@ -28,6 +31,8 @@ import { Router, RouterLink } from '@angular/router';
     NzModalModule,
     NzImageModule,
     RouterLink,
+    NzDropDownModule,
+    NzUploadModule,
   ],
   templateUrl: './item-list.component.html',
   styleUrl: './item-list.component.css',
@@ -37,6 +42,7 @@ export class ItemListComponent {
   private modal = inject(NzModalService);
   private toastrService = inject(ToastrService);
   private router = inject(Router);
+  private utilService = inject(UtilitiesService);
   items?: Pagination<Item>;
   prm = new ItemParams();
 
@@ -205,5 +211,70 @@ export class ItemListComponent {
         this.items.data.some((item) => this.setOfCheckedId.has(item.id)) &&
         !this.checked;
     }
+  }
+
+  exportTemplate() {
+    const listId = Array.from(this.setOfCheckedId);
+    this.itemService.exportTemplateUpdate(listId).subscribe({
+      next: (res) => {
+        this.utilService.downloadFile(res, `template_update_item.xlsx`);
+      },
+      error: (er) => {
+        console.log(er);
+      },
+    });
+  }
+
+  fileList: NzUploadFile[] = [];
+  importResult?: ImportResult;
+
+  // Hàm xử lý trước khi upload
+  beforeUpload = (file: NzUploadFile): boolean => {
+    this.handleImport(file as unknown as File);
+    return false; // Return false để ngăn tự động upload
+  };
+
+  // Hàm xử lý import
+  handleImport(file: File): void {
+    if (!file) {
+      this.toastrService.info('Please select a file first');
+      return;
+    }
+
+    // Kiểm tra định dạng file
+    if (!file.name.endsWith('.xlsx')) {
+      this.toastrService.error('Only .xlsx files are allowed');
+      return;
+    }
+
+    this.itemService.importUpdateItem(file).subscribe({
+      next: (result) => {
+        this.importResult = result;
+        this.showModal();
+        this.fileList = []; // Reset file list sau khi import thành công
+      },
+      error: (err) => {
+        this.toastrService.error(
+          err.error?.errors?.join('\n') || 'An error occurred during import'
+        );
+        this.fileList = []; // Reset file list khi có lỗi
+      },
+    });
+  }
+
+  isVisible = false;
+
+  showModal(): void {
+    this.isVisible = true;
+  }
+
+  handleOk(): void {
+    console.log('Button ok clicked!');
+    this.isVisible = false;
+  }
+
+  handleCancel(): void {
+    console.log('Button cancel clicked!');
+    this.isVisible = false;
   }
 }

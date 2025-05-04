@@ -1,15 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tea.Application.DTOs.Items;
+using Tea.Application.DTOs.Orders;
 using Tea.Application.DTOs.Sizes;
+using Tea.Application.Services.Implements;
 using Tea.Application.Services.Interfaces;
 using Tea.Domain.Common;
 using Tea.Domain.Constants;
+using Tea.Domain.Exceptions;
+using Tea.Infrastructure.Interfaces;
+using Tea.Infrastructure.Services;
 
 namespace Tea.Api.Controllers
 {
     [Authorize]
-    public class ItemsController(IItemService itemService) : BaseApiController
+    public class ItemsController(IItemService itemService, IExcelService excelService) : BaseApiController
     {
         [AllowAnonymous]
         [HttpGet]
@@ -71,7 +76,7 @@ namespace Tea.Api.Controllers
         public async Task<IActionResult> UpdateImageOfItem([FromRoute] int id, IFormFile imgFile)
         {
             var itemResponse = await itemService.UpdateImageAsync(id, imgFile);
-            return Ok(new {imgUrl = itemResponse});
+            return Ok(new { imgUrl = itemResponse });
         }
 
         [Authorize(Policy = AppPermission.Item_Edit)]
@@ -112,10 +117,38 @@ namespace Tea.Api.Controllers
         [ProducesResponseType(typeof(ItemResponse), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteSizesOfItem([FromRoute] int itemId,[FromQuery] List<int> sizeIdList)
+        public async Task<IActionResult> DeleteSizesOfItem([FromRoute] int itemId, [FromQuery] List<int> sizeIdList)
         {
             await itemService.DeleteSizesAsync(itemId, sizeIdList);
             return NoContent();
+        }
+
+        [HttpPost("export-template-update")]
+        public async Task<IActionResult> ExportTemplateAddItem([FromBody] List<int> ids)
+        {
+            var stream = await excelService.ExportTemplateUpdateItemAsync(ids);
+
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"UpdateItemExample{DateTime.Now.Ticks}.xlsx");
+        }
+
+        [HttpPost("import-update-items")]
+        public async Task<IActionResult> ImportUpdateItemsFromExcel(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded");
+            }
+
+            if (!Path.GetExtension(file.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest("Only .xlsx files are allowed");
+            }
+
+
+            using var stream = file.OpenReadStream();
+            var result = await excelService.ImportUpdateItemsFromExcelAsync(stream);
+            return Ok(result);
+
         }
     }
 }

@@ -1,9 +1,15 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Item, ItemParams, ItemUpdate } from '../../shared/models/item';
+import {
+  ImportResult,
+  Item,
+  ItemParams,
+  ItemUpdate,
+} from '../../shared/models/item';
 import { Pagination } from '../../shared/models/base';
 import { SizeAdd, SizeUpdate } from '../../shared/models/size';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -74,5 +80,21 @@ export class ItemService {
       params = params.append('sizeIdList', id);
     });
     return this.http.delete(this.apiUrl + `items/${itemId}/sizes`, { params });
+  }
+
+  exportTemplateUpdate(ids: number[]): Observable<Blob> {
+    return this.http.post(`${this.apiUrl}items/export-template-update`, ids, {
+      responseType: 'blob',
+    });
+  }
+
+  importUpdateItem(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<ImportResult>(
+      `${this.apiUrl}items/import-update-items`,
+      formData
+    );
   }
 }
