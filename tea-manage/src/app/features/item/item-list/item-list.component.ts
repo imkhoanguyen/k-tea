@@ -213,7 +213,7 @@ export class ItemListComponent {
     }
   }
 
-  exportTemplate() {
+  exportTemplateUpdate() {
     const listId = Array.from(this.setOfCheckedId);
     this.itemService.exportTemplateUpdate(listId).subscribe({
       next: (res) => {
@@ -229,13 +229,19 @@ export class ItemListComponent {
   importResult?: ImportResult;
 
   // Hàm xử lý trước khi upload
-  beforeUpload = (file: NzUploadFile): boolean => {
-    this.handleImport(file as unknown as File);
+  beforeUploadUpdate = (file: NzUploadFile): boolean => {
+    this.handleUpdateImport(file as unknown as File);
+    return false; // Return false để ngăn tự động upload
+  };
+
+  // Hàm xử lý trước khi upload
+  beforeUploadAdd = (file: NzUploadFile): boolean => {
+    this.handleAddImport(file as unknown as File);
     return false; // Return false để ngăn tự động upload
   };
 
   // Hàm xử lý import
-  handleImport(file: File): void {
+  handleUpdateImport(file: File): void {
     if (!file) {
       this.toastrService.info('Please select a file first');
       return;
@@ -248,6 +254,34 @@ export class ItemListComponent {
     }
 
     this.itemService.importUpdateItem(file).subscribe({
+      next: (result) => {
+        this.importResult = result;
+        this.showModal();
+        this.fileList = []; // Reset file list sau khi import thành công
+      },
+      error: (err) => {
+        this.toastrService.error(
+          err.error?.errors?.join('\n') || 'An error occurred during import'
+        );
+        this.fileList = []; // Reset file list khi có lỗi
+      },
+    });
+  }
+
+  // Hàm xử lý import
+  handleAddImport(file: File): void {
+    if (!file) {
+      this.toastrService.info('Please select a file first');
+      return;
+    }
+
+    // Kiểm tra định dạng file
+    if (!file.name.endsWith('.xlsx')) {
+      this.toastrService.error('Only .xlsx files are allowed');
+      return;
+    }
+
+    this.itemService.importAddItem(file).subscribe({
       next: (result) => {
         this.importResult = result;
         this.showModal();
@@ -276,5 +310,16 @@ export class ItemListComponent {
   handleCancel(): void {
     console.log('Button cancel clicked!');
     this.isVisible = false;
+  }
+
+  exportTemplateAdd() {
+    this.itemService.exportTemplateAdd().subscribe({
+      next: (res) => {
+        this.utilService.downloadFile(res, `template_add_item.xlsx`);
+      },
+      error: (er) => {
+        console.log(er);
+      },
+    });
   }
 }

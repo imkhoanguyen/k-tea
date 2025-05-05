@@ -7,5 +7,7 @@ namespace Tea.Infrastructure.Interfaces
         Task<byte[]> Export<T>(List<T> dataItems) where T : class, new();
         Task<byte[]> ExportTemplateUpdateItemAsync(List<int> ids);
         Task<ImportResult> ImportUpdateItemsFromExcelAsync(Stream fileStream);
+        Task<byte[]> ExportTemplateAddItemAsync();
+        Task<ImportResult> ImportAddItemsFromExcelAsync(Stream fileStream);
     }
 }

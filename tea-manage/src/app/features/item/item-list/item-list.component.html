@@ -15,14 +15,14 @@
     <nz-dropdown-menu #menu4="nzDropdownMenu">
       <ul nz-menu>
         <li nz-menu-item>
-          <button nz-button (click)="exportTemplate()" nzType="link">
+          <button nz-button (click)="exportTemplateUpdate()" nzType="link">
             <i nz-icon nzType="download"></i>
             Export Template Update
           </button>
         </li>
         <li nz-menu-item>
           <nz-upload
-            [nzBeforeUpload]="beforeUpload"
+            [nzBeforeUpload]="beforeUploadUpdate"
             [nzAccept]="'.xlsx'"
             [nzShowUploadList]="false"
           >
@@ -32,7 +32,25 @@
             </button>
           </nz-upload>
         </li>
-        <li nz-menu-item>menu4 3rd menu item</li>
+        <li nz-menu-item>
+          <button nz-button (click)="exportTemplateAdd()" nzType="link">
+            <i nz-icon nzType="download"></i>
+            Export Template Add
+          </button>
+        </li>
+
+        <li nz-menu-item>
+          <nz-upload
+            [nzBeforeUpload]="beforeUploadAdd"
+            [nzAccept]="'.xlsx'"
+            [nzShowUploadList]="false"
+          >
+            <button nz-button nzType="link">
+              <i nz-icon nzType="upload"></i>
+              Import File Add
+            </button>
+          </nz-upload>
+        </li>
       </ul>
     </nz-dropdown-menu>
 

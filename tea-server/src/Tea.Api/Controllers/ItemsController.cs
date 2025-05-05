@@ -124,7 +124,7 @@ namespace Tea.Api.Controllers
         }
 
         [HttpPost("export-template-update")]
-        public async Task<IActionResult> ExportTemplateAddItem([FromBody] List<int> ids)
+        public async Task<IActionResult> ExportTemplateUpdateItem([FromBody] List<int> ids)
         {
             var stream = await excelService.ExportTemplateUpdateItemAsync(ids);
 
@@ -148,7 +148,34 @@ namespace Tea.Api.Controllers
             using var stream = file.OpenReadStream();
             var result = await excelService.ImportUpdateItemsFromExcelAsync(stream);
             return Ok(result);
+        }
 
+
+        [HttpGet("export-template-add")]
+        public async Task<IActionResult> ExportTemplateAddItem()
+        {
+            var stream = await excelService.ExportTemplateAddItemAsync();
+
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"AddItemExample{DateTime.Now.Ticks}.xlsx");
+        }
+
+        [HttpPost("import-add-items")]
+        public async Task<IActionResult> ImportAddItemsFromExcel(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded");
+            }
+
+            if (!Path.GetExtension(file.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest("Only .xlsx files are allowed");
+            }
+
+
+            using var stream = file.OpenReadStream();
+            var result = await excelService.ImportAddItemsFromExcelAsync(stream);
+            return Ok(result);
         }
     }
 }

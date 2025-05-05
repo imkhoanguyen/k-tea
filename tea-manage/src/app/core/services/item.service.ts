@@ -97,4 +97,20 @@ export class ItemService {
       formData
     );
   }
+
+  exportTemplateAdd(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}items/export-template-add`, {
+      responseType: 'blob', // This tells HttpClient to expect binary data
+    });
+  }
+
+  importAddItem(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<ImportResult>(
+      `${this.apiUrl}items/import-add-items`,
+      formData
+    );
+  }
 }
