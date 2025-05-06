@@ -7,6 +7,7 @@ import { UtilitiesService } from '../../../core/services/utilities.service';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-order-detail',
@@ -25,6 +26,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 export class OrderDetailComponent implements OnInit {
   private orderService = inject(OrderService);
   private activatedRoute = inject(ActivatedRoute);
+  private toastrService = inject(ToastrService);
   utilService = inject(UtilitiesService);
   id: number = 0;
   order?: Order;
@@ -52,5 +54,17 @@ export class OrderDetailComponent implements OnInit {
       Number(order.subTotal) + Number(order.shippingFee) - discountPrice;
     if (total < 0) total = 0;
     return total;
+  }
+
+  cancelOrder(id: number) {
+    this.orderService.updateOrderStatus(id, 'Cancelled').subscribe({
+      next: (_) => {
+        this.toastrService.success('Hủy đơn hàng thành công');
+        this.loadOrder();
+      },
+      error: (er) => {
+        console.log(er);
+      },
+    });
   }
 }

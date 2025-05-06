@@ -38,7 +38,6 @@ namespace Tea.Api.Controllers
             return CreatedAtAction(nameof(Get), new { id = response.Id }, response);
         }
 
-        [Authorize(Policy = AppPermission.Order_Edit)]
         [HttpPut("{id}/order-status")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
