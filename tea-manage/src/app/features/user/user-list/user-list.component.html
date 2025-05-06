@@ -3,9 +3,14 @@
   <div></div>
 </div>
 
-<nz-table [nzData]="users?.data ?? []" [nzFrontPagination]="false">
+<nz-table
+  [nzData]="users?.data ?? []"
+  [nzFrontPagination]="false"
+  [nzScroll]="{ x: '1200px', y: '300px' }"
+>
   <thead>
     <tr>
+      <th>#</th>
       <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('userName')">
         Username
       </th>
@@ -29,7 +34,7 @@
       </th>
     </tr>
     <tr>
-      <th colspan="3">
+      <th colspan="4">
         <form (ngSubmit)="onSearch()" autocomplete="off">
           <nz-input-group [nzSuffix]="suffixIconSearch">
             <input
@@ -52,6 +57,7 @@
   <tbody>
     @for (data of users?.data; track data.userName) {
     <tr>
+      <td>{{ data.id }}</td>
       <td>{{ data.userName }}</td>
       <td>{{ data.fullName }}</td>
       <td>{{ data.phoneNumber || "Chưa có" }}</td>
@@ -65,7 +71,11 @@
       <td>
         <div class="d-flex gap-2 justify-content-center align-items-center">
           <button
+            [disabled]="userService.currentUser()?.userName === data.userName"
             (click)="goUpdatePage(data.userName)"
+            [class.disabled]="
+              userService.currentUser()?.userName === data.userName
+            "
             nz-button
             class="btn-blue"
           >
@@ -73,6 +83,7 @@
           </button>
 
           <button
+            [disabled]="userService.currentUser()?.userName === data.userName"
             (click)="showDeleteConfirm(data.userName)"
             nz-button
             nzType="primary"

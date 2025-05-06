@@ -211,7 +211,11 @@
       Làm mới
     </button>
   </div>
-  <nz-table [nzData]="orders?.data ?? []" [nzFrontPagination]="false">
+  <nz-table
+    [nzData]="orders?.data ?? []"
+    [nzFrontPagination]="false"
+    [nzScroll]="{ x: '1200px', y: '240px' }"
+  >
     <thead>
       <tr>
         <th class="text-center" style="width: 5%">#</th>

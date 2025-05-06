@@ -86,18 +86,22 @@
   </div>
 </div>
 
-<nz-table [nzData]="items?.data ?? []" [nzFrontPagination]="false">
+<nz-table
+  [nzData]="items?.data ?? []"
+  [nzFrontPagination]="false"
+  [nzScroll]="{ x: '1200px', y: '300px' }"
+>
   <thead>
     <tr>
       <th
-        style="width: 5%"
+        nzWidth="80px"
         [nzChecked]="checked"
         [nzIndeterminate]="indeterminate"
         nzLabel="Select all"
         (nzCheckedChange)="onAllChecked($event)"
       ></th>
 
-      <th class="text-center" style="width: 5%">Hình ảnh</th>
+      <th class="text-center" nzWidth="120px">Hình ảnh</th>
       <th
         style="width: 50%"
         [nzSortFn]="true"
@@ -105,8 +109,8 @@
       >
         Tên sản phẩm
       </th>
-      <th class="text-center" style="width: 7%">Nổi bật</th>
-      <th class="text-center" style="width: 7%">Hoạt động</th>
+      <th class="text-center" nzWidth="120px">Nổi bật</th>
+      <th class="text-center" nzWidth="120px">Hoạt động</th>
     </tr>
     <tr>
       <th colspan="2"></th>
@@ -178,7 +182,7 @@
     [nzShowQuickJumper]="true"
     [nzPageSizeOptions]="[3, 5, 10, 20, 50]"
   ></nz-pagination>
-  <ng-template #totalTemplate let-total>Tổng {{ total }} danh mục</ng-template>
+  <ng-template #totalTemplate let-total>Tổng {{ total }} sản phẩm</ng-template>
 </div>
 
 <nz-modal

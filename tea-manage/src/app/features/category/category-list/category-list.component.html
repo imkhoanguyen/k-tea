@@ -32,22 +32,23 @@
   nzBordered
   [nzData]="categories?.data ?? []"
   [nzFrontPagination]="false"
+  [nzScroll]="{ x: '1200px', y: '300px' }"
 >
   <thead>
     <tr>
       <th
-        style="width: 5%"
+        nzWidth="80px"
         [nzChecked]="checked"
         [nzIndeterminate]="indeterminate"
         nzLabel="Select all"
         (nzCheckedChange)="onAllChecked($event)"
       ></th>
       <th
-        style="width: 5%"
+        nzWidth="80px"
         [nzSortFn]="true"
         (nzSortOrderChange)="onSortChange('id')"
       >
-        ID
+        #
       </th>
       <th
         style="width: 50%"

@@ -71,7 +71,8 @@
 }
 
 .inner-content.sale-styles,
-.inner-content.report-styles {
+.inner-content.report-styles,
+.inner-content.update-user-styles {
   background-color: #f0f2f5 !important;
   padding: 0 !important;
 }

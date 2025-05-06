@@ -28,6 +28,7 @@ export class AppComponent implements OnInit {
   userService = inject(UserService);
   isSaleComponentActive = false;
   isReportComponentActive = false;
+  isUpdateUserComponentActive = false;
   ngOnInit(): void {
     this.setCurrentUser();
   }
@@ -37,6 +38,9 @@ export class AppComponent implements OnInit {
       if (event instanceof NavigationEnd) {
         this.isSaleComponentActive = event.url.includes('/ban-hang');
         this.isReportComponentActive = event.url.includes('/thong-ke');
+        this.isUpdateUserComponentActive = event.url.includes(
+          '/cap-nhat-nguoi-dung'
+        );
       }
     });
   }

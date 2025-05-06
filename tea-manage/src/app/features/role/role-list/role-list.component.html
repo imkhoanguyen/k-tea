@@ -3,7 +3,11 @@
   <div></div>
 </div>
 
-<nz-table [nzData]="roles?.data ?? []" [nzFrontPagination]="false">
+<nz-table
+  [nzData]="roles?.data ?? []"
+  [nzFrontPagination]="false"
+  [nzScroll]="{ x: '1200px', y: '240px' }"
+>
   <thead>
     <tr>
       <th style="width: 30%">
