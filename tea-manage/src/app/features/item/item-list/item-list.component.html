@@ -103,28 +103,30 @@
         [nzSortFn]="true"
         (nzSortOrderChange)="onSortChange('name')"
       >
-        <div class="d-flex align-items-center">
-          <div>Tên sản phẩm</div>
-          <div class="ms-auto">
-            <form (ngSubmit)="onSearch()" autocomplete="off">
-              <nz-input-group [nzSuffix]="suffixIconSearch">
-                <input
-                  type="text"
-                  nz-input
-                  placeholder="Nhập tên sản phẩm"
-                  [(ngModel)]="prm.search"
-                  name="search"
-                />
-              </nz-input-group>
-              <ng-template #suffixIconSearch>
-                <span nz-icon nzType="search"></span>
-              </ng-template>
-            </form>
-          </div>
-        </div>
+        Tên sản phẩm
       </th>
       <th class="text-center" style="width: 7%">Nổi bật</th>
       <th class="text-center" style="width: 7%">Hoạt động</th>
+    </tr>
+    <tr>
+      <th colspan="2"></th>
+      <th>
+        <form (ngSubmit)="onSearch()" autocomplete="off">
+          <nz-input-group [nzSuffix]="suffixIconSearch">
+            <input
+              type="text"
+              nz-input
+              placeholder="Nhập tên sản phẩm"
+              [(ngModel)]="prm.search"
+              name="search"
+            />
+          </nz-input-group>
+          <ng-template #suffixIconSearch>
+            <span nz-icon nzType="search"></span>
+          </ng-template>
+        </form>
+      </th>
+      <th colSpan="2"></th>
     </tr>
   </thead>
   <tbody>
