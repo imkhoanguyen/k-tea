@@ -30,22 +30,22 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
               }),
               catchError((er) => {
                 userService.logout();
-                toastrService.info(
-                  'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại'
-                );
                 router.navigate(['/dang-nhap']);
                 return throwError(
-                  () => new Error('Phiên đăng nhập đã hết hạn 1 ')
+                  () =>
+                    new Error(
+                      'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại'
+                    )
                 );
               })
             );
           } else {
             userService.logout();
-            toastrService.info(
-              'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại'
-            );
             router.navigate(['/dang-nhap']);
-            return throwError(() => new Error('Phiên đăng nhập đã hết hạn 2'));
+            return throwError(
+              () =>
+                new Error('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại')
+            );
           }
         } else {
           // Xử lý lỗi khác nếu có
