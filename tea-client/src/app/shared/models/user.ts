@@ -30,6 +30,15 @@ export interface Register {
   address: string;
 }
 
+export interface UserUpdate {
+  userName: string;
+  email: string;
+  password: string;
+  fullName: string;
+  phoneNumber: string;
+  address: string;
+}
+
 export interface ResetPassword {
   email: string;
   password: string;

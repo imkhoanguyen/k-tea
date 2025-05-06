@@ -73,4 +73,10 @@ export class OrderService {
       responseType: 'blob',
     });
   }
+
+  updateOrderStatus(id: number, status: string) {
+    return this.http.put(this.apiUrl + `orders/${id}/order-status`, {
+      status: status,
+    });
+  }
 }

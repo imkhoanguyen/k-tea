@@ -11,6 +11,7 @@ export interface User {
 }
 
 export interface AppUser {
+  id: string;
   userName: string;
   fullName: string;
   email: string;
@@ -27,6 +28,15 @@ export interface UserAdd {
   password: string;
   fullName: string;
   role: string;
+  phoneNumber: string;
+  address: string;
+}
+
+export interface UserUpdate {
+  userName: string;
+  email: string;
+  password: string;
+  fullName: string;
   phoneNumber: string;
   address: string;
 }

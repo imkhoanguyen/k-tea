@@ -1,58 +1,164 @@
-<h2>Thay đổi quyền</h2>
-<div class="mb-3">
-  <label class="form-label" for="role">Quyền</label>
-  <nz-select [(ngModel)]="roleName" id="role">
-    <nz-option
-      *ngFor="let role of roles"
-      [nzValue]="role.name"
-      [nzLabel]="role.name"
+<nz-card class="mb-3">
+  <h2>Thay đổi thông tin</h2>
+  <form
+    nz-form
+    [formGroup]="frm"
+    (ngSubmit)="submitForm()"
+    autocomplete="off"
+    class="login-form"
+  >
+    <nz-form-item>
+      <nz-form-label [nzSpan]="3" nzRequired>Username</nz-form-label>
+      <nz-form-control [nzSpan]="22" [nzErrorTip]="userNameErrorTpl">
+        <input
+          nz-input
+          formControlName="userName"
+          placeholder="Dùng để đăng nhập"
+        />
+        <ng-template #userNameErrorTpl let-control>
+          @if (control.errors?.['required']) { Vui lòng nhập username! }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="3" nzRequired>Email</nz-form-label>
+      <nz-form-control [nzSpan]="22" [nzErrorTip]="emailErrorTpl">
+        <input
+          nz-input
+          formControlName="email"
+          placeholder="ex: abc@gmail.com"
+        />
+        <ng-template #emailErrorTpl let-control>
+          @if (control.errors?.['required']) { Vui lòng nhập email! }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="3" nzRequired>Họ và tên</nz-form-label>
+      <nz-form-control [nzSpan]="22" [nzErrorTip]="fullNameErrorTpl">
+        <input
+          nz-input
+          formControlName="fullName"
+          placeholder="ex: Nguyễn Văn A, Nguyen Van B, ..."
+        />
+        <ng-template #fullNameErrorTpl let-control>
+          @if (control.errors?.['required']) { Vui lòng nhập họ và tên! }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="3" nzRequired>Mật khẩu</nz-form-label>
+      <nz-form-control [nzSpan]="22">
+        <input
+          nz-input
+          formControlName="password"
+          placeholder="Thay đổi mật khẩu nếu cần"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="3" nzRequired>Số điện thoại</nz-form-label>
+      <nz-form-control [nzSpan]="22" [nzErrorTip]="phoneNumberErrorTpl">
+        <input
+          nz-input
+          formControlName="phoneNumber"
+          placeholder="Số điện thoại Việt Nam"
+        />
+        <ng-template #phoneNumberErrorTpl let-control>
+          @if (control.errors?.['required']) { Vui lòng nhập số điện thoại! }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="3" nzRequired>Địa chỉ</nz-form-label>
+      <nz-form-control [nzSpan]="22" [nzErrorTip]="addressErrorTpl">
+        <input
+          nz-input
+          formControlName="address"
+          placeholder="Địa chỉ giao hàng"
+        />
+        <ng-template #addressErrorTpl let-control>
+          @if (control.errors?.['required']) { Vui lòng nhập địa chỉ! }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item *ngIf="validationErrors && validationErrors.length > 0">
+      <nz-form-control [nzOffset]="3" [nzSpan]="12">
+        <div class="mx-auto text-danger">
+          <ul>
+            <li
+              *ngFor="let error of validationErrors; let i = index"
+              class="mb-2"
+            >
+              {{ error }}
+            </li>
+          </ul>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control [nzOffset]="3" [nzSpan]="12">
+        <div class="d-flex gap-2">
+          <button nz-button nzType="primary" type="submit">Lưu</button>
+          <button
+            nz-button
+            nzType="default"
+            type="button"
+            (click)="backUserListPage()"
+          >
+            Trở về
+          </button>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-card>
+<nz-card>
+  <h2>Thay đổi quyền</h2>
+  <div class="mb-3">
+    <label class="form-label" for="role">Quyền</label>
+    <nz-select [(ngModel)]="roleName" id="role">
+      <nz-option
+        *ngFor="let role of roles"
+        [nzValue]="role.name"
+        [nzLabel]="role.name"
+      >
+      </nz-option>
+    </nz-select>
+  </div>
+
+  <div
+    *ngIf="validationChangeRole && validationChangeRole.length > 0"
+    class="mx-auto mb-3 bg-danger text-white rounded"
+  >
+    <ul class="list-unstyled p-3">
+      <li
+        *ngFor="let error of validationChangeRole; let i = index"
+        class="mb-2"
+      >
+        {{ error }}
+      </li>
+    </ul>
+  </div>
+
+  <div class="d-flex gap-2 justify-content-end align-items-center">
+    <button nz-button nzType="primary" type="submit" (click)="changeRole()">
+      Lưu
+    </button>
+    <button
+      nz-button
+      nzType="default"
+      type="button"
+      (click)="backUserListPage()"
     >
-    </nz-option>
-  </nz-select>
-</div>
-
-<div
-  *ngIf="validationChangeRole && validationChangeRole.length > 0"
-  class="mx-auto mb-3 bg-danger text-white rounded"
->
-  <ul class="list-unstyled p-3">
-    <li *ngFor="let error of validationChangeRole; let i = index" class="mb-2">
-      {{ error }}
-    </li>
-  </ul>
-</div>
-
-<div class="d-flex gap-2 justify-content-end align-items-center">
-  <button nz-button nzType="primary" type="submit" (click)="changeRole()">
-    Lưu
-  </button>
-  <button nz-button nzType="default" type="button" (click)="backUserListPage()">
-    Trở về
-  </button>
-</div>
-
-<!-- <hr class="my-3" />
-<h2>Mở/Khoá tài khoản</h2>
-<div class="d-flex gap-2 justify-content-start align-items-center">
-  <button
-    [disabled]="!isLooked"
-    nz-button
-    nzType="primary"
-    type="button"
-    (click)="changeRole()"
-  >
-    Mở
-  </button>
-  <button
-    [disabled]="isLooked"
-    nz-button
-    nzType="primary"
-    type="button"
-    (click)="backUserListPage()"
-  >
-    Khoá
-  </button>
-</div>
-
-<hr class="my-3" />
-<h2>Đặt lại mật khẩu</h2> -->
+      Trở về
+    </button>
+  </div>
+</nz-card>

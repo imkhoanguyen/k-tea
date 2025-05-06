@@ -2,6 +2,7 @@
 {
     public class UserResponse
     {
+        public required string Id { get; set; }
         public required string FullName { get; set; }
         public DateTimeOffset Created { get; set; } = DateTimeOffset.Now;
         public required string UserName { get; set; }

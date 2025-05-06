@@ -57,4 +57,13 @@ export class HeaderComponent {
     }
     this.router.navigate(['/lich-su-dat-hang', user?.userName]);
   }
+
+  goUpdateInfo() {
+    var user = this.userService.currentUser();
+    if (!user) {
+      this.toastrService.info('Vui lòng đăng nhập');
+      return;
+    }
+    this.router.navigate(['/thay-doi-thong-tin', user?.userName]);
+  }
 }

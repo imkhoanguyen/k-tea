@@ -11,6 +11,7 @@ import { RecommendDrinkComponent } from './features/recommend-drink/recommend-dr
 import { RegisterComponent } from './features/register/register.component';
 import { ForgotPasswordComponent } from './features/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './features/reset-password/reset-password.component';
+import { UpdateInfoComponent } from './features/update-info/update-info.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -25,4 +26,5 @@ export const routes: Routes = [
   { path: 'dang-ky', component: RegisterComponent },
   { path: 'quen-mat-khau', component: ForgotPasswordComponent },
   { path: 'dat-lai-mat-khau', component: ResetPasswordComponent },
+  { path: 'thay-doi-thong-tin/:username', component: UpdateInfoComponent },
 ];

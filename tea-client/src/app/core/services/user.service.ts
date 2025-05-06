@@ -7,6 +7,7 @@ import {
   ResetPassword,
   User,
   UserParams,
+  UserUpdate,
 } from '../../shared/models/user';
 import { map } from 'rxjs';
 import { Pagination } from '../../shared/models/base';
@@ -61,8 +62,8 @@ export class UserService {
     return this.http.get<AppUser>(this.apiUrl + `users/${username}`);
   }
 
-  delete(username: string) {
-    return this.http.delete(this.apiUrl + `users/${username}`);
+  update(u: UserUpdate) {
+    return this.http.put<AppUser>(this.apiUrl + `users/${u.userName}`, u);
   }
 
   forgotPassword(email: string) {
@@ -79,7 +80,7 @@ export class UserService {
 
   callRefreshToken(refreshToken: string) {
     return this.http.post<any>(this.apiUrl + 'auths/refresh-token', {
-      refreshToken,
+      rfToken: refreshToken,
     });
   }
 

@@ -126,15 +126,15 @@ namespace Tea.Api.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<UserLoginResponse>> RefreshToken(string rfToken)
+        public async Task<ActionResult<UserLoginResponse>> RefreshToken([FromBody] RefreshTokenRequest request)
         {
-            if (rfToken.IsNullOrEmpty())
+            if (request.RfToken.IsNullOrEmpty())
             {
                 _logger.LogWarning("Could not get refresh token");
                 throw new InvalidRefreshTokenException("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại");
             }
 
-            return Ok(await _tokenService.ValidRefreshToken(rfToken));
+            return Ok(await _tokenService.ValidRefreshToken(request.RfToken));
         }
 
         [HttpGet("forgot-password")]

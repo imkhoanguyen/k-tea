@@ -7,6 +7,7 @@ using Tea.Application.Interfaces;
 using Tea.Domain.Common;
 using Tea.Domain.Constants;
 using Tea.Domain.Entities;
+using Tea.Domain.Exceptions;
 using Tea.Domain.Exceptions.BadRequests;
 using Tea.Domain.Exceptions.NotFounds;
 using Tea.Domain.Repositories;
@@ -40,7 +41,8 @@ namespace Tea.Api.Controllers
             {
                 query = query.Where(u => u.PhoneNumber.Contains(request.Search)
                 || u.FullName.ToLower().Contains(request.Search)
-                || u.UserName.ToLower().Contains(request.Search));
+                || u.UserName.ToLower().Contains(request.Search)
+                || u.Id.ToLower().Contains(request.Search));
             }
 
             if (!string.IsNullOrEmpty(request.OrderBy))
@@ -68,6 +70,7 @@ namespace Tea.Api.Controllers
                 var roles = await _userManager.GetRolesAsync(user);
                 var res = new UserResponse
                 {
+                    Id = user.Id,
                     FullName = user.FullName,
                     UserName = user.UserName,
                     Created = user.Created,
@@ -104,6 +107,7 @@ namespace Tea.Api.Controllers
 
             var res = new UserResponse
             {
+                Id = user.Id,
                 FullName = user.FullName,
                 UserName = user.UserName,
                 Created = user.Created,
@@ -173,6 +177,7 @@ namespace Tea.Api.Controllers
 
                 var res = new UserResponse
                 {
+                    Id = user.Id,
                     FullName = user.FullName,
                     UserName = user.UserName,
                     Created = user.Created,
@@ -222,32 +227,64 @@ namespace Tea.Api.Controllers
                 throw new UsernameExistsException();
             }
 
-            user.FullName = request.FullName;
-            user.Email = request.Email;
-            user.UserName = request.UserName;
+            await _unit.BeginTransactionAsync();
 
-            var updateUserResult = await _userManager.UpdateAsync(user);
-            if (!updateUserResult.Succeeded)
+            try
             {
-                _logger.LogError($"{string.Join(", ", updateUserResult.Errors.Select(er => er.Description))}");
-                throw new UpdateUserFailedException("Cập nhật thông tin người dùng thất bại");
+                if (request.Password != null && request.Password.Length > 0)
+                {
+                    if (request.Password.Length < 6 || request.Password.Length > 24)
+                    {
+                        throw new BadRequestException("Mật khẩu phải lớn hơn hoặc bằng 6 ký tự và bé hơn 24 ký tự");
+                    }
+
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var changePasswordResult = await _userManager.ResetPasswordAsync(user, token, request.Password);
+
+                    if (!changePasswordResult.Succeeded)
+                    {
+                        _logger.LogError($"{string.Join(", ", changePasswordResult.Errors.Select(er => er.Description))}");
+                        throw new BadRequestException("Thay đổi mật khẩu thất bại");
+                    }
+                }
+
+                user.FullName = request.FullName;
+                user.Email = request.Email;
+                user.UserName = request.UserName;
+                user.Address = request.Address;
+                user.PhoneNumber = request.PhoneNumber;
+
+                var updateUserResult = await _userManager.UpdateAsync(user);
+                if (!updateUserResult.Succeeded)
+                {
+                    _logger.LogError($"{string.Join(", ", updateUserResult.Errors.Select(er => er.Description))}");
+                    throw new UpdateUserFailedException("Cập nhật thông tin người dùng thất bại");
+                }
+
+                await _unit.CommitTransactionAsync();
+
+                var updatedRoles = await _userManager.GetRolesAsync(user);
+                var response = new UserResponse
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    UserName = user.UserName,
+                    Created = user.Created,
+                    Role = updatedRoles.FirstOrDefault(),
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Address = user.Address,
+                    IsLooked = user.LockoutEnd.HasValue && (user.LockoutEnd > DateTimeOffset.UtcNow || user.LockoutEnd == DateTimeOffset.MaxValue)
+                };
+
+                return Ok(response);
+            } catch
+            {
+                await _unit.RollbackTransactionAsync();
+                throw;
             }
-
-            var updatedRoles = await _userManager.GetRolesAsync(user);
-            var response = new UserResponse
-            {
-                FullName = user.FullName,
-                UserName = user.UserName,
-                Created = user.Created,
-                Role = updatedRoles.FirstOrDefault(),
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Address = user.Address,
-                IsLooked = user.LockoutEnd.HasValue && (user.LockoutEnd > DateTimeOffset.UtcNow || user.LockoutEnd == DateTimeOffset.MaxValue)
-            };
-
-            return Ok(response);
         }
+        
 
         [HttpPut("{userName}/change-password")]
         public async Task<ActionResult> ChangePassword(string userName, [FromBody] ChangePasswordRequest request)
@@ -346,8 +383,9 @@ namespace Tea.Api.Controllers
                 throw new UserNotFoundException(userName);
             }
 
-            var result = await _userManager.DeleteAsync(user);
-            if (!result.Succeeded)
+           user.IsDeleted = true;
+           var updateUserResult = await _userManager.UpdateAsync(user);
+            if (!updateUserResult.Succeeded)
             {
                 _logger.LogError($"Failed to delete {userName}");
                 throw new DeleteUserFailedException("Xoá người dùng thất bại.");

@@ -1,7 +1,13 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AppUser, User, UserAdd, UserParams } from '../../shared/models/user';
+import {
+  AppUser,
+  User,
+  UserAdd,
+  UserParams,
+  UserUpdate,
+} from '../../shared/models/user';
 import { map } from 'rxjs';
 import { Pagination } from '../../shared/models/base';
 
@@ -67,6 +73,10 @@ export class UserService {
 
   add(userAdd: UserAdd) {
     return this.http.post<AppUser>(this.apiUrl + 'users', userAdd);
+  }
+
+  update(u: UserUpdate) {
+    return this.http.put<AppUser>(this.apiUrl + `users/${u.userName}`, u);
   }
 
   changeRole(userName: string, role: string) {
