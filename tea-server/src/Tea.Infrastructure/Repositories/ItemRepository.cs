@@ -68,6 +68,11 @@ namespace Tea.Infrastructure.Repositories
                 );
             }
 
+            if (request.IsFeatured.HasValue)
+            {
+                query = query.Where(x => x.IsFeatured == request.IsFeatured);
+            }
+
             if (!string.IsNullOrEmpty(request.OrderBy))
             {
                 query = request.OrderBy switch
