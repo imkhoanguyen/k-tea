@@ -48,6 +48,55 @@ nz-card {
   text-align: center;
 }
 
+/* Badge giảm giá (như cũ) */
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ff4d4f;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+/* Badge sản phẩm nổi bật */
+.featured-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px; /* Hoặc right nếu muốn cùng phía với discount */
+  background-color: #1890ff; /* Màu xanh nổi bật */
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+/* Giá cũ (gạch ngang) */
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+  margin-right: 8px;
+}
+
+/* Giá mới (màu đỏ) */
+.new-price {
+  color: #ff4d4f;
+}
+
+/* Đảm bảo ảnh và card có position để badge hiển thị đúng */
+.product-image {
+  position: relative;
+}
+
+nz-card {
+  position: relative;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .container {

@@ -97,4 +97,8 @@ export class ShopComponent implements OnInit {
   showModal(id: number): void {
     this.itemComponent.showModal(id);
   }
+
+  calculateDiscountPercent(originalPrice: number, newPrice: number): number {
+    return Math.round(((originalPrice - newPrice) / originalPrice) * 100);
+  }
 }

@@ -1,0 +1,149 @@
+/* Container chính của slider */
+nz-carousel {
+  width: 100%;
+  padding: 0 15px;
+  height: 500px;
+}
+
+.slide-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  flex-wrap: nowrap; /* Ngăn tự động xuống dòng */
+  overflow: hidden; /* Ẩn phần tràn */
+}
+
+/* Card sản phẩm */
+nz-card {
+  width: 310px; /* Chiều rộng cố định */
+  min-height: 300px; /* Chiều cao tối thiểu */
+  margin: 0 auto; /* Tự động căn giữa */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Căn giữa nội dung trong card */
+  text-align: center; /* Căn giữa text */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden; /* Ẩn nội dung tràn */
+}
+
+nz-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Ảnh sản phẩm */
+.product-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  display: block;
+  border-radius: 4px 4px 0 0;
+}
+
+/* Tên sản phẩm */
+.item-name {
+  margin: 0.75rem 0;
+  font-size: 16px;
+  text-align: center;
+  font-weight: 500;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 10px;
+  max-width: 250px;
+}
+
+/* Giá sản phẩm */
+.item-price {
+  font-size: 14px;
+  text-align: center;
+  margin-top: auto; /* Đẩy giá xuống dưới cùng */
+  padding: 0 10px 10px;
+}
+
+/* Badge giảm giá */
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ff4d4f;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+/* Badge sản phẩm nổi bật */
+.featured-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #1890ff;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+/* Giá cũ */
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+  margin-right: 5px;
+}
+
+/* Giá mới */
+.new-price {
+  color: #ff4d4f;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .slide-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .slide-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .slide-container {
+    grid-template-columns: 1fr;
+  }
+
+  .product-image {
+    height: 220px;
+  }
+
+  nz-card {
+    width: 180px;
+    min-height: 280px;
+  }
+}
+
+/* Chỉnh dots của carousel */
+.ant-carousel .slick-dots {
+  bottom: -25px;
+}
+
+.ant-carousel .slick-dots li button {
+  background: #d9d9d9;
+  opacity: 0.4;
+}
+
+.ant-carousel .slick-dots li.slick-active button {
+  background: #1890ff;
+  opacity: 1;
+}

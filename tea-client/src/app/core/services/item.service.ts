@@ -26,6 +26,10 @@ export class ItemService {
       params = params.append('categoryId', prm.categoryId);
     }
 
+    if (prm.isFeatured) {
+      params = params.append('isFeatured', prm.isFeatured);
+    }
+
     params = params.append('pageIndex', prm.pageIndex);
     params = params.append('pageSize', prm.pageSize);
 

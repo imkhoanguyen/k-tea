@@ -1,0 +1,55 @@
+<h1 class="my-5 text-center text-uppercase">Sản phẩm nổi bật</h1>
+<nz-carousel
+  *ngIf="items?.data"
+  nzAutoPlay
+  nzDotPosition="bottom"
+  nzEffect="scrollx"
+>
+  <!-- Mỗi slide chứa 4 sản phẩm -->
+  @for (chunk of chunkArray(items?.data, 4); track $index) {
+  <div nz-carousel-content>
+    <div class="slide-container">
+      @for (item of chunk; track item.id) {
+      <nz-card style="cursor: pointer" (click)="showModal(item.id)">
+        <div class="d-flex flex-column gap-3">
+          <!-- Badge GIẢM GIÁ (nếu có newPrice) -->
+          @if (item.sizes[0].newPrice) {
+          <div class="discount-badge">
+            Giảm
+            {{
+              calculateDiscountPercent(
+                item.sizes[0].price,
+                item.sizes[0].newPrice
+              )
+            }}%
+          </div>
+          }
+          <!-- Badge NỔI BẬT (nếu isFeatured = true) -->
+          @if (item.isFeatured) {
+          <div class="featured-badge">Nổi bật</div>
+          }
+          <img [src]="item.imgUrl" [alt]="item.name" class="product-image" />
+          <div nz-tooltip nzTooltipTitle="{{ item.name }}" class="item-name">
+            {{ item.name }}
+          </div>
+          <div class="item-price">
+            Giá:
+            <span class="fw-medium" [class.old-price]="item.sizes[0].newPrice">
+              {{ utilService.formatVND(item.sizes[0].price) }}
+            </span>
+            @if (item.sizes[0].newPrice) {
+            <span class="fw-medium new-price">
+              {{ utilService.formatVND(item.sizes[0].newPrice) }}
+            </span>
+            }
+          </div>
+        </div>
+      </nz-card>
+      }
+    </div>
+  </div>
+  }
+</nz-carousel>
+
+<!-- item modal -->
+<app-item-modal></app-item-modal>

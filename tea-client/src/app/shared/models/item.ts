@@ -20,4 +20,5 @@ export class ItemParams extends PaginationRequest {
   }
   override pageSize: number = 12;
   categoryId: number = 0;
+  isFeatured?: boolean;
 }

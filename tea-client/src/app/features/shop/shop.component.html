@@ -42,20 +42,43 @@
     @if (items) { @for (item of items.data; track item.id) {
     <nz-card style="cursor: pointer" (click)="showModal(item.id)">
       <div class="d-flex flex-column gap-3">
+        <!-- Badge GIẢM GIÁ (nếu có newPrice) -->
+        @if (item.sizes[0].newPrice) {
+        <div class="discount-badge">
+          Giảm
+          {{
+            calculateDiscountPercent(
+              item.sizes[0].price,
+              item.sizes[0].newPrice
+            )
+          }}%
+        </div>
+        }
+        <!-- Badge NỔI BẬT (nếu isFeatured = true) -->
+        @if (item.isFeatured) {
+        <div class="featured-badge">Nổi bật</div>
+        }
         <img [src]="item.imgUrl" [alt]="item.name" class="product-image" />
         <div nz-tooltip nzTooltipTitle="{{ item.name }}" class="item-name">
           {{ item.name }}
         </div>
         <div class="item-price">
           Giá:
-          <span class="fw-medium">{{
-            utilService.formatVND(item.sizes[0].price)
-          }}</span>
+          <span class="fw-medium" [class.old-price]="item.sizes[0].newPrice">
+            {{ utilService.formatVND(item.sizes[0].price) }}
+          </span>
+          @if (item.sizes[0].newPrice) {
+          <span class="fw-medium new-price">
+            {{ utilService.formatVND(item.sizes[0].newPrice) }}
+          </span>
+          }
         </div>
       </div>
     </nz-card>
     } }
   </div>
+
+  <!-- pagination -->
   <div
     *ngIf="items != null"
     class="d-flex align-items-center justify-content-center mt-5 mb-3"
